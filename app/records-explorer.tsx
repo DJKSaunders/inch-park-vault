@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  FormEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type BattingRow = [
   string,
@@ -108,7 +103,7 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   battingAverage: {
     label: "Batting average",
-    shortLabel: "Average",
+    shortLabel: "Bat avg",
     category: "batting",
     value: (stats) => (stats.outs > 0 ? stats.battingRuns / stats.outs : null),
     display: (stats) =>
@@ -116,7 +111,7 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   highScore: {
     label: "Highest score",
-    shortLabel: "High score",
+    shortLabel: "HS",
     category: "batting",
     value: (stats) => stats.highScore,
     display: (stats) => integer.format(stats.highScore),
@@ -137,14 +132,14 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   wickets: {
     label: "Bowling wickets",
-    shortLabel: "Wickets",
+    shortLabel: "Wkts",
     category: "bowling",
     value: (stats) => stats.wickets,
     display: (stats) => integer.format(stats.wickets),
   },
   bowlingAverage: {
     label: "Bowling average",
-    shortLabel: "Average",
+    shortLabel: "Bowl avg",
     category: "bowling",
     ascending: true,
     value: (stats) =>
@@ -156,7 +151,7 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   economy: {
     label: "Economy rate",
-    shortLabel: "Economy",
+    shortLabel: "Econ",
     category: "bowling",
     ascending: true,
     value: (stats) =>
@@ -168,7 +163,7 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   bestBowling: {
     label: "Best bowling",
-    shortLabel: "Best",
+    shortLabel: "BB",
     category: "bowling",
     value: (stats) =>
       stats.bestWickets > 0 ? stats.bestWickets * 1000 - stats.bestRuns : null,
@@ -177,11 +172,24 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
   catches: {
     label: "Catches",
-    shortLabel: "Catches",
+    shortLabel: "Ct",
     category: "fielding",
     value: (stats) => stats.catches,
     display: (stats) => integer.format(stats.catches),
   },
+};
+
+const metricColumn: Record<MetricKey, string> = {
+  runs: "runs",
+  battingAverage: "battingAverage",
+  highScore: "highScore",
+  hundreds: "hundreds",
+  fifties: "fifties",
+  wickets: "wickets",
+  bowlingAverage: "bowlingAverage",
+  economy: "economy",
+  bestBowling: "bestBowling",
+  catches: "catches",
 };
 
 function newStats(name: string): PlayerStats {
@@ -206,6 +214,37 @@ function newStats(name: string): PlayerStats {
   };
 }
 
+function addBatting(stats: PlayerStats, row: BattingRow) {
+  const runs = typeof row[6] === "number" ? row[6] : 0;
+  if (!row[8]) {
+    stats.innings += 1;
+    stats.battingRuns += runs;
+    stats.highScore = Math.max(stats.highScore, runs);
+    if (!row[7]) stats.outs += 1;
+    if (runs >= 100) stats.hundreds += 1;
+    else if (runs >= 50) stats.fifties += 1;
+  }
+  stats.catches += row[9];
+  stats.stumpings += row[10];
+  stats.runOuts += row[11];
+  stats.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
+}
+
+function addBowling(stats: PlayerStats, row: BowlingRow) {
+  stats.balls += row[6];
+  stats.maidens += row[7];
+  stats.bowlingRuns += row[8];
+  stats.wickets += row[9];
+  if (
+    row[9] > stats.bestWickets ||
+    (row[9] === stats.bestWickets && row[8] < stats.bestRuns)
+  ) {
+    stats.bestWickets = row[9];
+    stats.bestRuns = row[8];
+  }
+  stats.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
+}
+
 function passesQualification(
   stats: PlayerStats,
   qualification: string,
@@ -213,15 +252,8 @@ function passesQualification(
 ) {
   if (qualification === "any") return true;
   const regular = qualification === "regular";
-
-  if (category === "batting") {
-    return stats.innings >= (regular ? 10 : 5);
-  }
-
-  if (category === "bowling") {
-    return stats.balls >= (regular ? 150 : 60);
-  }
-
+  if (category === "batting") return stats.innings >= (regular ? 10 : 5);
+  if (category === "bowling") return stats.balls >= (regular ? 150 : 60);
   return stats.matches.size >= (regular ? 10 : 5);
 }
 
@@ -234,6 +266,32 @@ function initials(name: string) {
   return `${parts[0]?.[0] ?? ""}${parts.at(-1)?.[0] ?? ""}`.toUpperCase();
 }
 
+function overs(balls: number) {
+  return `${Math.floor(balls / 6)}.${balls % 6}`;
+}
+
+function battingAverage(stats: PlayerStats) {
+  return stats.outs > 0 ? decimal.format(stats.battingRuns / stats.outs) : "—";
+}
+
+function bowlingAverage(stats: PlayerStats) {
+  return stats.wickets > 0
+    ? decimal.format(stats.bowlingRuns / stats.wickets)
+    : "—";
+}
+
+function economy(stats: PlayerStats) {
+  return stats.balls > 0
+    ? decimal.format(stats.bowlingRuns / (stats.balls / 6))
+    : "—";
+}
+
+function bestBowling(stats: PlayerStats) {
+  return stats.bestWickets > 0
+    ? `${stats.bestWickets}/${stats.bestRuns}`
+    : "—";
+}
+
 export function RecordsExplorer() {
   const [data, setData] = useState<RecordsData | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -244,9 +302,8 @@ export function RecordsExplorer() {
   const [opposition, setOpposition] = useState("");
   const [metric, setMetric] = useState<MetricKey>("runs");
   const [qualification, setQualification] = useState("established");
-  const [selectedPlayer, setSelectedPlayer] = useState("Graeme Beghin");
+  const [openPlayer, setOpenPlayer] = useState<string | null>(null);
   const [playerQuery, setPlayerQuery] = useState("");
-  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -260,9 +317,6 @@ export function RecordsExplorer() {
         setData(records);
         setStartYear(records.meta.seasonStart);
         setEndYear(records.meta.seasonEnd);
-        if (!records.meta.playerNames.includes("Graeme Beghin")) {
-          setSelectedPlayer(records.meta.playerNames[0] ?? "");
-        }
       })
       .catch(() => {
         if (active) setLoadError(true);
@@ -272,6 +326,19 @@ export function RecordsExplorer() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!openPlayer) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenPlayer(null);
+    };
+    document.body.classList.add("dialog-open");
+    window.addEventListener("keydown", close);
+    return () => {
+      document.body.classList.remove("dialog-open");
+      window.removeEventListener("keydown", close);
+    };
+  }, [openPlayer]);
+
   const filtered = useMemo(() => {
     if (!data) return { batting: [], bowling: [] };
     const passes = (row: BattingRow | BowlingRow) =>
@@ -280,8 +347,7 @@ export function RecordsExplorer() {
       (team === "All teams" || row[2] === team) &&
       (matchType === "All match types" || row[3] === matchType) &&
       (!opposition.trim() ||
-        row[4].toLocaleLowerCase().includes(opposition.trim().toLocaleLowerCase()));
-
+        row[4].toLowerCase().includes(opposition.trim().toLowerCase()));
     return {
       batting: data.batting.filter(passes),
       bowling: data.bowling.filter(passes),
@@ -298,40 +364,8 @@ export function RecordsExplorer() {
       }
       return current;
     };
-
-    for (const row of filtered.batting) {
-      const current = get(row[0]);
-      const runs = typeof row[6] === "number" ? row[6] : 0;
-      if (!row[8]) {
-        current.innings += 1;
-        current.battingRuns += runs;
-        current.highScore = Math.max(current.highScore, runs);
-        if (!row[7]) current.outs += 1;
-        if (runs >= 100) current.hundreds += 1;
-        else if (runs >= 50) current.fifties += 1;
-      }
-      current.catches += row[9];
-      current.stumpings += row[10];
-      current.runOuts += row[11];
-      current.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
-    }
-
-    for (const row of filtered.bowling) {
-      const current = get(row[0]);
-      current.balls += row[6];
-      current.maidens += row[7];
-      current.bowlingRuns += row[8];
-      current.wickets += row[9];
-      if (
-        row[9] > current.bestWickets ||
-        (row[9] === current.bestWickets && row[8] < current.bestRuns)
-      ) {
-        current.bestWickets = row[9];
-        current.bestRuns = row[8];
-      }
-      current.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
-    }
-
+    for (const row of filtered.batting) addBatting(get(row[0]), row);
+    for (const row of filtered.bowling) addBowling(get(row[0]), row);
     return stats;
   }, [filtered]);
 
@@ -356,62 +390,39 @@ export function RecordsExplorer() {
       .slice(0, 100);
   }, [metric, qualification, statsByPlayer]);
 
-  const selectedStats =
-    statsByPlayer.get(selectedPlayer) ?? newStats(selectedPlayer);
+  const selectedStats = openPlayer
+    ? statsByPlayer.get(openPlayer) ?? newStats(openPlayer)
+    : null;
 
   const seasonTrend = useMemo(() => {
-    if (!data || !selectedPlayer) return [];
+    if (!openPlayer) return [];
     const points: { season: number; value: number; display: string }[] = [];
     for (let season = startYear; season <= endYear; season += 1) {
-      const seasonStats = newStats(selectedPlayer);
+      const seasonStats = newStats(openPlayer);
       for (const row of filtered.batting) {
-        if (row[0] !== selectedPlayer || row[1] !== season) continue;
-        const runs = typeof row[6] === "number" ? row[6] : 0;
-        if (!row[8]) {
-          seasonStats.innings += 1;
-          seasonStats.battingRuns += runs;
-          seasonStats.highScore = Math.max(seasonStats.highScore, runs);
-          if (!row[7]) seasonStats.outs += 1;
-          if (runs >= 100) seasonStats.hundreds += 1;
-          else if (runs >= 50) seasonStats.fifties += 1;
-        }
-        seasonStats.catches += row[9];
-        seasonStats.stumpings += row[10];
-        seasonStats.runOuts += row[11];
-        seasonStats.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
+        if (row[0] === openPlayer && row[1] === season) addBatting(seasonStats, row);
       }
       for (const row of filtered.bowling) {
-        if (row[0] !== selectedPlayer || row[1] !== season) continue;
-        seasonStats.balls += row[6];
-        seasonStats.maidens += row[7];
-        seasonStats.bowlingRuns += row[8];
-        seasonStats.wickets += row[9];
-        if (
-          row[9] > seasonStats.bestWickets ||
-          (row[9] === seasonStats.bestWickets && row[8] < seasonStats.bestRuns)
-        ) {
-          seasonStats.bestWickets = row[9];
-          seasonStats.bestRuns = row[8];
-        }
+        if (row[0] === openPlayer && row[1] === season) addBowling(seasonStats, row);
       }
-      const trendValue = metrics[metric].value(seasonStats);
-      if (trendValue !== null && Number.isFinite(trendValue)) {
+      const value = metrics[metric].value(seasonStats);
+      if (value !== null && Number.isFinite(value)) {
         points.push({
           season,
-          value: trendValue,
+          value,
           display: metrics[metric].display(seasonStats),
         });
       }
     }
     return points;
-  }, [data, endYear, filtered, metric, selectedPlayer, startYear]);
+  }, [endYear, filtered, metric, openPlayer, startYear]);
 
   const chart = useMemo(() => {
-    const width = 760;
-    const height = 270;
-    const padX = 34;
+    const width = 860;
+    const height = 300;
+    const padX = 42;
     const padTop = 22;
-    const padBottom = 36;
+    const padBottom = 42;
     const values = seasonTrend.map((point) => point.value);
     const maximum = Math.max(...values, 1);
     const minimum = metrics[metric].ascending
@@ -439,27 +450,18 @@ export function RecordsExplorer() {
     };
   }, [metric, seasonTrend]);
 
-  const visibleLeaderboard = showAll
-    ? leaderboard
-    : leaderboard.slice(0, 12);
-
-  function selectSearchedPlayer(event: FormEvent<HTMLFormElement>) {
+  function openSearchedPlayer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!data) return;
-    const query = playerQuery.trim().toLocaleLowerCase();
+    const query = playerQuery.trim().toLowerCase();
     const match =
-      data.meta.playerNames.find(
-        (name) => name.toLocaleLowerCase() === query,
-      ) ??
+      data.meta.playerNames.find((name) => name.toLowerCase() === query) ??
       data.meta.playerNames.find((name) =>
-        name.toLocaleLowerCase().includes(query),
+        name.toLowerCase().includes(query),
       );
     if (match) {
-      setSelectedPlayer(match);
+      setOpenPlayer(match);
       setPlayerQuery("");
-      document
-        .getElementById("career")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
@@ -472,6 +474,8 @@ export function RecordsExplorer() {
     setOpposition("");
     setQualification("established");
   }
+
+  const activeColumn = metricColumn[metric];
 
   if (loadError) {
     return (
@@ -504,82 +508,97 @@ export function RecordsExplorer() {
           </span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#leaderboard">Rankings</a>
-          <a href="#career">Player timeline</a>
+          <a href="#rankings">Rankings</a>
           <a href="https://www.edinburghsouthcc.org" target="_blank" rel="noreferrer">
             Club website <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
+      <section className="ranking-hero" id="top">
+        <div className="ranking-intro">
           <p className="eyebrow">The South archive · 2004–2025</p>
           <h1>
-            Every innings.
-            <br />
-            Every spell.
-            <br />
-            <em>One club story.</em>
+            Rank the <em>South.</em>
           </h1>
-          <p className="hero-intro">
-            Explore more than two decades of Edinburgh South performances,
-            compare players and follow careers season by season.
+          <p>
+            Choose the measure that matters, shape the timeframe and compare
+            every player across the complete club archive.
           </p>
         </div>
-
-        <form className="player-search" onSubmit={selectSearchedPlayer}>
-          <label htmlFor="player-search">Find a player</label>
-          <div className="search-box">
-            <span aria-hidden="true">⌕</span>
-            <input
-              id="player-search"
-              list="player-names"
-              value={playerQuery}
-              onChange={(event) => setPlayerQuery(event.target.value)}
-              placeholder={`Search ${integer.format(data.meta.playerCount)} players`}
-            />
-            <button type="submit">Search records</button>
-          </div>
-          <datalist id="player-names">
-            {data.meta.playerNames.map((name) => (
-              <option value={name} key={name} />
-            ))}
-          </datalist>
-          <p>
-            Try a full or partial name. Select a leaderboard row to switch
-            player instantly.
-          </p>
-        </form>
+        <label className="metric-selector">
+          <span>Rank players by</span>
+          <select
+            value={metric}
+            onChange={(event) => setMetric(event.target.value as MetricKey)}
+          >
+            <optgroup label="Batting">
+              <option value="runs">Batting runs</option>
+              <option value="battingAverage">Batting average</option>
+              <option value="highScore">Highest score</option>
+              <option value="hundreds">Hundreds</option>
+              <option value="fifties">Fifties</option>
+            </optgroup>
+            <optgroup label="Bowling">
+              <option value="wickets">Bowling wickets</option>
+              <option value="bowlingAverage">Bowling average</option>
+              <option value="economy">Economy rate</option>
+              <option value="bestBowling">Best bowling</option>
+            </optgroup>
+            <optgroup label="Fielding">
+              <option value="catches">Catches</option>
+            </optgroup>
+          </select>
+          <small>Top 100 · highlighted in the table below</small>
+        </label>
       </section>
 
       <section className="archive-stats" aria-label="Archive summary">
         <div>
           <strong>{integer.format(data.meta.recordCount)}</strong>
-          <span>Recorded performances</span>
+          <span>Performances</span>
         </div>
         <div>
           <strong>{integer.format(data.meta.playerCount)}</strong>
-          <span>Players in the archive</span>
+          <span>Players</span>
         </div>
         <div>
           <strong>{integer.format(data.meta.seasonCount)}</strong>
-          <span>Seasons of club cricket</span>
+          <span>Seasons</span>
         </div>
       </section>
 
-      <section className="explorer-shell">
-        <div className="filter-heading">
+      <section className="rankings-shell" id="rankings">
+        <div className="rankings-toolbar">
           <div>
-            <p className="eyebrow">Shape the archive</p>
-            <h2>Choose the records you want to see</h2>
+            <p className="eyebrow">Top 100 rankings</p>
+            <h2>{metrics[metric].label}</h2>
           </div>
-          <button className="text-button" type="button" onClick={resetFilters}>
-            Reset filters
-          </button>
+          <form className="compact-search" onSubmit={openSearchedPlayer}>
+            <label htmlFor="player-search">Open player record</label>
+            <div>
+              <input
+                id="player-search"
+                list="player-names"
+                value={playerQuery}
+                onChange={(event) => setPlayerQuery(event.target.value)}
+                placeholder="Search player"
+              />
+              <button type="submit">Open</button>
+            </div>
+            <datalist id="player-names">
+              {data.meta.playerNames.map((name) => (
+                <option value={name} key={name} />
+              ))}
+            </datalist>
+          </form>
         </div>
 
-        <div className="filters" aria-label="Record filters">
+        <div className="filters-heading">
+          <span>Filter the ranking</span>
+          <button type="button" onClick={resetFilters}>Reset</button>
+        </div>
+        <div className="filters" aria-label="Ranking filters">
           <label>
             <span>From season</span>
             <select
@@ -591,9 +610,7 @@ export function RecordsExplorer() {
               {Array.from(
                 { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
                 (_, index) => data.meta.seasonStart + index,
-              ).map((season) => (
-                <option key={season}>{season}</option>
-              ))}
+              ).map((season) => <option key={season}>{season}</option>)}
             </select>
           </label>
           <label>
@@ -607,30 +624,21 @@ export function RecordsExplorer() {
               {Array.from(
                 { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
                 (_, index) => data.meta.seasonStart + index,
-              ).map((season) => (
-                <option key={season}>{season}</option>
-              ))}
+              ).map((season) => <option key={season}>{season}</option>)}
             </select>
           </label>
           <label>
             <span>Team</span>
             <select value={team} onChange={(event) => setTeam(event.target.value)}>
               <option>All teams</option>
-              {data.meta.teams.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
+              {data.meta.teams.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
           <label>
             <span>Match type</span>
-            <select
-              value={matchType}
-              onChange={(event) => setMatchType(event.target.value)}
-            >
+            <select value={matchType} onChange={(event) => setMatchType(event.target.value)}>
               <option>All match types</option>
-              {data.meta.matchTypes.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
+              {data.meta.matchTypes.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
           <label>
@@ -648,38 +656,8 @@ export function RecordsExplorer() {
             </datalist>
           </label>
           <label>
-            <span>Ranking</span>
-            <select
-              value={metric}
-              onChange={(event) => {
-                setMetric(event.target.value as MetricKey);
-                setShowAll(false);
-              }}
-            >
-              <optgroup label="Batting">
-                <option value="runs">Batting runs</option>
-                <option value="battingAverage">Batting average</option>
-                <option value="highScore">Highest score</option>
-                <option value="hundreds">Hundreds</option>
-                <option value="fifties">Fifties</option>
-              </optgroup>
-              <optgroup label="Bowling">
-                <option value="wickets">Bowling wickets</option>
-                <option value="bowlingAverage">Bowling average</option>
-                <option value="economy">Economy rate</option>
-                <option value="bestBowling">Best bowling</option>
-              </optgroup>
-              <optgroup label="Fielding">
-                <option value="catches">Catches</option>
-              </optgroup>
-            </select>
-          </label>
-          <label>
             <span>Qualification</span>
-            <select
-              value={qualification}
-              onChange={(event) => setQualification(event.target.value)}
-            >
+            <select value={qualification} onChange={(event) => setQualification(event.target.value)}>
               <option value="any">Any sample</option>
               <option value="established">Established</option>
               <option value="regular">Regular</option>
@@ -692,183 +670,74 @@ export function RecordsExplorer() {
           <span>{team}</span>
           <span>{matchType}</span>
           {opposition && <span>vs {opposition}</span>}
+          <strong>{leaderboard.length} ranked players</strong>
         </div>
 
-        <div className="records-grid">
-          <section className="leaderboard" id="leaderboard">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">All-time rankings</p>
-                <h2>{metrics[metric].label}</h2>
-              </div>
-              <span className="top-hundred">Top 100</span>
-            </div>
-            <div className="table-head" aria-hidden="true">
-              <span>Rank</span>
-              <span>Player</span>
-              <span>{metrics[metric].shortLabel}</span>
-            </div>
-            <ol className="ranking-list">
-              {visibleLeaderboard.map(({ stats }, index) => (
-                <li key={stats.name}>
-                  <button
-                    type="button"
-                    className={selectedPlayer === stats.name ? "selected" : ""}
-                    onClick={() => setSelectedPlayer(stats.name)}
-                    aria-label={`View ${stats.name}'s player timeline`}
-                  >
-                    <span className="rank">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="rank-player">
-                      <strong>{stats.name}</strong>
-                      <small>
-                        {stats.innings} innings · {stats.matches.size} matches
-                      </small>
-                    </span>
-                    <strong className="rank-value">
-                      {metrics[metric].display(stats)}
-                    </strong>
-                  </button>
-                </li>
+        <div className="stats-table-wrap">
+          <table className="stats-table">
+            <caption>
+              Top {leaderboard.length} players ranked by {metrics[metric].label.toLowerCase()}.
+              Select a player name to open their record.
+            </caption>
+            <thead>
+              <tr>
+                <th className="rank-col">Rank</th>
+                <th className="player-col">Player</th>
+                <th>Mat</th>
+                <th>Inn</th>
+                <th className={activeColumn === "runs" ? "active-sort" : ""}>Runs</th>
+                <th className={activeColumn === "battingAverage" ? "active-sort" : ""}>Bat avg</th>
+                <th className={activeColumn === "highScore" ? "active-sort" : ""}>HS</th>
+                <th className={activeColumn === "fifties" ? "active-sort" : ""}>50s</th>
+                <th className={activeColumn === "hundreds" ? "active-sort" : ""}>100s</th>
+                <th>Overs</th>
+                <th className={activeColumn === "wickets" ? "active-sort" : ""}>Wkts</th>
+                <th className={activeColumn === "bowlingAverage" ? "active-sort" : ""}>Bowl avg</th>
+                <th className={activeColumn === "economy" ? "active-sort" : ""}>Econ</th>
+                <th className={activeColumn === "bestBowling" ? "active-sort" : ""}>BB</th>
+                <th className={activeColumn === "catches" ? "active-sort" : ""}>Ct</th>
+                <th>St</th>
+                <th>RO</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard.map(({ stats }, index) => (
+                <tr key={stats.name}>
+                  <td className="rank-col">{String(index + 1).padStart(2, "0")}</td>
+                  <th scope="row" className="player-col">
+                    <button type="button" onClick={() => setOpenPlayer(stats.name)}>
+                      <span>{stats.name}</span>
+                      <small>View player record ↗</small>
+                    </button>
+                  </th>
+                  <td>{integer.format(stats.matches.size)}</td>
+                  <td>{integer.format(stats.innings)}</td>
+                  <td className={activeColumn === "runs" ? "active-sort" : ""}>{integer.format(stats.battingRuns)}</td>
+                  <td className={activeColumn === "battingAverage" ? "active-sort" : ""}>{battingAverage(stats)}</td>
+                  <td className={activeColumn === "highScore" ? "active-sort" : ""}>{integer.format(stats.highScore)}</td>
+                  <td className={activeColumn === "fifties" ? "active-sort" : ""}>{integer.format(stats.fifties)}</td>
+                  <td className={activeColumn === "hundreds" ? "active-sort" : ""}>{integer.format(stats.hundreds)}</td>
+                  <td>{overs(stats.balls)}</td>
+                  <td className={activeColumn === "wickets" ? "active-sort" : ""}>{integer.format(stats.wickets)}</td>
+                  <td className={activeColumn === "bowlingAverage" ? "active-sort" : ""}>{bowlingAverage(stats)}</td>
+                  <td className={activeColumn === "economy" ? "active-sort" : ""}>{economy(stats)}</td>
+                  <td className={activeColumn === "bestBowling" ? "active-sort" : ""}>{bestBowling(stats)}</td>
+                  <td className={activeColumn === "catches" ? "active-sort" : ""}>{integer.format(stats.catches)}</td>
+                  <td>{integer.format(stats.stumpings)}</td>
+                  <td>{integer.format(stats.runOuts)}</td>
+                </tr>
               ))}
-            </ol>
-            {leaderboard.length === 0 && (
-              <p className="empty-state">
-                No qualifying performances match these filters.
-              </p>
-            )}
-            {leaderboard.length > 12 && (
-              <button
-                className="show-more"
-                type="button"
-                onClick={() => setShowAll((current) => !current)}
-              >
-                {showAll
-                  ? "Show leading 12"
-                  : `View full top ${leaderboard.length}`}
-              </button>
-            )}
-          </section>
-
-          <section className="career" id="career">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Season by season</p>
-                <h2>Player over time</h2>
-              </div>
-              <div className="player-chip">
-                <span>{initials(selectedPlayer)}</span>
-                <strong>{selectedPlayer}</strong>
-              </div>
-            </div>
-
-            <div className="player-summary">
-              <div>
-                <span>Career runs</span>
-                <strong>{integer.format(selectedStats.battingRuns)}</strong>
-              </div>
-              <div>
-                <span>Batting average</span>
-                <strong>
-                  {selectedStats.outs > 0
-                    ? decimal.format(
-                        selectedStats.battingRuns / selectedStats.outs,
-                      )
-                    : "—"}
-                </strong>
-              </div>
-              <div>
-                <span>Wickets</span>
-                <strong>{integer.format(selectedStats.wickets)}</strong>
-              </div>
-            </div>
-
-            <div className="chart-card">
-              <div className="chart-title">
-                <div>
-                  <span>{metrics[metric].label}</span>
-                  <strong>
-                    {metrics[metric].display(selectedStats)}
-                  </strong>
-                </div>
-                <p>{yearLabel(startYear, endYear)} · per season</p>
-              </div>
-              {chart.points.length > 0 ? (
-                <svg
-                  viewBox={`0 0 ${chart.width} ${chart.height}`}
-                  role="img"
-                  aria-label={`${metrics[metric].label} by season for ${selectedPlayer}`}
-                >
-                  {[0, 0.5, 1].map((position) => {
-                    const y = 22 + position * 212;
-                    const value =
-                      chart.maximum -
-                      position * (chart.maximum - chart.minimum);
-                    return (
-                      <g key={position}>
-                        <line x1="34" x2="726" y1={y} y2={y} />
-                        <text x="4" y={y + 4}>
-                          {Number.isInteger(value)
-                            ? integer.format(value)
-                            : value.toFixed(1)}
-                        </text>
-                      </g>
-                    );
-                  })}
-                  <polyline className="chart-area" points={`34,234 ${chart.path} 726,234`} />
-                  <polyline className="chart-line" points={chart.path} />
-                  {chart.points.map((point, index) => (
-                    <g key={point.season}>
-                      <circle cx={point.x} cy={point.y} r="5">
-                        <title>{`${point.season}: ${point.display}`}</title>
-                      </circle>
-                      {(chart.points.length <= 12 ||
-                        index === 0 ||
-                        index === chart.points.length - 1 ||
-                        index % 3 === 0) && (
-                        <text
-                          className="season-label"
-                          x={point.x}
-                          y="258"
-                          textAnchor="middle"
-                        >
-                          {point.season}
-                        </text>
-                      )}
-                    </g>
-                  ))}
-                </svg>
-              ) : (
-                <p className="empty-state">
-                  No season-by-season values are available for this player and
-                  ranking.
-                </p>
-              )}
-            </div>
-
-            <div className="career-details">
-              <div>
-                <span>Innings</span>
-                <strong>{integer.format(selectedStats.innings)}</strong>
-              </div>
-              <div>
-                <span>High score</span>
-                <strong>{integer.format(selectedStats.highScore)}</strong>
-              </div>
-              <div>
-                <span>Best bowling</span>
-                <strong>
-                  {selectedStats.bestWickets > 0
-                    ? `${selectedStats.bestWickets}/${selectedStats.bestRuns}`
-                    : "—"}
-                </strong>
-              </div>
-              <div>
-                <span>Catches</span>
-                <strong>{integer.format(selectedStats.catches)}</strong>
-              </div>
-            </div>
-          </section>
+            </tbody>
+          </table>
+          {leaderboard.length === 0 && (
+            <p className="empty-state">No qualifying performances match these filters.</p>
+          )}
         </div>
+        <p className="table-note">
+          The highlighted column controls the ranking. Lower values rank first
+          for bowling average and economy. “Established” requires 5 innings,
+          10 overs or 5 matches depending on the measure.
+        </p>
       </section>
 
       <footer>
@@ -886,6 +755,104 @@ export function RecordsExplorer() {
           Statistics update with each annual data release.
         </p>
       </footer>
+
+      {openPlayer && selectedStats && (
+        <div className="player-overlay" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setOpenPlayer(null);
+        }}>
+          <section
+            className="player-record"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="player-record-title"
+          >
+            <header>
+              <div className="player-identity">
+                <span>{initials(openPlayer)}</span>
+                <div>
+                  <p className="eyebrow">Player record · {yearLabel(startYear, endYear)}</p>
+                  <h2 id="player-record-title">{openPlayer}</h2>
+                </div>
+              </div>
+              <button
+                className="close-player"
+                type="button"
+                onClick={() => setOpenPlayer(null)}
+                aria-label="Close player record"
+              >
+                ×
+              </button>
+            </header>
+
+            <div className="record-filter-context">
+              <span>{team}</span>
+              <span>{matchType}</span>
+              {opposition && <span>vs {opposition}</span>}
+            </div>
+
+            <div className="player-stat-grid">
+              <div><span>Matches</span><strong>{integer.format(selectedStats.matches.size)}</strong></div>
+              <div><span>Runs</span><strong>{integer.format(selectedStats.battingRuns)}</strong></div>
+              <div><span>Batting average</span><strong>{battingAverage(selectedStats)}</strong></div>
+              <div><span>High score</span><strong>{integer.format(selectedStats.highScore)}</strong></div>
+              <div><span>Wickets</span><strong>{integer.format(selectedStats.wickets)}</strong></div>
+              <div><span>Bowling average</span><strong>{bowlingAverage(selectedStats)}</strong></div>
+              <div><span>Best bowling</span><strong>{bestBowling(selectedStats)}</strong></div>
+              <div><span>Catches</span><strong>{integer.format(selectedStats.catches)}</strong></div>
+            </div>
+
+            <div className="chart-card">
+              <div className="chart-title">
+                <div>
+                  <span>{metrics[metric].label} by season</span>
+                  <strong>{metrics[metric].display(selectedStats)}</strong>
+                </div>
+                <p>Current ranking measure</p>
+              </div>
+              {chart.points.length > 0 ? (
+                <svg
+                  viewBox={`0 0 ${chart.width} ${chart.height}`}
+                  role="img"
+                  aria-label={`${metrics[metric].label} by season for ${openPlayer}`}
+                >
+                  {[0, 0.5, 1].map((position) => {
+                    const y = 22 + position * 236;
+                    const value =
+                      chart.maximum - position * (chart.maximum - chart.minimum);
+                    return (
+                      <g key={position}>
+                        <line x1="42" x2="818" y1={y} y2={y} />
+                        <text x="4" y={y + 4}>
+                          {Number.isInteger(value) ? integer.format(value) : value.toFixed(1)}
+                        </text>
+                      </g>
+                    );
+                  })}
+                  <polyline className="chart-area" points={`42,258 ${chart.path} 818,258`} />
+                  <polyline className="chart-line" points={chart.path} />
+                  {chart.points.map((point, index) => (
+                    <g key={point.season}>
+                      <circle cx={point.x} cy={point.y} r="5">
+                        <title>{`${point.season}: ${point.display}`}</title>
+                      </circle>
+                      {(chart.points.length <= 12 ||
+                        index === 0 ||
+                        index === chart.points.length - 1 ||
+                        index % 3 === 0) && (
+                        <text className="season-label" x={point.x} y="284" textAnchor="middle">
+                          {point.season}
+                        </text>
+                      )}
+                    </g>
+                  ))}
+                </svg>
+              ) : (
+                <p className="empty-state">No season-by-season values are available for this ranking.</p>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
