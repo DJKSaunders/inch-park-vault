@@ -628,7 +628,8 @@ export function RecordsExplorer() {
 
   useEffect(() => {
     let active = true;
-    fetch("/data/records.json")
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    fetch(`${basePath}/data/records.json`)
       .then((response) => {
         if (!response.ok) throw new Error("Records could not be loaded");
         return response.json();
