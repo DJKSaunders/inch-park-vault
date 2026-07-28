@@ -847,6 +847,7 @@ export function RecordsExplorer() {
       return {
         performances: rows.length,
         players: new Set(rows.map((row) => row[0])).size,
+        matches: new Set(rows.map(matchKey)).size,
         seasons: new Set(rows.map((row) => row[1])).size,
       };
     }
@@ -877,6 +878,9 @@ export function RecordsExplorer() {
     return {
       performances: eligibleBatting.length + eligibleBowling.length,
       players: eligibleNames.size,
+      matches: new Set(
+        [...eligibleBatting, ...eligibleBowling].map(matchKey),
+      ).size,
       seasons: seasons.size,
     };
   }, [
@@ -1514,6 +1518,10 @@ export function RecordsExplorer() {
           <div>
             <strong>{integer.format(archiveSummary.players)}</strong>
             <span>Players</span>
+          </div>
+          <div>
+            <strong>{integer.format(archiveSummary.matches)}</strong>
+            <span>Matches</span>
           </div>
           <div>
             <strong>{integer.format(archiveSummary.seasons)}</strong>

@@ -261,7 +261,7 @@ body.iframe-mode .table-scroll-hint {
   width: 100%;
   margin: 0 0 16px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border: 1px solid rgba(6, 16, 28, 0.18);
   background: #ebe4d7;
 }
@@ -1874,18 +1874,22 @@ footer p {
   }
 
   .archive-stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .archive-stats > div {
     display: grid;
     padding: 12px 9px;
     border-right: 1px solid rgba(6, 16, 28, 0.16);
-    border-bottom: 0;
+    border-bottom: 1px solid rgba(6, 16, 28, 0.16);
   }
 
-  .archive-stats > div:last-child {
+  .archive-stats > div:nth-child(2n) {
     border-right: 0;
+  }
+
+  .archive-stats > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
   }
 
   .archive-stats strong {
