@@ -1253,7 +1253,7 @@ export function RecordsExplorer() {
   }
 
   return (
-    <main>
+    <main className="vault-app">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Inch Park Vault">
           <img src={`${publicBasePath}/escc-logo.png`} alt="" />
@@ -1481,6 +1481,9 @@ export function RecordsExplorer() {
           </div>
         </div>
 
+        <p className="table-scroll-hint">
+          <span aria-hidden="true">↔</span> Scroll sideways for every statistic
+        </p>
         <div className="stats-table-wrap">
           {activeSection === "performances" ? (
             <>
