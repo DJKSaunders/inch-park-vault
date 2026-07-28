@@ -53,6 +53,7 @@ type PlayerStats = {
   innings: number;
   outs: number;
   highScore: number;
+  highScoreNotOut: boolean;
   hundreds: number;
   fifties: number;
   fours: number;
@@ -182,7 +183,8 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     shortLabel: "HS",
     category: "batting",
     value: (stats) => stats.highScore,
-    display: (stats) => integer.format(stats.highScore),
+    display: (stats) =>
+      `${integer.format(stats.highScore)}${stats.highScoreNotOut ? "*" : ""}`,
   },
   notOuts: {
     label: "Not outs",
@@ -334,6 +336,7 @@ function newStats(name: string): PlayerStats {
     innings: 0,
     outs: 0,
     highScore: 0,
+    highScoreNotOut: false,
     hundreds: 0,
     fifties: 0,
     fours: 0,
@@ -361,7 +364,12 @@ function addBatting(stats: PlayerStats, row: BattingRow) {
   if (!row[8]) {
     stats.innings += 1;
     stats.battingRuns += runs;
-    stats.highScore = Math.max(stats.highScore, runs);
+    if (runs > stats.highScore) {
+      stats.highScore = runs;
+      stats.highScoreNotOut = row[7];
+    } else if (runs === stats.highScore && row[7]) {
+      stats.highScoreNotOut = true;
+    }
     if (!row[7]) stats.outs += 1;
     if (runs >= 100) stats.hundreds += 1;
     else if (runs >= 50) stats.fifties += 1;
@@ -459,13 +467,19 @@ function fuzzyOpponentAlias(name: string) {
 }
 
 function canonicalOpponent(rawOpponent: string) {
-  const raw = (rawOpponent || "").trim().replace(/\s+/g, " ");
+  const raw = (rawOpponent || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/\s+([.,;:])/g, "$1");
   if (!raw) return "Unknown opposition";
   const cached = opponentCache.get(raw);
   if (cached) return cached;
 
   const aliases: [RegExp, string][] = [
-    [/(?:intra[\s-]?club|interclub game)/i, "Edinburgh South"],
+    [
+      /(?:intra[\s-]?club|interclub game|\bmitres\b|^practice match\b|^team(?:\s+(?:jas|aaron))?\s*\.?$)/i,
+      "Internal Friendly",
+    ],
     [/^edinburgh south\b/i, "Edinburgh South"],
     [/^bass\s+rock\b/i, "Bass Rock"],
     [/^carlton\b/i, "Carlton"],
@@ -487,6 +501,7 @@ function canonicalOpponent(rawOpponent: string) {
     [/^fauldhouse\b/i, "Fauldhouse"],
     [/^murrayfield[\s-]*dafs\b/i, "Murrayfield DAFS"],
     [/^manderston\b/i, "Manderston"],
+    [/^morton\b/i, "Morton"],
     [/^(?:rhc|rh corstorphine|royal high corstorphine)\b/i, "RH Corstorphine"],
     [/^(?:smrh|stew[\s-]?mel|stewarts?'? melville)\b/i, "Stewart's Melville"],
     [/^(?:scottish (?:&|and) newcastle|s&n tranent)\b/i, "Scottish & Newcastle"],
@@ -514,11 +529,13 @@ function canonicalOpponent(rawOpponent: string) {
     .replace(/\brugby club\b/gi, "")
     .replace(/\br\.?\s*f\.?\s*c\.?\b/gi, "")
     .replace(/\bc\.?\s*c\.?\b/gi, "")
+    .replace(/\./g, " ")
     .replace(
       /\s+(?:[1-6](?:st|nd|rd|th)?(?:\s*xi)?|[1-6](?:s|nds|rds|ths)|firsts?|seconds?|thirds?|fourths?|fifths?|sixths?|ii'?s?|xi|x1|development(?:\s+xi)?|challengers?|ladies|women(?:'s)?)\b.*$/i,
       "",
     )
     .replace(/\s*\/\s*mitres.*$/i, "")
+    .replace(/[,:;]+$/g, "")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -598,6 +615,7 @@ export function RecordsExplorer() {
   const [profileMetric, setProfileMetric] = useState<MetricKey>("runs");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [visibleLimit, setVisibleLimit] = useState(100);
+  const [performanceLimit, setPerformanceLimit] = useState(50);
   const [openPlayer, setOpenPlayer] = useState<string | null>(null);
   const [playerQuery, setPlayerQuery] = useState("");
   const [recordFilters, setRecordFilters] = useState<PerformanceFilters>({
@@ -654,6 +672,12 @@ export function RecordsExplorer() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisibleLimit(100);
   }, [filters, metric, minimumAppearances, sortDirection]);
+
+  useEffect(() => {
+    // Reset performance pagination whenever its population changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPerformanceLimit(50);
+  }, [filters, performanceDiscipline]);
 
   const filtered = useMemo(() => {
     if (!data) return { batting: [], bowling: [] };
@@ -775,7 +799,7 @@ export function RecordsExplorer() {
       );
   }, [filtered, performanceDiscipline]);
 
-  const topPerformances = performanceRows.slice(0, 50);
+  const topPerformances = performanceRows.slice(0, performanceLimit);
 
   const archiveSummary = useMemo(() => {
     if (activeSection === "performances") {
@@ -1282,15 +1306,15 @@ export function RecordsExplorer() {
             className={activeSection === "performances" ? "active" : ""}
             onClick={() => chooseSection("performances")}
           >
-            Top 50 <span>performances</span>
+            Top <span>performances</span>
           </button>
         </div>
 
         <div className="rankings-toolbar">
           {activeSection === "performances" ? (
             <div className="performance-heading">
-              <span>All-time top 50</span>
-              <strong>Performances</strong>
+              <span>All-time rankings</span>
+              <strong>Top performances</strong>
               <div
                 className="performance-switch"
                 role="group"
@@ -1428,7 +1452,7 @@ export function RecordsExplorer() {
           <strong>
             {activeSection === "performances"
               ? `${integer.format(
-                  Math.min(50, performanceRows.length),
+                  Math.min(performanceLimit, performanceRows.length),
                 )} performances`
               : `${integer.format(leaderboard.length)} players`}
           </strong>
@@ -1454,7 +1478,7 @@ export function RecordsExplorer() {
             <>
               <table className="stats-table performance-table">
               <caption>
-                Top 50 individual {performanceDiscipline} performances.
+                Top individual {performanceDiscipline} performances.
               </caption>
               <thead>
                 <tr>
@@ -1645,7 +1669,7 @@ export function RecordsExplorer() {
                           metric === "highScore" ? "active-sort" : ""
                         }
                       >
-                        {integer.format(stats.highScore)}
+                        {metrics.highScore.display(stats)}
                       </td>
                       <td
                         className={metric === "notOuts" ? "active-sort" : ""}
@@ -1759,6 +1783,27 @@ export function RecordsExplorer() {
                 }
               >
                 Show next {Math.min(100, leaderboard.length - visibleLimit)}
+              </button>
+            </div>
+          )}
+
+        {activeSection === "performances" &&
+          performanceRows.length > performanceLimit && (
+            <div className="load-more">
+              <span>
+                Showing {integer.format(performanceLimit)} of{" "}
+                {integer.format(performanceRows.length)}
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setPerformanceLimit((current) =>
+                    Math.min(current + 50, performanceRows.length),
+                  )
+                }
+              >
+                Show next{" "}
+                {Math.min(50, performanceRows.length - performanceLimit)}
               </button>
             </div>
           )}
@@ -1915,7 +1960,7 @@ export function RecordsExplorer() {
                   {profileStatCard(
                     "highScore",
                     "High score",
-                    integer.format(selectedStats.highScore),
+                    metrics.highScore.display(selectedStats),
                   )}
                   {profileStatCard(
                     "notOuts",
