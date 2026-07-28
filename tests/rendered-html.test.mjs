@@ -22,13 +22,13 @@ async function render() {
   );
 }
 
-test("server-renders the Edinburgh South records explorer", async () => {
+test("server-renders The Inch Park Vault", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Club Records \| Edinburgh South CC<\/title>/i);
-  assert.match(html, /Preparing the club archive/);
+  assert.match(html, /<title>The Inch Park Vault<\/title>/i);
+  assert.match(html, /Opening the vault/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });

@@ -67,24 +67,37 @@ type PlayerStats = {
 };
 
 type MetricKey =
+  | "matches"
+  | "innings"
   | "runs"
   | "battingAverage"
   | "highScore"
-  | "hundreds"
   | "fifties"
+  | "hundreds"
+  | "overs"
   | "wickets"
   | "bowlingAverage"
   | "economy"
   | "bestBowling"
-  | "catches";
+  | "catches"
+  | "stumpings"
+  | "runOuts";
 
 type MetricDefinition = {
   label: string;
   shortLabel: string;
-  category: "batting" | "bowling" | "fielding";
+  category: "batting" | "bowling" | "fielding" | "general";
   ascending?: boolean;
   value: (stats: PlayerStats) => number | null;
   display: (stats: PlayerStats) => string;
+};
+
+type PerformanceFilters = {
+  startYear: number;
+  endYear: number;
+  team: string;
+  matchType: string;
+  opposition: string;
 };
 
 const integer = new Intl.NumberFormat("en-GB");
@@ -93,7 +106,37 @@ const decimal = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 2,
 });
 
+function battingAverageValue(stats: PlayerStats) {
+  return stats.outs > 0 ? stats.battingRuns / stats.outs : null;
+}
+
+function bowlingAverageValue(stats: PlayerStats) {
+  return stats.wickets > 0 ? stats.bowlingRuns / stats.wickets : null;
+}
+
+function economyValue(stats: PlayerStats) {
+  return stats.balls > 0 ? stats.bowlingRuns / (stats.balls / 6) : null;
+}
+
+function overs(balls: number) {
+  return `${Math.floor(balls / 6)}.${balls % 6}`;
+}
+
 const metrics: Record<MetricKey, MetricDefinition> = {
+  matches: {
+    label: "Appearances",
+    shortLabel: "Mat",
+    category: "general",
+    value: (stats) => stats.matches.size,
+    display: (stats) => integer.format(stats.matches.size),
+  },
+  innings: {
+    label: "Batting innings",
+    shortLabel: "Inn",
+    category: "batting",
+    value: (stats) => stats.innings,
+    display: (stats) => integer.format(stats.innings),
+  },
   runs: {
     label: "Batting runs",
     shortLabel: "Runs",
@@ -105,9 +148,11 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     label: "Batting average",
     shortLabel: "Bat avg",
     category: "batting",
-    value: (stats) => (stats.outs > 0 ? stats.battingRuns / stats.outs : null),
-    display: (stats) =>
-      stats.outs > 0 ? decimal.format(stats.battingRuns / stats.outs) : "—",
+    value: battingAverageValue,
+    display: (stats) => {
+      const value = battingAverageValue(stats);
+      return value === null ? "—" : decimal.format(value);
+    },
   },
   highScore: {
     label: "Highest score",
@@ -116,6 +161,13 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.highScore,
     display: (stats) => integer.format(stats.highScore),
   },
+  fifties: {
+    label: "Fifties",
+    shortLabel: "50s",
+    category: "batting",
+    value: (stats) => stats.fifties,
+    display: (stats) => integer.format(stats.fifties),
+  },
   hundreds: {
     label: "Hundreds",
     shortLabel: "100s",
@@ -123,12 +175,12 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.hundreds,
     display: (stats) => integer.format(stats.hundreds),
   },
-  fifties: {
-    label: "Fifties",
-    shortLabel: "50s",
-    category: "batting",
-    value: (stats) => stats.fifties,
-    display: (stats) => integer.format(stats.fifties),
+  overs: {
+    label: "Overs bowled",
+    shortLabel: "Overs",
+    category: "bowling",
+    value: (stats) => stats.balls,
+    display: (stats) => overs(stats.balls),
   },
   wickets: {
     label: "Bowling wickets",
@@ -142,24 +194,22 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     shortLabel: "Bowl avg",
     category: "bowling",
     ascending: true,
-    value: (stats) =>
-      stats.wickets > 0 ? stats.bowlingRuns / stats.wickets : null,
-    display: (stats) =>
-      stats.wickets > 0
-        ? decimal.format(stats.bowlingRuns / stats.wickets)
-        : "—",
+    value: bowlingAverageValue,
+    display: (stats) => {
+      const value = bowlingAverageValue(stats);
+      return value === null ? "—" : decimal.format(value);
+    },
   },
   economy: {
     label: "Economy rate",
     shortLabel: "Econ",
     category: "bowling",
     ascending: true,
-    value: (stats) =>
-      stats.balls > 0 ? stats.bowlingRuns / (stats.balls / 6) : null,
-    display: (stats) =>
-      stats.balls > 0
-        ? decimal.format(stats.bowlingRuns / (stats.balls / 6))
-        : "—",
+    value: economyValue,
+    display: (stats) => {
+      const value = economyValue(stats);
+      return value === null ? "—" : decimal.format(value);
+    },
   },
   bestBowling: {
     label: "Best bowling",
@@ -177,19 +227,20 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.catches,
     display: (stats) => integer.format(stats.catches),
   },
-};
-
-const metricColumn: Record<MetricKey, string> = {
-  runs: "runs",
-  battingAverage: "battingAverage",
-  highScore: "highScore",
-  hundreds: "hundreds",
-  fifties: "fifties",
-  wickets: "wickets",
-  bowlingAverage: "bowlingAverage",
-  economy: "economy",
-  bestBowling: "bestBowling",
-  catches: "catches",
+  stumpings: {
+    label: "Stumpings",
+    shortLabel: "St",
+    category: "fielding",
+    value: (stats) => stats.stumpings,
+    display: (stats) => integer.format(stats.stumpings),
+  },
+  runOuts: {
+    label: "Run outs",
+    shortLabel: "RO",
+    category: "fielding",
+    value: (stats) => stats.runOuts,
+    display: (stats) => integer.format(stats.runOuts),
+  },
 };
 
 function newStats(name: string): PlayerStats {
@@ -214,6 +265,10 @@ function newStats(name: string): PlayerStats {
   };
 }
 
+function matchKey(row: BattingRow | BowlingRow) {
+  return `${row[5]}|${row[2]}|${row[4]}`;
+}
+
 function addBatting(stats: PlayerStats, row: BattingRow) {
   const runs = typeof row[6] === "number" ? row[6] : 0;
   if (!row[8]) {
@@ -227,7 +282,7 @@ function addBatting(stats: PlayerStats, row: BattingRow) {
   stats.catches += row[9];
   stats.stumpings += row[10];
   stats.runOuts += row[11];
-  stats.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
+  stats.matches.add(matchKey(row));
 }
 
 function addBowling(stats: PlayerStats, row: BowlingRow) {
@@ -242,19 +297,39 @@ function addBowling(stats: PlayerStats, row: BowlingRow) {
     stats.bestWickets = row[9];
     stats.bestRuns = row[8];
   }
-  stats.matches.add(`${row[5]}|${row[2]}|${row[4]}`);
+  stats.matches.add(matchKey(row));
 }
 
-function passesQualification(
-  stats: PlayerStats,
-  qualification: string,
-  category: MetricDefinition["category"],
+function aggregateRows(batting: BattingRow[], bowling: BowlingRow[]) {
+  const stats = new Map<string, PlayerStats>();
+  const get = (name: string) => {
+    let current = stats.get(name);
+    if (!current) {
+      current = newStats(name);
+      stats.set(name, current);
+    }
+    return current;
+  };
+  for (const row of batting) addBatting(get(row[0]), row);
+  for (const row of bowling) addBowling(get(row[0]), row);
+  return stats;
+}
+
+function rowPassesFilters(
+  row: BattingRow | BowlingRow,
+  filters: PerformanceFilters,
 ) {
-  if (qualification === "any") return true;
-  const regular = qualification === "regular";
-  if (category === "batting") return stats.innings >= (regular ? 10 : 5);
-  if (category === "bowling") return stats.balls >= (regular ? 150 : 60);
-  return stats.matches.size >= (regular ? 10 : 5);
+  return (
+    row[1] >= filters.startYear &&
+    row[1] <= filters.endYear &&
+    (filters.team === "All teams" || row[2] === filters.team) &&
+    (filters.matchType === "All match types" ||
+      row[3] === filters.matchType) &&
+    (!filters.opposition.trim() ||
+      row[4]
+        .toLowerCase()
+        .includes(filters.opposition.trim().toLowerCase()))
+  );
 }
 
 function yearLabel(startYear: number, endYear: number) {
@@ -266,44 +341,33 @@ function initials(name: string) {
   return `${parts[0]?.[0] ?? ""}${parts.at(-1)?.[0] ?? ""}`.toUpperCase();
 }
 
-function overs(balls: number) {
-  return `${Math.floor(balls / 6)}.${balls % 6}`;
-}
-
-function battingAverage(stats: PlayerStats) {
-  return stats.outs > 0 ? decimal.format(stats.battingRuns / stats.outs) : "—";
-}
-
-function bowlingAverage(stats: PlayerStats) {
-  return stats.wickets > 0
-    ? decimal.format(stats.bowlingRuns / stats.wickets)
-    : "—";
-}
-
-function economy(stats: PlayerStats) {
-  return stats.balls > 0
-    ? decimal.format(stats.bowlingRuns / (stats.balls / 6))
-    : "—";
-}
-
-function bestBowling(stats: PlayerStats) {
-  return stats.bestWickets > 0
-    ? `${stats.bestWickets}/${stats.bestRuns}`
-    : "—";
+function defaultDirection(metric: MetricKey): "asc" | "desc" {
+  return metrics[metric].ascending ? "asc" : "desc";
 }
 
 export function RecordsExplorer() {
   const [data, setData] = useState<RecordsData | null>(null);
   const [loadError, setLoadError] = useState(false);
-  const [startYear, setStartYear] = useState(2004);
-  const [endYear, setEndYear] = useState(2025);
-  const [team, setTeam] = useState("All teams");
-  const [matchType, setMatchType] = useState("All match types");
-  const [opposition, setOpposition] = useState("");
+  const [filters, setFilters] = useState<PerformanceFilters>({
+    startYear: 2004,
+    endYear: 2025,
+    team: "All teams",
+    matchType: "All match types",
+    opposition: "",
+  });
+  const [minimumAppearances, setMinimumAppearances] = useState(0);
   const [metric, setMetric] = useState<MetricKey>("runs");
-  const [qualification, setQualification] = useState("established");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [visibleLimit, setVisibleLimit] = useState(100);
   const [openPlayer, setOpenPlayer] = useState<string | null>(null);
   const [playerQuery, setPlayerQuery] = useState("");
+  const [recordFilters, setRecordFilters] = useState<PerformanceFilters>({
+    startYear: 2004,
+    endYear: 2025,
+    team: "All teams",
+    matchType: "All match types",
+    opposition: "",
+  });
 
   useEffect(() => {
     let active = true;
@@ -314,9 +378,16 @@ export function RecordsExplorer() {
       })
       .then((records: RecordsData) => {
         if (!active) return;
+        const initialFilters = {
+          startYear: records.meta.seasonStart,
+          endYear: records.meta.seasonEnd,
+          team: "All teams",
+          matchType: "All match types",
+          opposition: "",
+        };
         setData(records);
-        setStartYear(records.meta.seasonStart);
-        setEndYear(records.meta.seasonEnd);
+        setFilters(initialFilters);
+        setRecordFilters(initialFilters);
       })
       .catch(() => {
         if (active) setLoadError(true);
@@ -339,41 +410,37 @@ export function RecordsExplorer() {
     };
   }, [openPlayer]);
 
+  useEffect(() => {
+    setVisibleLimit(100);
+  }, [filters, metric, minimumAppearances, sortDirection]);
+
   const filtered = useMemo(() => {
     if (!data) return { batting: [], bowling: [] };
-    const passes = (row: BattingRow | BowlingRow) =>
-      row[1] >= startYear &&
-      row[1] <= endYear &&
-      (team === "All teams" || row[2] === team) &&
-      (matchType === "All match types" || row[3] === matchType) &&
-      (!opposition.trim() ||
-        row[4].toLowerCase().includes(opposition.trim().toLowerCase()));
     return {
-      batting: data.batting.filter(passes),
-      bowling: data.bowling.filter(passes),
+      batting: data.batting.filter((row) => rowPassesFilters(row, filters)),
+      bowling: data.bowling.filter((row) => rowPassesFilters(row, filters)),
     };
-  }, [data, endYear, matchType, opposition, startYear, team]);
+  }, [data, filters]);
 
-  const statsByPlayer = useMemo(() => {
-    const stats = new Map<string, PlayerStats>();
-    const get = (name: string) => {
-      let current = stats.get(name);
-      if (!current) {
-        current = newStats(name);
-        stats.set(name, current);
-      }
-      return current;
-    };
-    for (const row of filtered.batting) addBatting(get(row[0]), row);
-    for (const row of filtered.bowling) addBowling(get(row[0]), row);
-    return stats;
-  }, [filtered]);
+  const statsByPlayer = useMemo(
+    () => aggregateRows(filtered.batting, filtered.bowling),
+    [filtered],
+  );
+
+  const allTimeAppearances = useMemo(() => {
+    if (!data) return new Map<string, number>();
+    const allTimeStats = aggregateRows(data.batting, data.bowling);
+    return new Map(
+      [...allTimeStats].map(([name, stats]) => [name, stats.matches.size]),
+    );
+  }, [data]);
 
   const leaderboard = useMemo(() => {
     const definition = metrics[metric];
     return [...statsByPlayer.values()]
-      .filter((stats) =>
-        passesQualification(stats, qualification, definition.category),
+      .filter(
+        (stats) =>
+          (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances,
       )
       .map((stats) => ({ stats, value: definition.value(stats) }))
       .filter(
@@ -384,26 +451,88 @@ export function RecordsExplorer() {
           value: number;
         } => entry.value !== null && Number.isFinite(entry.value),
       )
-      .sort((a, b) =>
-        definition.ascending ? a.value - b.value : b.value - a.value,
-      )
-      .slice(0, 100);
-  }, [metric, qualification, statsByPlayer]);
+      .sort((a, b) => {
+        const result = a.value - b.value;
+        if (result === 0) return a.stats.name.localeCompare(b.stats.name);
+        return sortDirection === "asc" ? result : -result;
+      });
+  }, [
+    allTimeAppearances,
+    metric,
+    minimumAppearances,
+    sortDirection,
+    statsByPlayer,
+  ]);
 
-  const selectedStats = openPlayer
-    ? statsByPlayer.get(openPlayer) ?? newStats(openPlayer)
-    : null;
+  const displayedLeaderboard = leaderboard.slice(0, visibleLimit);
+
+  const archiveSummary = useMemo(() => {
+    const eligibleNames = new Set(
+      [...statsByPlayer.values()]
+        .filter(
+          (stats) =>
+            (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances,
+        )
+        .map((stats) => stats.name),
+    );
+    const eligibleBatting = filtered.batting.filter((row) =>
+      eligibleNames.has(row[0]),
+    );
+    const eligibleBowling = filtered.bowling.filter((row) =>
+      eligibleNames.has(row[0]),
+    );
+    const seasons = new Set([
+      ...eligibleBatting.map((row) => row[1]),
+      ...eligibleBowling.map((row) => row[1]),
+    ]);
+    return {
+      performances: eligibleBatting.length + eligibleBowling.length,
+      players: eligibleNames.size,
+      seasons: seasons.size,
+    };
+  }, [
+    allTimeAppearances,
+    filtered,
+    minimumAppearances,
+    statsByPlayer,
+  ]);
+
+  const selectedRows = useMemo(() => {
+    if (!data || !openPlayer) return { batting: [], bowling: [] };
+    return {
+      batting: data.batting.filter(
+        (row) =>
+          row[0] === openPlayer && rowPassesFilters(row, recordFilters),
+      ),
+      bowling: data.bowling.filter(
+        (row) =>
+          row[0] === openPlayer && rowPassesFilters(row, recordFilters),
+      ),
+    };
+  }, [data, openPlayer, recordFilters]);
+
+  const selectedStats = useMemo(() => {
+    if (!openPlayer) return null;
+    return (
+      aggregateRows(selectedRows.batting, selectedRows.bowling).get(openPlayer) ??
+      newStats(openPlayer)
+    );
+  }, [openPlayer, selectedRows]);
 
   const seasonTrend = useMemo(() => {
     if (!openPlayer) return [];
     const points: { season: number; value: number; display: string }[] = [];
-    for (let season = startYear; season <= endYear; season += 1) {
+    for (
+      let season = recordFilters.startYear;
+      season <= recordFilters.endYear;
+      season += 1
+    ) {
       const seasonStats = newStats(openPlayer);
-      for (const row of filtered.batting) {
-        if (row[0] === openPlayer && row[1] === season) addBatting(seasonStats, row);
+      for (const row of selectedRows.batting) {
+        if (row[1] === season) addBatting(seasonStats, row);
       }
-      for (const row of filtered.bowling) {
-        if (row[0] === openPlayer && row[1] === season) addBowling(seasonStats, row);
+      for (const row of selectedRows.bowling) {
+        if (row[1] === season) addBowling(seasonStats, row);
       }
       const value = metrics[metric].value(seasonStats);
       if (value !== null && Number.isFinite(value)) {
@@ -415,7 +544,7 @@ export function RecordsExplorer() {
       }
     }
     return points;
-  }, [endYear, filtered, metric, openPlayer, startYear]);
+  }, [metric, openPlayer, recordFilters, selectedRows]);
 
   const chart = useMemo(() => {
     const width = 860;
@@ -450,6 +579,20 @@ export function RecordsExplorer() {
     };
   }, [metric, seasonTrend]);
 
+  function chooseMetric(nextMetric: MetricKey) {
+    if (nextMetric === metric) {
+      setSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setMetric(nextMetric);
+    setSortDirection(defaultDirection(nextMetric));
+  }
+
+  function openPlayerRecord(name: string) {
+    setRecordFilters(filters);
+    setOpenPlayer(name);
+  }
+
   function openSearchedPlayer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!data) return;
@@ -460,29 +603,16 @@ export function RecordsExplorer() {
         name.toLowerCase().includes(query),
       );
     if (match) {
-      setOpenPlayer(match);
+      openPlayerRecord(match);
       setPlayerQuery("");
     }
   }
-
-  function resetFilters() {
-    if (!data) return;
-    setStartYear(data.meta.seasonStart);
-    setEndYear(data.meta.seasonEnd);
-    setTeam("All teams");
-    setMatchType("All match types");
-    setOpposition("");
-    setQualification("established");
-  }
-
-  const activeColumn = metricColumn[metric];
 
   if (loadError) {
     return (
       <main className="status-screen">
         <img src="/escc-logo.png" alt="Edinburgh South CC" />
-        <h1>Club records are temporarily unavailable.</h1>
-        <p>Please refresh the page to try loading the archive again.</p>
+        <h1>The vault is temporarily unavailable.</h1>
       </main>
     );
   }
@@ -492,24 +622,195 @@ export function RecordsExplorer() {
       <main className="status-screen" aria-live="polite">
         <img src="/escc-logo.png" alt="Edinburgh South CC" />
         <div className="loading-line" />
-        <p>Preparing the club archive…</p>
+        <p>Opening the vault…</p>
       </main>
+    );
+  }
+
+  const seasonOptions = Array.from(
+    { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
+    (_, index) => data.meta.seasonStart + index,
+  );
+
+  function updateFilters(
+    setter: React.Dispatch<React.SetStateAction<PerformanceFilters>>,
+    update: Partial<PerformanceFilters>,
+  ) {
+    setter((current) => ({ ...current, ...update }));
+  }
+
+  function renderPerformanceFilters(
+    values: PerformanceFilters,
+    setter: React.Dispatch<React.SetStateAction<PerformanceFilters>>,
+    prefix: string,
+    includeAppearances: boolean,
+  ) {
+    return (
+      <div className="filters" aria-label={`${prefix} performance filters`}>
+        <label>
+          <span>From season</span>
+          <select
+            value={values.startYear}
+            onChange={(event) =>
+              updateFilters(setter, {
+                startYear: Math.min(
+                  Number(event.target.value),
+                  values.endYear,
+                ),
+              })
+            }
+          >
+            {seasonOptions.map((season) => (
+              <option key={season}>{season}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>To season</span>
+          <select
+            value={values.endYear}
+            onChange={(event) =>
+              updateFilters(setter, {
+                endYear: Math.max(
+                  Number(event.target.value),
+                  values.startYear,
+                ),
+              })
+            }
+          >
+            {seasonOptions.map((season) => (
+              <option key={season}>{season}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Team</span>
+          <select
+            value={values.team}
+            onChange={(event) =>
+              updateFilters(setter, { team: event.target.value })
+            }
+          >
+            <option>All teams</option>
+            {data.meta.teams.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Match type</span>
+          <select
+            value={values.matchType}
+            onChange={(event) =>
+              updateFilters(setter, { matchType: event.target.value })
+            }
+          >
+            <option>All match types</option>
+            {data.meta.matchTypes.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Opposition</span>
+          <input
+            list={`${prefix}-oppositions`}
+            value={values.opposition}
+            onChange={(event) =>
+              updateFilters(setter, { opposition: event.target.value })
+            }
+            placeholder="All opponents"
+          />
+          <datalist id={`${prefix}-oppositions`}>
+            {data.meta.oppositions.map((item) => (
+              <option value={item} key={item} />
+            ))}
+          </datalist>
+        </label>
+        {includeAppearances && (
+          <label>
+            <span>Club appearances</span>
+            <select
+              value={minimumAppearances}
+              onChange={(event) =>
+                setMinimumAppearances(Number(event.target.value))
+              }
+            >
+              <option value="0">Any</option>
+              <option value="5">5+</option>
+              <option value="10">10+</option>
+              <option value="25">25+</option>
+              <option value="50">50+</option>
+              <option value="100">100+</option>
+              <option value="200">200+</option>
+            </select>
+          </label>
+        )}
+      </div>
+    );
+  }
+
+  function resetRankingFilters() {
+    setFilters({
+      startYear: data.meta.seasonStart,
+      endYear: data.meta.seasonEnd,
+      team: "All teams",
+      matchType: "All match types",
+      opposition: "",
+    });
+    setMinimumAppearances(0);
+  }
+
+  function resetRecordFilters() {
+    setRecordFilters({
+      startYear: data.meta.seasonStart,
+      endYear: data.meta.seasonEnd,
+      team: "All teams",
+      matchType: "All match types",
+      opposition: "",
+    });
+  }
+
+  const sortArrow = sortDirection === "asc" ? "↑" : "↓";
+
+  function sortableHeader(key: MetricKey, label: string) {
+    const active = metric === key;
+    return (
+      <th
+        className={active ? "active-sort" : ""}
+        aria-sort={
+          active
+            ? sortDirection === "asc"
+              ? "ascending"
+              : "descending"
+            : "none"
+        }
+      >
+        <button type="button" onClick={() => chooseMetric(key)}>
+          {label}
+          <span aria-hidden="true">{active ? sortArrow : "↕"}</span>
+        </button>
+      </th>
     );
   }
 
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Edinburgh South CC records">
+        <a className="brand" href="#top" aria-label="The Inch Park Vault">
           <img src="/escc-logo.png" alt="" />
           <span>
-            <strong>Edinburgh South CC</strong>
-            <small>Club records</small>
+            <strong>The Inch Park Vault</strong>
+            <small>Edinburgh South CC performance archive</small>
           </span>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#rankings">Rankings</a>
-          <a href="https://www.edinburghsouthcc.org" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.edinburghsouthcc.org"
+            target="_blank"
+            rel="noreferrer"
+          >
             Club website <span aria-hidden="true">↗</span>
           </a>
         </nav>
@@ -517,29 +818,32 @@ export function RecordsExplorer() {
 
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
-          <p className="eyebrow">The South archive · 2004–2025</p>
+          <p className="eyebrow">Edinburgh South CC performance archive</p>
           <h1>
-            Rank the <em>South.</em>
+            The Inch Park <em>Vault.</em>
           </h1>
-          <p>
-            Choose the measure that matters, shape the timeframe and compare
-            every player across the complete club archive.
-          </p>
         </div>
         <label className="metric-selector">
           <span>Rank players by</span>
           <select
             value={metric}
-            onChange={(event) => setMetric(event.target.value as MetricKey)}
+            onChange={(event) =>
+              chooseMetric(event.target.value as MetricKey)
+            }
           >
+            <optgroup label="General">
+              <option value="matches">Appearances</option>
+            </optgroup>
             <optgroup label="Batting">
+              <option value="innings">Batting innings</option>
               <option value="runs">Batting runs</option>
               <option value="battingAverage">Batting average</option>
               <option value="highScore">Highest score</option>
-              <option value="hundreds">Hundreds</option>
               <option value="fifties">Fifties</option>
+              <option value="hundreds">Hundreds</option>
             </optgroup>
             <optgroup label="Bowling">
+              <option value="overs">Overs bowled</option>
               <option value="wickets">Bowling wickets</option>
               <option value="bowlingAverage">Bowling average</option>
               <option value="economy">Economy rate</option>
@@ -547,23 +851,27 @@ export function RecordsExplorer() {
             </optgroup>
             <optgroup label="Fielding">
               <option value="catches">Catches</option>
+              <option value="stumpings">Stumpings</option>
+              <option value="runOuts">Run outs</option>
             </optgroup>
           </select>
-          <small>Top 100 · highlighted in the table below</small>
+          <small>
+            {sortDirection === "asc" ? "Lowest first" : "Highest first"}
+          </small>
         </label>
       </section>
 
-      <section className="archive-stats" aria-label="Archive summary">
+      <section className="archive-stats" aria-label="Filtered archive summary">
         <div>
-          <strong>{integer.format(data.meta.recordCount)}</strong>
+          <strong>{integer.format(archiveSummary.performances)}</strong>
           <span>Performances</span>
         </div>
         <div>
-          <strong>{integer.format(data.meta.playerCount)}</strong>
+          <strong>{integer.format(archiveSummary.players)}</strong>
           <span>Players</span>
         </div>
         <div>
-          <strong>{integer.format(data.meta.seasonCount)}</strong>
+          <strong>{integer.format(archiveSummary.seasons)}</strong>
           <span>Seasons</span>
         </div>
       </section>
@@ -571,7 +879,7 @@ export function RecordsExplorer() {
       <section className="rankings-shell" id="rankings">
         <div className="rankings-toolbar">
           <div>
-            <p className="eyebrow">Top 100 rankings</p>
+            <p className="eyebrow">Player rankings</p>
             <h2>{metrics[metric].label}</h2>
           </div>
           <form className="compact-search" onSubmit={openSearchedPlayer}>
@@ -595,171 +903,168 @@ export function RecordsExplorer() {
         </div>
 
         <div className="filters-heading">
-          <span>Filter the ranking</span>
-          <button type="button" onClick={resetFilters}>Reset</button>
+          <span>Filters</span>
+          <button type="button" onClick={resetRankingFilters}>
+            Reset
+          </button>
         </div>
-        <div className="filters" aria-label="Ranking filters">
-          <label>
-            <span>From season</span>
-            <select
-              value={startYear}
-              onChange={(event) =>
-                setStartYear(Math.min(Number(event.target.value), endYear))
-              }
-            >
-              {Array.from(
-                { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
-                (_, index) => data.meta.seasonStart + index,
-              ).map((season) => <option key={season}>{season}</option>)}
-            </select>
-          </label>
-          <label>
-            <span>To season</span>
-            <select
-              value={endYear}
-              onChange={(event) =>
-                setEndYear(Math.max(Number(event.target.value), startYear))
-              }
-            >
-              {Array.from(
-                { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
-                (_, index) => data.meta.seasonStart + index,
-              ).map((season) => <option key={season}>{season}</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Team</span>
-            <select value={team} onChange={(event) => setTeam(event.target.value)}>
-              <option>All teams</option>
-              {data.meta.teams.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Match type</span>
-            <select value={matchType} onChange={(event) => setMatchType(event.target.value)}>
-              <option>All match types</option>
-              {data.meta.matchTypes.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Opposition</span>
-            <input
-              list="oppositions"
-              value={opposition}
-              onChange={(event) => setOpposition(event.target.value)}
-              placeholder="All opponents"
-            />
-            <datalist id="oppositions">
-              {data.meta.oppositions.map((item) => (
-                <option value={item} key={item} />
-              ))}
-            </datalist>
-          </label>
-          <label>
-            <span>Qualification</span>
-            <select value={qualification} onChange={(event) => setQualification(event.target.value)}>
-              <option value="any">Any sample</option>
-              <option value="established">Established</option>
-              <option value="regular">Regular</option>
-            </select>
-          </label>
-        </div>
+        {renderPerformanceFilters(filters, setFilters, "ranking", true)}
 
         <div className="results-context" aria-live="polite">
-          <span>{yearLabel(startYear, endYear)}</span>
-          <span>{team}</span>
-          <span>{matchType}</span>
-          {opposition && <span>vs {opposition}</span>}
-          <strong>{leaderboard.length} ranked players</strong>
+          <span>{yearLabel(filters.startYear, filters.endYear)}</span>
+          <span>{filters.team}</span>
+          <span>{filters.matchType}</span>
+          {filters.opposition && <span>vs {filters.opposition}</span>}
+          {minimumAppearances > 0 && (
+            <span>{minimumAppearances}+ club appearances</span>
+          )}
+          <strong>{integer.format(leaderboard.length)} players</strong>
         </div>
 
         <div className="stats-table-wrap">
           <table className="stats-table">
             <caption>
-              Top {leaderboard.length} players ranked by {metrics[metric].label.toLowerCase()}.
-              Select a player name to open their record.
+              Players ranked by {metrics[metric].label.toLowerCase()}.
             </caption>
             <thead>
               <tr>
                 <th className="rank-col">Rank</th>
                 <th className="player-col">Player</th>
-                <th>Mat</th>
-                <th>Inn</th>
-                <th className={activeColumn === "runs" ? "active-sort" : ""}>Runs</th>
-                <th className={activeColumn === "battingAverage" ? "active-sort" : ""}>Bat avg</th>
-                <th className={activeColumn === "highScore" ? "active-sort" : ""}>HS</th>
-                <th className={activeColumn === "fifties" ? "active-sort" : ""}>50s</th>
-                <th className={activeColumn === "hundreds" ? "active-sort" : ""}>100s</th>
-                <th>Overs</th>
-                <th className={activeColumn === "wickets" ? "active-sort" : ""}>Wkts</th>
-                <th className={activeColumn === "bowlingAverage" ? "active-sort" : ""}>Bowl avg</th>
-                <th className={activeColumn === "economy" ? "active-sort" : ""}>Econ</th>
-                <th className={activeColumn === "bestBowling" ? "active-sort" : ""}>BB</th>
-                <th className={activeColumn === "catches" ? "active-sort" : ""}>Ct</th>
-                <th>St</th>
-                <th>RO</th>
+                {sortableHeader("matches", "Mat")}
+                {sortableHeader("innings", "Inn")}
+                {sortableHeader("runs", "Runs")}
+                {sortableHeader("battingAverage", "Bat avg")}
+                {sortableHeader("highScore", "HS")}
+                {sortableHeader("fifties", "50s")}
+                {sortableHeader("hundreds", "100s")}
+                {sortableHeader("overs", "Overs")}
+                {sortableHeader("wickets", "Wkts")}
+                {sortableHeader("bowlingAverage", "Bowl avg")}
+                {sortableHeader("economy", "Econ")}
+                {sortableHeader("bestBowling", "BB")}
+                {sortableHeader("catches", "Ct")}
+                {sortableHeader("stumpings", "St")}
+                {sortableHeader("runOuts", "RO")}
               </tr>
             </thead>
             <tbody>
-              {leaderboard.map(({ stats }, index) => (
+              {displayedLeaderboard.map(({ stats }, index) => (
                 <tr key={stats.name}>
-                  <td className="rank-col">{String(index + 1).padStart(2, "0")}</td>
+                  <td className="rank-col">
+                    {String(index + 1).padStart(2, "0")}
+                  </td>
                   <th scope="row" className="player-col">
-                    <button type="button" onClick={() => setOpenPlayer(stats.name)}>
+                    <button
+                      type="button"
+                      onClick={() => openPlayerRecord(stats.name)}
+                      aria-label={`Open ${stats.name} player record`}
+                    >
                       <span>{stats.name}</span>
-                      <small>View player record ↗</small>
+                      <span className="player-link-icon" aria-hidden="true">
+                        ↗
+                      </span>
                     </button>
                   </th>
-                  <td>{integer.format(stats.matches.size)}</td>
-                  <td>{integer.format(stats.innings)}</td>
-                  <td className={activeColumn === "runs" ? "active-sort" : ""}>{integer.format(stats.battingRuns)}</td>
-                  <td className={activeColumn === "battingAverage" ? "active-sort" : ""}>{battingAverage(stats)}</td>
-                  <td className={activeColumn === "highScore" ? "active-sort" : ""}>{integer.format(stats.highScore)}</td>
-                  <td className={activeColumn === "fifties" ? "active-sort" : ""}>{integer.format(stats.fifties)}</td>
-                  <td className={activeColumn === "hundreds" ? "active-sort" : ""}>{integer.format(stats.hundreds)}</td>
-                  <td>{overs(stats.balls)}</td>
-                  <td className={activeColumn === "wickets" ? "active-sort" : ""}>{integer.format(stats.wickets)}</td>
-                  <td className={activeColumn === "bowlingAverage" ? "active-sort" : ""}>{bowlingAverage(stats)}</td>
-                  <td className={activeColumn === "economy" ? "active-sort" : ""}>{economy(stats)}</td>
-                  <td className={activeColumn === "bestBowling" ? "active-sort" : ""}>{bestBowling(stats)}</td>
-                  <td className={activeColumn === "catches" ? "active-sort" : ""}>{integer.format(stats.catches)}</td>
-                  <td>{integer.format(stats.stumpings)}</td>
-                  <td>{integer.format(stats.runOuts)}</td>
+                  <td className={metric === "matches" ? "active-sort" : ""}>
+                    {integer.format(stats.matches.size)}
+                  </td>
+                  <td className={metric === "innings" ? "active-sort" : ""}>
+                    {integer.format(stats.innings)}
+                  </td>
+                  <td className={metric === "runs" ? "active-sort" : ""}>
+                    {integer.format(stats.battingRuns)}
+                  </td>
+                  <td
+                    className={
+                      metric === "battingAverage" ? "active-sort" : ""
+                    }
+                  >
+                    {metrics.battingAverage.display(stats)}
+                  </td>
+                  <td className={metric === "highScore" ? "active-sort" : ""}>
+                    {integer.format(stats.highScore)}
+                  </td>
+                  <td className={metric === "fifties" ? "active-sort" : ""}>
+                    {integer.format(stats.fifties)}
+                  </td>
+                  <td className={metric === "hundreds" ? "active-sort" : ""}>
+                    {integer.format(stats.hundreds)}
+                  </td>
+                  <td className={metric === "overs" ? "active-sort" : ""}>
+                    {overs(stats.balls)}
+                  </td>
+                  <td className={metric === "wickets" ? "active-sort" : ""}>
+                    {integer.format(stats.wickets)}
+                  </td>
+                  <td
+                    className={
+                      metric === "bowlingAverage" ? "active-sort" : ""
+                    }
+                  >
+                    {metrics.bowlingAverage.display(stats)}
+                  </td>
+                  <td className={metric === "economy" ? "active-sort" : ""}>
+                    {metrics.economy.display(stats)}
+                  </td>
+                  <td
+                    className={metric === "bestBowling" ? "active-sort" : ""}
+                  >
+                    {metrics.bestBowling.display(stats)}
+                  </td>
+                  <td className={metric === "catches" ? "active-sort" : ""}>
+                    {integer.format(stats.catches)}
+                  </td>
+                  <td className={metric === "stumpings" ? "active-sort" : ""}>
+                    {integer.format(stats.stumpings)}
+                  </td>
+                  <td className={metric === "runOuts" ? "active-sort" : ""}>
+                    {integer.format(stats.runOuts)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           {leaderboard.length === 0 && (
-            <p className="empty-state">No qualifying performances match these filters.</p>
+            <p className="empty-state">No matching performances.</p>
           )}
         </div>
-        <p className="table-note">
-          The highlighted column controls the ranking. Lower values rank first
-          for bowling average and economy. “Established” requires 5 innings,
-          10 overs or 5 matches depending on the measure.
-        </p>
+
+        {leaderboard.length > visibleLimit && (
+          <div className="load-more">
+            <span>
+              Showing {integer.format(visibleLimit)} of{" "}
+              {integer.format(leaderboard.length)}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setVisibleLimit((current) =>
+                  Math.min(current + 100, leaderboard.length),
+                )
+              }
+            >
+              Show next {Math.min(100, leaderboard.length - visibleLimit)}
+            </button>
+          </div>
+        )}
       </section>
 
       <footer>
         <div>
           <img src="/escc-logo.png" alt="" />
-          <p>
-            Edinburgh South Cricket Club
-            <br />
-            <span>Come on the South.</span>
-          </p>
+          <p>The Inch Park Vault</p>
         </div>
-        <p>
-          Archive covers recorded performances from 2004–2025.
-          <br />
-          Statistics update with each annual data release.
-        </p>
+        <p>Edinburgh South CC performance archive</p>
       </footer>
 
       {openPlayer && selectedStats && (
-        <div className="player-overlay" role="presentation" onMouseDown={(event) => {
-          if (event.target === event.currentTarget) setOpenPlayer(null);
-        }}>
+        <div
+          className="player-overlay"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setOpenPlayer(null);
+          }}
+        >
           <section
             className="player-record"
             role="dialog"
@@ -770,7 +1075,7 @@ export function RecordsExplorer() {
               <div className="player-identity">
                 <span>{initials(openPlayer)}</span>
                 <div>
-                  <p className="eyebrow">Player record · {yearLabel(startYear, endYear)}</p>
+                  <p className="eyebrow">Player record</p>
                   <h2 id="player-record-title">{openPlayer}</h2>
                 </div>
               </div>
@@ -784,21 +1089,69 @@ export function RecordsExplorer() {
               </button>
             </header>
 
+            <div className="record-filters">
+              <div className="filters-heading">
+                <span>Filter this record</span>
+                <button type="button" onClick={resetRecordFilters}>
+                  Reset
+                </button>
+              </div>
+              {renderPerformanceFilters(
+                recordFilters,
+                setRecordFilters,
+                "record",
+                false,
+              )}
+            </div>
+
             <div className="record-filter-context">
-              <span>{team}</span>
-              <span>{matchType}</span>
-              {opposition && <span>vs {opposition}</span>}
+              <span>
+                {yearLabel(recordFilters.startYear, recordFilters.endYear)}
+              </span>
+              <span>{recordFilters.team}</span>
+              <span>{recordFilters.matchType}</span>
+              {recordFilters.opposition && (
+                <span>vs {recordFilters.opposition}</span>
+              )}
             </div>
 
             <div className="player-stat-grid">
-              <div><span>Matches</span><strong>{integer.format(selectedStats.matches.size)}</strong></div>
-              <div><span>Runs</span><strong>{integer.format(selectedStats.battingRuns)}</strong></div>
-              <div><span>Batting average</span><strong>{battingAverage(selectedStats)}</strong></div>
-              <div><span>High score</span><strong>{integer.format(selectedStats.highScore)}</strong></div>
-              <div><span>Wickets</span><strong>{integer.format(selectedStats.wickets)}</strong></div>
-              <div><span>Bowling average</span><strong>{bowlingAverage(selectedStats)}</strong></div>
-              <div><span>Best bowling</span><strong>{bestBowling(selectedStats)}</strong></div>
-              <div><span>Catches</span><strong>{integer.format(selectedStats.catches)}</strong></div>
+              <div>
+                <span>Matches</span>
+                <strong>{integer.format(selectedStats.matches.size)}</strong>
+              </div>
+              <div>
+                <span>Runs</span>
+                <strong>{integer.format(selectedStats.battingRuns)}</strong>
+              </div>
+              <div>
+                <span>Batting average</span>
+                <strong>
+                  {metrics.battingAverage.display(selectedStats)}
+                </strong>
+              </div>
+              <div>
+                <span>High score</span>
+                <strong>{integer.format(selectedStats.highScore)}</strong>
+              </div>
+              <div>
+                <span>Wickets</span>
+                <strong>{integer.format(selectedStats.wickets)}</strong>
+              </div>
+              <div>
+                <span>Bowling average</span>
+                <strong>
+                  {metrics.bowlingAverage.display(selectedStats)}
+                </strong>
+              </div>
+              <div>
+                <span>Best bowling</span>
+                <strong>{metrics.bestBowling.display(selectedStats)}</strong>
+              </div>
+              <div>
+                <span>Catches</span>
+                <strong>{integer.format(selectedStats.catches)}</strong>
+              </div>
             </div>
 
             <div className="chart-card">
@@ -807,7 +1160,6 @@ export function RecordsExplorer() {
                   <span>{metrics[metric].label} by season</span>
                   <strong>{metrics[metric].display(selectedStats)}</strong>
                 </div>
-                <p>Current ranking measure</p>
               </div>
               {chart.points.length > 0 ? (
                 <svg
@@ -818,17 +1170,23 @@ export function RecordsExplorer() {
                   {[0, 0.5, 1].map((position) => {
                     const y = 22 + position * 236;
                     const value =
-                      chart.maximum - position * (chart.maximum - chart.minimum);
+                      chart.maximum -
+                      position * (chart.maximum - chart.minimum);
                     return (
                       <g key={position}>
                         <line x1="42" x2="818" y1={y} y2={y} />
                         <text x="4" y={y + 4}>
-                          {Number.isInteger(value) ? integer.format(value) : value.toFixed(1)}
+                          {Number.isInteger(value)
+                            ? integer.format(value)
+                            : value.toFixed(1)}
                         </text>
                       </g>
                     );
                   })}
-                  <polyline className="chart-area" points={`42,258 ${chart.path} 818,258`} />
+                  <polyline
+                    className="chart-area"
+                    points={`42,258 ${chart.path} 818,258`}
+                  />
                   <polyline className="chart-line" points={chart.path} />
                   {chart.points.map((point, index) => (
                     <g key={point.season}>
@@ -839,7 +1197,12 @@ export function RecordsExplorer() {
                         index === 0 ||
                         index === chart.points.length - 1 ||
                         index % 3 === 0) && (
-                        <text className="season-label" x={point.x} y="284" textAnchor="middle">
+                        <text
+                          className="season-label"
+                          x={point.x}
+                          y="284"
+                          textAnchor="middle"
+                        >
                           {point.season}
                         </text>
                       )}
@@ -847,7 +1210,7 @@ export function RecordsExplorer() {
                   ))}
                 </svg>
               ) : (
-                <p className="empty-state">No season-by-season values are available for this ranking.</p>
+                <p className="empty-state">No data for this selection.</p>
               )}
             </div>
           </section>
