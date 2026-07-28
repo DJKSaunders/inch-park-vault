@@ -75,6 +75,47 @@ a {
   white-space: nowrap;
 }
 
+.table-scroll-hint {
+  display: none;
+}
+
+body.iframe-mode {
+  background: var(--cream);
+}
+
+body.iframe-mode .site-header,
+body.iframe-mode .ranking-hero,
+body.iframe-mode footer {
+  display: none;
+}
+
+body.iframe-mode .rankings-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-right: 4px;
+  padding-left: 4px;
+  box-shadow: none;
+}
+
+body.iframe-mode .archive-as-of {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+body.iframe-mode .section-tabs {
+  margin-right: -4px;
+  margin-left: -4px;
+}
+
+body.iframe-mode .stats-table-wrap,
+body.iframe-mode .table-scroll-hint {
+  margin-right: -4px;
+  margin-left: -4px;
+  max-width: calc(100% + 8px);
+}
+
 .site-header {
   width: min(1600px, calc(100% - 64px));
   min-height: 92px;
@@ -220,7 +261,7 @@ a {
   width: 100%;
   margin: 0 0 16px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border: 1px solid rgba(6, 16, 28, 0.18);
   background: #ebe4d7;
 }
@@ -260,6 +301,23 @@ a {
   background: var(--cream);
   color: var(--navy-950);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+}
+
+.archive-as-of {
+  width: min(1600px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 13px 46px 12px;
+  background: var(--orange);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.archive-as-of strong {
+  color: var(--gold);
+  font-weight: 900;
 }
 
 .section-tabs {
@@ -792,10 +850,11 @@ a {
 }
 
 .player-col button > span:first-child {
-  overflow: hidden;
   font-size: 13px;
   font-weight: 800;
-  text-overflow: ellipsis;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .player-link-icon {
@@ -1298,6 +1357,12 @@ footer p {
     padding: 30px 16px 24px;
   }
 
+  .archive-as-of {
+    width: calc(100% - 16px);
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
   .section-tabs {
     margin: -30px -16px 30px;
   }
@@ -1427,6 +1492,370 @@ footer p {
   }
 }
 
+@media (max-width: 1200px) {
+  body {
+    background: var(--navy-950);
+  }
+
+  .site-header,
+  .ranking-hero,
+  footer {
+    width: 100%;
+  }
+
+  .site-header {
+    min-height: 58px;
+    padding: 0 14px;
+    background: var(--navy-950);
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 9px;
+  }
+
+  .brand img {
+    width: 42px;
+    height: 34px;
+  }
+
+  .brand span {
+    min-width: 0;
+  }
+
+  .brand strong {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .brand small {
+    max-width: 350px;
+    overflow: hidden;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-header nav {
+    display: none;
+  }
+
+  .ranking-hero {
+    display: none;
+  }
+
+  .rankings-shell {
+    width: 100%;
+    padding: 18px 12px 22px;
+    box-shadow: none;
+  }
+
+  .archive-as-of {
+    width: 100%;
+    padding: 10px 12px 9px;
+    font-size: 11px;
+  }
+
+  .section-tabs {
+    margin: -18px -12px 18px;
+  }
+
+  .section-tabs button {
+    min-height: 58px;
+    padding: 9px 8px;
+    font-size: clamp(17px, 4.4vw, 24px);
+    line-height: 0.88;
+  }
+
+  .section-tabs button span {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.52em;
+    line-height: 1;
+  }
+
+  .rankings-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 18px;
+  }
+
+  .criteria-menu,
+  .compact-search {
+    width: 100%;
+  }
+
+  .criteria-menu summary {
+    min-height: 66px;
+    padding: 10px 14px;
+  }
+
+  .criteria-menu summary > span,
+  .performance-heading > span {
+    font-size: 9px;
+  }
+
+  .criteria-menu summary strong,
+  .performance-heading > strong {
+    font-size: clamp(32px, 9vw, 46px);
+  }
+
+  .criteria-menu > div {
+    max-height: min(52vh, 390px);
+    overflow-y: auto;
+  }
+
+  .compact-search label {
+    font-size: 9px;
+  }
+
+  .compact-search input,
+  .compact-search button {
+    min-height: 44px;
+  }
+
+  .filters-heading {
+    margin-top: 18px;
+  }
+
+  .filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .filters label > span {
+    font-size: 8px;
+  }
+
+  .filters select,
+  .filters input {
+    min-height: 44px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .results-context {
+    padding: 14px 0 10px;
+  }
+
+  .results-context button,
+  .results-context strong {
+    min-height: 32px;
+    padding: 6px 9px;
+    font-size: 9px;
+  }
+
+  .archive-stats {
+    margin-bottom: 10px;
+  }
+
+  .archive-stats > div {
+    min-height: 58px;
+    padding: 11px 9px;
+  }
+
+  .archive-stats strong {
+    font-size: 24px;
+  }
+
+  .table-scroll-hint {
+    margin: 0 -12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    background: #dcd3c4;
+    color: #596574;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .table-scroll-hint span {
+    color: var(--orange);
+    font-size: 15px;
+  }
+
+  .stats-table-wrap {
+    margin: 0 -12px;
+    max-width: calc(100% + 24px);
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .leaderboard-table {
+    min-width: 720px;
+    table-layout: fixed;
+  }
+
+  .bowling-table {
+    min-width: 790px;
+  }
+
+  .performance-table {
+    min-width: 720px;
+    table-layout: fixed;
+  }
+
+  .stats-table th,
+  .stats-table td {
+    height: 48px;
+    padding: 5px 2px;
+    font-size: 12px;
+  }
+
+  .stats-table tbody td {
+    font-weight: 600;
+  }
+
+  .stats-table thead th {
+    height: 44px;
+    padding-right: 1px;
+    padding-left: 1px;
+    font-size: 9.5px;
+    letter-spacing: 0.025em;
+  }
+
+  .stats-table .rank-col {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    width: 32px;
+    min-width: 32px;
+    background: #f2ecdf;
+    box-shadow: inset -1px 0 rgba(6, 16, 28, 0.08);
+  }
+
+  .stats-table thead .rank-col {
+    z-index: 6;
+    background: var(--navy-900);
+  }
+
+  .stats-table .player-col {
+    left: 32px;
+    width: 116px;
+    min-width: 116px;
+    box-shadow: 7px 0 11px rgba(6, 16, 28, 0.12);
+  }
+
+  .stats-table thead .player-col {
+    z-index: 5;
+  }
+
+  .player-col button {
+    min-height: 48px;
+    height: auto;
+    gap: 4px;
+    padding: 4px 3px;
+  }
+
+  .player-col button > span:first-child {
+    font-size: 11.5px;
+    line-height: 1.12;
+  }
+
+  .performance-table .opposition-col {
+    width: 108px;
+    min-width: 108px;
+    max-width: 108px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .player-link-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 7px;
+  }
+
+  .load-more {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 14px;
+  }
+
+  .load-more button {
+    width: 100%;
+  }
+
+  footer {
+    display: none;
+  }
+
+  .player-overlay {
+    padding: 0;
+    background: var(--cream);
+    backdrop-filter: none;
+  }
+
+  .player-record {
+    width: 100%;
+    min-height: 100dvh;
+    box-shadow: none;
+  }
+
+  .player-record > header {
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .player-identity h2 {
+    font-size: clamp(30px, 8vw, 44px);
+  }
+
+  .close-player {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+  }
+
+  .record-filters {
+    padding: 0 12px 4px;
+  }
+
+  .record-filter-context {
+    padding: 14px 12px;
+  }
+
+  .player-stat-sections {
+    padding: 12px;
+  }
+
+  .player-stat-section h3 {
+    font-size: 21px;
+  }
+
+  .player-stat-grid > button,
+  .player-stat-grid > div {
+    min-height: 82px;
+    padding: 11px 9px;
+  }
+
+  .chart-card {
+    margin: 0 12px 12px;
+    padding: 12px;
+  }
+
+  .chart-card svg {
+    min-width: 520px;
+  }
+}
+
+@media (max-width: 760px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 430px) {
   .brand small {
     display: none;
@@ -1445,18 +1874,22 @@ footer p {
   }
 
   .archive-stats {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .archive-stats > div {
     display: grid;
     padding: 12px 9px;
     border-right: 1px solid rgba(6, 16, 28, 0.16);
-    border-bottom: 0;
+    border-bottom: 1px solid rgba(6, 16, 28, 0.16);
   }
 
-  .archive-stats > div:last-child {
+  .archive-stats > div:nth-child(2n) {
     border-right: 0;
+  }
+
+  .archive-stats > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
   }
 
   .archive-stats strong {
