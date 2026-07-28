@@ -629,6 +629,14 @@ export function RecordsExplorer() {
   });
 
   useEffect(() => {
+    const iframeMode =
+      window.self !== window.top ||
+      new URLSearchParams(window.location.search).get("embed") === "1";
+    document.body.classList.toggle("iframe-mode", iframeMode);
+    return () => document.body.classList.remove("iframe-mode");
+  }, []);
+
+  useEffect(() => {
     let active = true;
     fetch(`${publicBasePath}/data/records.json`)
       .then((response) => {
