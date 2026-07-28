@@ -93,8 +93,8 @@ body.iframe-mode .rankings-shell {
   width: 100%;
   max-width: none;
   margin: 0;
-  padding-right: 8px;
-  padding-left: 8px;
+  padding-right: 4px;
+  padding-left: 4px;
   box-shadow: none;
 }
 
@@ -105,15 +105,15 @@ body.iframe-mode .archive-as-of {
 }
 
 body.iframe-mode .section-tabs {
-  margin-right: -8px;
-  margin-left: -8px;
+  margin-right: -4px;
+  margin-left: -4px;
 }
 
 body.iframe-mode .stats-table-wrap,
 body.iframe-mode .table-scroll-hint {
-  margin-right: -8px;
-  margin-left: -8px;
-  max-width: calc(100% + 16px);
+  margin-right: -4px;
+  margin-left: -4px;
+  max-width: calc(100% + 8px);
 }
 
 .site-header {
@@ -1704,22 +1704,28 @@ footer p {
   .stats-table th,
   .stats-table td {
     height: 48px;
-    padding: 6px 4px;
-    font-size: 10px;
+    padding: 5px 2px;
+    font-size: 12px;
+  }
+
+  .stats-table tbody td {
+    font-weight: 600;
   }
 
   .stats-table thead th {
     height: 44px;
-    font-size: 8px;
-    letter-spacing: 0.04em;
+    padding-right: 1px;
+    padding-left: 1px;
+    font-size: 9.5px;
+    letter-spacing: 0.025em;
   }
 
   .stats-table .rank-col {
     position: sticky;
     left: 0;
     z-index: 3;
-    width: 36px;
-    min-width: 36px;
+    width: 32px;
+    min-width: 32px;
     background: #f2ecdf;
     box-shadow: inset -1px 0 rgba(6, 16, 28, 0.08);
   }
@@ -1730,9 +1736,9 @@ footer p {
   }
 
   .stats-table .player-col {
-    left: 36px;
-    width: 118px;
-    min-width: 118px;
+    left: 32px;
+    width: 116px;
+    min-width: 116px;
     box-shadow: 7px 0 11px rgba(6, 16, 28, 0.12);
   }
 
@@ -1743,11 +1749,13 @@ footer p {
   .player-col button {
     min-height: 48px;
     height: auto;
-    padding: 6px;
+    gap: 4px;
+    padding: 4px 3px;
   }
 
   .player-col button > span:first-child {
-    font-size: 9.5px;
+    font-size: 11.5px;
+    line-height: 1.12;
   }
 
   .performance-table .opposition-col {
@@ -1760,9 +1768,9 @@ footer p {
   }
 
   .player-link-icon {
-    width: 18px;
-    height: 18px;
-    font-size: 8px;
+    width: 16px;
+    height: 16px;
+    font-size: 7px;
   }
 
   .load-more {
