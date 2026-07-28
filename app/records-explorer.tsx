@@ -2,6 +2,8 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 type BattingRow = [
   string,
   number,
@@ -628,8 +630,7 @@ export function RecordsExplorer() {
 
   useEffect(() => {
     let active = true;
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-    fetch(`${basePath}/data/records.json`)
+    fetch(`${publicBasePath}/data/records.json`)
       .then((response) => {
         if (!response.ok) throw new Error("Records could not be loaded");
         return response.json();
@@ -1009,7 +1010,10 @@ export function RecordsExplorer() {
   if (loadError) {
     return (
       <main className="status-screen">
-        <img src="/escc-logo.png" alt="Edinburgh South CC" />
+        <img
+          src={`${publicBasePath}/escc-logo.png`}
+          alt="Edinburgh South CC"
+        />
         <h1>The vault is temporarily unavailable.</h1>
       </main>
     );
@@ -1018,7 +1022,10 @@ export function RecordsExplorer() {
   if (!data) {
     return (
       <main className="status-screen" aria-live="polite">
-        <img src="/escc-logo.png" alt="Edinburgh South CC" />
+        <img
+          src={`${publicBasePath}/escc-logo.png`}
+          alt="Edinburgh South CC"
+        />
         <div className="loading-line" />
         <p>Opening the vault…</p>
       </main>
@@ -1249,7 +1256,7 @@ export function RecordsExplorer() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Inch Park Vault">
-          <img src="/escc-logo.png" alt="" />
+          <img src={`${publicBasePath}/escc-logo.png`} alt="" />
           <span>
             <strong>The Inch Park Vault</strong>
             <small>
@@ -1812,7 +1819,7 @@ export function RecordsExplorer() {
 
       <footer>
         <div>
-          <img src="/escc-logo.png" alt="" />
+          <img src={`${publicBasePath}/escc-logo.png`} alt="" />
           <p>The Inch Park Vault</p>
         </div>
         <p>Edinburgh South Cricket Club Performance Archive – 2004–2025</p>
