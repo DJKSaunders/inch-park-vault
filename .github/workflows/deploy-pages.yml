@@ -36,9 +36,8 @@ jobs:
       - name: Restore archive assets
         run: |
           mkdir -p public/data
-          if [ ! -f public/data/records.json ]; then
-            base64 --decode .github/pages-assets/records.json.gz.b64 | gzip --decompress > public/data/records.json
-          fi
+          curl --fail --location --output public/data/records.json \
+            https://edinburgh-south-club-records.djksaunders.chatgpt.site/data/records.json
           if [ ! -f public/escc-logo.png ]; then
             base64 --decode .github/pages-assets/escc-logo.png.b64 > public/escc-logo.png
           fi
