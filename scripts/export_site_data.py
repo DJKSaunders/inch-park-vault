@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 from datetime import date, datetime
 
@@ -34,6 +35,18 @@ def date_value(candidate):
     return candidate or ""
 
 
+def normalize_player_name(candidate):
+    if not candidate:
+        return candidate
+    return re.sub(r"\s+\((?:SM'20|SM)\)\s*$", "", str(candidate), flags=re.IGNORECASE).strip()
+
+
+def normalize_team(candidate):
+    if candidate == "Women's Premier (SM combined)":
+        return "Women's"
+    return candidate
+
+
 batting = []
 bowling = []
 boundaries = []
@@ -44,9 +57,9 @@ match_types = set()
 oppositions = set()
 
 for row in rows:
-    player = value(row, "Player Name")
+    player = normalize_player_name(value(row, "Player Name"))
     season = number(row, "Season")
-    team = value(row, "Team")
+    team = normalize_team(value(row, "Team"))
     match_type = value(row, "Match Type")
     opposition = value(row, "Opposition")
     common = [
@@ -97,7 +110,7 @@ summary_index = {
 for row in summary_rows:
     first_name = row[summary_index["First Name"]] or ""
     surname = row[summary_index["Surname"]] or ""
-    player_name = " ".join(f"{first_name} {surname}".split())
+    player_name = normalize_player_name(" ".join(f"{first_name} {surname}".split()))
     fours = row[summary_index["Fours"]]
     sixes = row[summary_index["Sixes"]]
     if player_name:
