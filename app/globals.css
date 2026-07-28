@@ -79,6 +79,37 @@ a {
   display: none;
 }
 
+body.iframe-mode {
+  background: var(--cream);
+}
+
+body.iframe-mode .site-header,
+body.iframe-mode .ranking-hero,
+body.iframe-mode footer {
+  display: none;
+}
+
+body.iframe-mode .rankings-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+  box-shadow: none;
+}
+
+body.iframe-mode .section-tabs {
+  margin-right: -8px;
+  margin-left: -8px;
+}
+
+body.iframe-mode .stats-table-wrap,
+body.iframe-mode .table-scroll-hint {
+  margin-right: -8px;
+  margin-left: -8px;
+  max-width: calc(100% + 16px);
+}
+
 .site-header {
   width: min(1600px, calc(100% - 64px));
   min-height: 92px;
