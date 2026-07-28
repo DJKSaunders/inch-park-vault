@@ -827,10 +827,11 @@ body.iframe-mode .table-scroll-hint {
 }
 
 .player-col button > span:first-child {
-  overflow: hidden;
   font-size: 13px;
   font-weight: 800;
-  text-overflow: ellipsis;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .player-link-icon {
@@ -1652,15 +1653,23 @@ footer p {
   }
 
   .stats-table,
+  .leaderboard-table {
+    min-width: 940px;
+  }
+
+  .bowling-table {
+    min-width: 980px;
+  }
+
   .performance-table {
-    min-width: 1080px;
+    min-width: 820px;
   }
 
   .stats-table th,
   .stats-table td {
-    height: 50px;
-    padding: 7px 10px;
-    font-size: 12px;
+    height: 48px;
+    padding: 7px 8px;
+    font-size: 11px;
   }
 
   .stats-table thead th {
@@ -1672,8 +1681,8 @@ footer p {
     position: sticky;
     left: 0;
     z-index: 3;
-    width: 44px;
-    min-width: 44px;
+    width: 42px;
+    min-width: 42px;
     background: #f2ecdf;
     box-shadow: inset -1px 0 rgba(6, 16, 28, 0.08);
   }
@@ -1684,9 +1693,9 @@ footer p {
   }
 
   .stats-table .player-col {
-    left: 44px;
-    width: 166px;
-    min-width: 166px;
+    left: 42px;
+    width: 142px;
+    min-width: 142px;
     box-shadow: 7px 0 11px rgba(6, 16, 28, 0.12);
   }
 
@@ -1695,12 +1704,22 @@ footer p {
   }
 
   .player-col button {
-    height: 49px;
-    padding: 6px 10px;
+    min-height: 48px;
+    height: auto;
+    padding: 7px 8px;
   }
 
   .player-col button > span:first-child {
-    font-size: 11px;
+    font-size: 10.5px;
+  }
+
+  .performance-table .opposition-col {
+    width: 128px;
+    min-width: 128px;
+    max-width: 128px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .player-link-icon {

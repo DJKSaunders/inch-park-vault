@@ -1507,7 +1507,7 @@ export function RecordsExplorer() {
                     <>
                       <th>Score</th>
                       <th>Team</th>
-                      <th>Opposition</th>
+                      <th className="opposition-col">Opposition</th>
                       <th>Date</th>
                       <th>Season</th>
                       <th>Type</th>
@@ -1518,7 +1518,7 @@ export function RecordsExplorer() {
                       <th>Overs</th>
                       <th>Maidens</th>
                       <th>Team</th>
-                      <th>Opposition</th>
+                      <th className="opposition-col">Opposition</th>
                       <th>Date</th>
                       <th>Season</th>
                       <th>Type</th>
@@ -1555,7 +1555,9 @@ export function RecordsExplorer() {
                           {row[7] ? "*" : ""}
                         </td>
                         <td>{row[2]}</td>
-                        <td>{canonicalOpponent(row[4])}</td>
+                        <td className="opposition-col">
+                          {canonicalOpponent(row[4])}
+                        </td>
                         <td>{matchDate(row[5])}</td>
                         <td>{row[1]}</td>
                         <td>{row[3]}</td>
@@ -1591,7 +1593,9 @@ export function RecordsExplorer() {
                         <td>{overs(row[6])}</td>
                         <td>{integer.format(row[7])}</td>
                         <td>{row[2]}</td>
-                        <td>{canonicalOpponent(row[4])}</td>
+                        <td className="opposition-col">
+                          {canonicalOpponent(row[4])}
+                        </td>
                         <td>{matchDate(row[5])}</td>
                         <td>{row[1]}</td>
                         <td>{row[3]}</td>
@@ -1605,7 +1609,7 @@ export function RecordsExplorer() {
             </>
           ) : (
             <>
-              <table className="stats-table">
+              <table className={`stats-table leaderboard-table ${activeSection}-table`}>
             <caption>
               Players ranked by {metrics[metric].label.toLowerCase()}.
             </caption>
