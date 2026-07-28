@@ -55,6 +55,8 @@ type PlayerStats = {
   highScore: number;
   hundreds: number;
   fifties: number;
+  fours: number;
+  sixes: number;
   catches: number;
   stumpings: number;
   runOuts: number;
@@ -75,6 +77,8 @@ type MetricKey =
   | "highScore"
   | "fifties"
   | "hundreds"
+  | "fours"
+  | "sixes"
   | "overs"
   | "wickets"
   | "bowlingAverage"
@@ -92,6 +96,8 @@ type MetricDefinition = {
   value: (stats: PlayerStats) => number | null;
   display: (stats: PlayerStats) => string;
 };
+
+type SectionKey = "batting" | "bowling";
 
 type PerformanceFilters = {
   startYear: number;
@@ -176,6 +182,20 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.hundreds,
     display: (stats) => integer.format(stats.hundreds),
   },
+  fours: {
+    label: "Career fours",
+    shortLabel: "4s",
+    category: "batting",
+    value: (stats) => stats.fours,
+    display: (stats) => integer.format(stats.fours),
+  },
+  sixes: {
+    label: "Career sixes",
+    shortLabel: "6s",
+    category: "batting",
+    value: (stats) => stats.sixes,
+    display: (stats) => integer.format(stats.sixes),
+  },
   overs: {
     label: "Overs bowled",
     shortLabel: "Overs",
@@ -216,8 +236,7 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     label: "Best bowling",
     shortLabel: "BB",
     category: "bowling",
-    value: (stats) =>
-      stats.bestWickets > 0 ? stats.bestWickets * 1000 - stats.bestRuns : null,
+    value: (stats) => (stats.bestWickets > 0 ? stats.bestWickets : null),
     display: (stats) =>
       stats.bestWickets > 0 ? `${stats.bestWickets}/${stats.bestRuns}` : "—",
   },
@@ -244,6 +263,30 @@ const metrics: Record<MetricKey, MetricDefinition> = {
   },
 };
 
+const battingMetricKeys: MetricKey[] = [
+  "matches",
+  "innings",
+  "runs",
+  "battingAverage",
+  "highScore",
+  "fifties",
+  "hundreds",
+  "fours",
+  "sixes",
+];
+
+const bowlingMetricKeys: MetricKey[] = [
+  "matches",
+  "overs",
+  "wickets",
+  "bowlingAverage",
+  "economy",
+  "bestBowling",
+  "catches",
+  "stumpings",
+  "runOuts",
+];
+
 function newStats(name: string): PlayerStats {
   return {
     name,
@@ -253,6 +296,8 @@ function newStats(name: string): PlayerStats {
     highScore: 0,
     hundreds: 0,
     fifties: 0,
+    fours: 0,
+    sixes: 0,
     catches: 0,
     stumpings: 0,
     runOuts: 0,
@@ -411,7 +456,9 @@ export function RecordsExplorer() {
     opposition: "",
   });
   const [minimumAppearances, setMinimumAppearances] = useState(0);
+  const [activeSection, setActiveSection] = useState<SectionKey>("batting");
   const [metric, setMetric] = useState<MetricKey>("runs");
+  const [profileMetric, setProfileMetric] = useState<MetricKey>("runs");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [visibleLimit, setVisibleLimit] = useState(100);
   const [openPlayer, setOpenPlayer] = useState<string | null>(null);
@@ -477,11 +524,6 @@ export function RecordsExplorer() {
     };
   }, [data, filters]);
 
-  const statsByPlayer = useMemo(
-    () => aggregateRows(filtered.batting, filtered.bowling),
-    [filtered],
-  );
-
   const allTimeAppearances = useMemo(() => {
     if (!data) return new Map<string, number>();
     const allTimeStats = aggregateRows(data.batting, data.bowling);
@@ -511,12 +553,28 @@ export function RecordsExplorer() {
     );
   }, [data]);
 
+  const statsByPlayer = useMemo(() => {
+    const stats = aggregateRows(filtered.batting, filtered.bowling);
+    for (const playerStats of stats.values()) {
+      const boundaries = boundaryByPlayer.get(playerKey(playerStats.name));
+      playerStats.fours = boundaries?.fours ?? 0;
+      playerStats.sixes = boundaries?.sixes ?? 0;
+    }
+    return stats;
+  }, [boundaryByPlayer, filtered]);
+
   const leaderboard = useMemo(() => {
     const definition = metrics[metric];
     return [...statsByPlayer.values()]
       .filter(
         (stats) =>
-          (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances,
+          (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances &&
+          (activeSection === "batting"
+            ? stats.innings > 0
+            : stats.balls > 0 ||
+              stats.catches > 0 ||
+              stats.stumpings > 0 ||
+              stats.runOuts > 0),
       )
       .map((stats) => ({ stats, value: definition.value(stats) }))
       .filter(
@@ -528,11 +586,25 @@ export function RecordsExplorer() {
         } => entry.value !== null && Number.isFinite(entry.value),
       )
       .sort((a, b) => {
+        if (metric === "bestBowling") {
+          if (a.stats.bestWickets !== b.stats.bestWickets) {
+            return sortDirection === "asc"
+              ? a.stats.bestWickets - b.stats.bestWickets
+              : b.stats.bestWickets - a.stats.bestWickets;
+          }
+          if (a.stats.bestRuns !== b.stats.bestRuns) {
+            return sortDirection === "asc"
+              ? b.stats.bestRuns - a.stats.bestRuns
+              : a.stats.bestRuns - b.stats.bestRuns;
+          }
+          return a.stats.name.localeCompare(b.stats.name);
+        }
         const result = a.value - b.value;
         if (result === 0) return a.stats.name.localeCompare(b.stats.name);
         return sortDirection === "asc" ? result : -result;
       });
   }, [
+    activeSection,
     allTimeAppearances,
     metric,
     minimumAppearances,
@@ -547,7 +619,13 @@ export function RecordsExplorer() {
       [...statsByPlayer.values()]
         .filter(
           (stats) =>
-            (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances,
+            (allTimeAppearances.get(stats.name) ?? 0) >= minimumAppearances &&
+            (activeSection === "batting"
+              ? stats.innings > 0
+              : stats.balls > 0 ||
+                stats.catches > 0 ||
+                stats.stumpings > 0 ||
+                stats.runOuts > 0),
         )
         .map((stats) => stats.name),
     );
@@ -567,6 +645,7 @@ export function RecordsExplorer() {
       seasons: seasons.size,
     };
   }, [
+    activeSection,
     allTimeAppearances,
     filtered,
     minimumAppearances,
@@ -614,17 +693,17 @@ export function RecordsExplorer() {
       for (const row of selectedRows.bowling) {
         if (row[1] === season) addBowling(seasonStats, row);
       }
-      const value = metrics[metric].value(seasonStats);
+      const value = metrics[profileMetric].value(seasonStats);
       if (value !== null && Number.isFinite(value)) {
         points.push({
           season,
           value,
-          display: metrics[metric].display(seasonStats),
+          display: metrics[profileMetric].display(seasonStats),
         });
       }
     }
     return points;
-  }, [metric, openPlayer, recordFilters, selectedRows]);
+  }, [openPlayer, profileMetric, recordFilters, selectedRows]);
 
   const chart = useMemo(() => {
     const width = 860;
@@ -634,7 +713,7 @@ export function RecordsExplorer() {
     const padBottom = 42;
     const values = seasonTrend.map((point) => point.value);
     const maximum = Math.max(...values, 1);
-    const minimum = metrics[metric].ascending
+    const minimum = metrics[profileMetric].ascending
       ? Math.min(...values, 0)
       : 0;
     const range = Math.max(maximum - minimum, 1);
@@ -657,7 +736,7 @@ export function RecordsExplorer() {
       maximum,
       minimum,
     };
-  }, [metric, seasonTrend]);
+  }, [profileMetric, seasonTrend]);
 
   function chooseMetric(nextMetric: MetricKey) {
     if (nextMetric === metric) {
@@ -668,8 +747,18 @@ export function RecordsExplorer() {
     setSortDirection(defaultDirection(nextMetric));
   }
 
+  function chooseSection(nextSection: SectionKey) {
+    setActiveSection(nextSection);
+    const nextMetric = nextSection === "batting" ? "runs" : "wickets";
+    setMetric(nextMetric);
+    setSortDirection(defaultDirection(nextMetric));
+  }
+
   function openPlayerRecord(name: string) {
     setRecordFilters(filters);
+    setProfileMetric(
+      metric === "fours" || metric === "sixes" ? "runs" : metric,
+    );
     setOpenPlayer(name);
   }
 
@@ -712,34 +801,38 @@ export function RecordsExplorer() {
     { length: records.meta.seasonEnd - records.meta.seasonStart + 1 },
     (_, index) => records.meta.seasonStart + index,
   );
+  const activeMetricKeys =
+    activeSection === "batting" ? battingMetricKeys : bowlingMetricKeys;
 
-  function renderMetricOptions() {
+  function renderCriteriaMenu() {
     return (
-      <>
-        <optgroup label="General">
-          <option value="matches">Appearances</option>
-        </optgroup>
-        <optgroup label="Batting">
-          <option value="innings">Batting innings</option>
-          <option value="runs">Batting runs</option>
-          <option value="battingAverage">Batting average</option>
-          <option value="highScore">Highest score</option>
-          <option value="fifties">Fifties</option>
-          <option value="hundreds">Hundreds</option>
-        </optgroup>
-        <optgroup label="Bowling">
-          <option value="overs">Overs bowled</option>
-          <option value="wickets">Bowling wickets</option>
-          <option value="bowlingAverage">Bowling average</option>
-          <option value="economy">Economy rate</option>
-          <option value="bestBowling">Best bowling</option>
-        </optgroup>
-        <optgroup label="Fielding">
-          <option value="catches">Catches</option>
-          <option value="stumpings">Stumpings</option>
-          <option value="runOuts">Run outs</option>
-        </optgroup>
-      </>
+      <details className="criteria-menu">
+        <summary>
+          <span>Rank by</span>
+          <strong>{metrics[metric].label}</strong>
+          <i aria-hidden="true">⌄</i>
+        </summary>
+        <div role="listbox" aria-label="Ranking criterion">
+          {activeMetricKeys.map((key) => (
+            <button
+              type="button"
+              role="option"
+              aria-selected={metric === key}
+              key={key}
+              onClick={(event) => {
+                if (metric !== key) chooseMetric(key);
+                const details = event.currentTarget.closest(
+                  "details",
+                ) as HTMLDetailsElement | null;
+                if (details) details.open = false;
+              }}
+            >
+              {metrics[key].label}
+              {metric === key && <span aria-hidden="true">✓</span>}
+            </button>
+          ))}
+        </div>
+      </details>
     );
   }
 
@@ -905,6 +998,24 @@ export function RecordsExplorer() {
     );
   }
 
+  function profileStatCard(
+    key: MetricKey,
+    label: string,
+    value: string,
+  ) {
+    return (
+      <button
+        type="button"
+        className={profileMetric === key ? "active" : ""}
+        onClick={() => setProfileMetric(key)}
+        aria-pressed={profileMetric === key}
+      >
+        <span>{label}</span>
+        <strong>{value}</strong>
+      </button>
+    );
+  }
+
   return (
     <main>
       <header className="site-header">
@@ -934,53 +1045,32 @@ export function RecordsExplorer() {
             The Inch Park <em>Vault.</em>
           </h1>
         </div>
-        <label className="metric-selector">
-          <span>Rank players by</span>
-          <select
-            value={metric}
-            onChange={(event) =>
-              chooseMetric(event.target.value as MetricKey)
-            }
-          >
-            {renderMetricOptions()}
-          </select>
-          <small>
-            {sortDirection === "asc" ? "Lowest first" : "Highest first"}
-          </small>
-        </label>
-      </section>
-
-      <section className="archive-stats" aria-label="Filtered archive summary">
-        <div>
-          <strong>{integer.format(archiveSummary.performances)}</strong>
-          <span>Performances</span>
-        </div>
-        <div>
-          <strong>{integer.format(archiveSummary.players)}</strong>
-          <span>Players</span>
-        </div>
-        <div>
-          <strong>{integer.format(archiveSummary.seasons)}</strong>
-          <span>Seasons</span>
-        </div>
       </section>
 
       <section className="rankings-shell" id="rankings">
+        <div className="section-tabs" role="tablist" aria-label="Statistics">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSection === "batting"}
+            className={activeSection === "batting" ? "active" : ""}
+            onClick={() => chooseSection("batting")}
+          >
+            Batting
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeSection === "bowling"}
+            className={activeSection === "bowling" ? "active" : ""}
+            onClick={() => chooseSection("bowling")}
+          >
+            Bowling <span>&amp; fielding</span>
+          </button>
+        </div>
+
         <div className="rankings-toolbar">
-          <div>
-            <p className="eyebrow">Player rankings</p>
-            <label className="ranking-title-select">
-              <span className="visually-hidden">Ranking criterion</span>
-              <select
-                value={metric}
-                onChange={(event) =>
-                  chooseMetric(event.target.value as MetricKey)
-                }
-              >
-                {renderMetricOptions()}
-              </select>
-            </label>
-          </div>
+          {renderCriteriaMenu()}
           <form className="compact-search" onSubmit={openSearchedPlayer}>
             <label htmlFor="player-search">Open player record</label>
             <div>
@@ -1003,22 +1093,26 @@ export function RecordsExplorer() {
 
         <div className="filters-heading">
           <span>Filters</span>
-          <button type="button" onClick={resetRankingFilters}>
-            Reset
+          <button
+            className="clear-filters"
+            type="button"
+            onClick={resetRankingFilters}
+          >
+            Clear filters
           </button>
         </div>
         {renderPerformanceFilters(filters, setFilters, "ranking", true)}
 
         <div className="results-context" aria-live="polite">
-          {(filters.startYear !== data.meta.seasonStart ||
-            filters.endYear !== data.meta.seasonEnd) && (
+          {(filters.startYear !== records.meta.seasonStart ||
+            filters.endYear !== records.meta.seasonEnd) && (
             <button
               type="button"
               onClick={() =>
                 setFilters((current) => ({
                   ...current,
-                  startYear: data.meta.seasonStart,
-                  endYear: data.meta.seasonEnd,
+                  startYear: records.meta.seasonStart,
+                  endYear: records.meta.seasonEnd,
                 }))
               }
               aria-label="Remove season filter"
@@ -1079,6 +1173,21 @@ export function RecordsExplorer() {
           <strong>{integer.format(leaderboard.length)} players</strong>
         </div>
 
+        <div className="archive-stats" aria-label="Filtered archive summary">
+          <div>
+            <strong>{integer.format(archiveSummary.performances)}</strong>
+            <span>Performances</span>
+          </div>
+          <div>
+            <strong>{integer.format(archiveSummary.players)}</strong>
+            <span>Players</span>
+          </div>
+          <div>
+            <strong>{integer.format(archiveSummary.seasons)}</strong>
+            <span>Seasons</span>
+          </div>
+        </div>
+
         <div className="stats-table-wrap">
           <table className="stats-table">
             <caption>
@@ -1088,21 +1197,31 @@ export function RecordsExplorer() {
               <tr>
                 <th className="rank-col">Rank</th>
                 <th className="player-col">Player</th>
-                {sortableHeader("matches", "Mat")}
-                {sortableHeader("innings", "Inn")}
-                {sortableHeader("runs", "Runs")}
-                {sortableHeader("battingAverage", "Bat avg")}
-                {sortableHeader("highScore", "HS")}
-                {sortableHeader("fifties", "50s")}
-                {sortableHeader("hundreds", "100s")}
-                {sortableHeader("overs", "Overs")}
-                {sortableHeader("wickets", "Wkts")}
-                {sortableHeader("bowlingAverage", "Bowl avg")}
-                {sortableHeader("economy", "Econ")}
-                {sortableHeader("bestBowling", "BB")}
-                {sortableHeader("catches", "Ct")}
-                {sortableHeader("stumpings", "St")}
-                {sortableHeader("runOuts", "RO")}
+                {activeSection === "batting" ? (
+                  <>
+                    {sortableHeader("matches", "Mat")}
+                    {sortableHeader("innings", "Inn")}
+                    {sortableHeader("runs", "Runs")}
+                    {sortableHeader("battingAverage", "Bat avg")}
+                    {sortableHeader("highScore", "HS")}
+                    {sortableHeader("fifties", "50s")}
+                    {sortableHeader("hundreds", "100s")}
+                    {sortableHeader("fours", "4s")}
+                    {sortableHeader("sixes", "6s")}
+                  </>
+                ) : (
+                  <>
+                    {sortableHeader("matches", "Mat")}
+                    {sortableHeader("overs", "Overs")}
+                    {sortableHeader("wickets", "Wkts")}
+                    {sortableHeader("bowlingAverage", "Bowl avg")}
+                    {sortableHeader("economy", "Econ")}
+                    {sortableHeader("bestBowling", "BB")}
+                    {sortableHeader("catches", "Ct")}
+                    {sortableHeader("stumpings", "St")}
+                    {sortableHeader("runOuts", "RO")}
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -1123,61 +1242,103 @@ export function RecordsExplorer() {
                       </span>
                     </button>
                   </th>
-                  <td className={metric === "matches" ? "active-sort" : ""}>
-                    {integer.format(stats.matches.size)}
-                  </td>
-                  <td className={metric === "innings" ? "active-sort" : ""}>
-                    {integer.format(stats.innings)}
-                  </td>
-                  <td className={metric === "runs" ? "active-sort" : ""}>
-                    {integer.format(stats.battingRuns)}
-                  </td>
-                  <td
-                    className={
-                      metric === "battingAverage" ? "active-sort" : ""
-                    }
-                  >
-                    {metrics.battingAverage.display(stats)}
-                  </td>
-                  <td className={metric === "highScore" ? "active-sort" : ""}>
-                    {integer.format(stats.highScore)}
-                  </td>
-                  <td className={metric === "fifties" ? "active-sort" : ""}>
-                    {integer.format(stats.fifties)}
-                  </td>
-                  <td className={metric === "hundreds" ? "active-sort" : ""}>
-                    {integer.format(stats.hundreds)}
-                  </td>
-                  <td className={metric === "overs" ? "active-sort" : ""}>
-                    {overs(stats.balls)}
-                  </td>
-                  <td className={metric === "wickets" ? "active-sort" : ""}>
-                    {integer.format(stats.wickets)}
-                  </td>
-                  <td
-                    className={
-                      metric === "bowlingAverage" ? "active-sort" : ""
-                    }
-                  >
-                    {metrics.bowlingAverage.display(stats)}
-                  </td>
-                  <td className={metric === "economy" ? "active-sort" : ""}>
-                    {metrics.economy.display(stats)}
-                  </td>
-                  <td
-                    className={metric === "bestBowling" ? "active-sort" : ""}
-                  >
-                    {metrics.bestBowling.display(stats)}
-                  </td>
-                  <td className={metric === "catches" ? "active-sort" : ""}>
-                    {integer.format(stats.catches)}
-                  </td>
-                  <td className={metric === "stumpings" ? "active-sort" : ""}>
-                    {integer.format(stats.stumpings)}
-                  </td>
-                  <td className={metric === "runOuts" ? "active-sort" : ""}>
-                    {integer.format(stats.runOuts)}
-                  </td>
+                  {activeSection === "batting" ? (
+                    <>
+                      <td
+                        className={metric === "matches" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.matches.size)}
+                      </td>
+                      <td
+                        className={metric === "innings" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.innings)}
+                      </td>
+                      <td className={metric === "runs" ? "active-sort" : ""}>
+                        {integer.format(stats.battingRuns)}
+                      </td>
+                      <td
+                        className={
+                          metric === "battingAverage" ? "active-sort" : ""
+                        }
+                      >
+                        {metrics.battingAverage.display(stats)}
+                      </td>
+                      <td
+                        className={
+                          metric === "highScore" ? "active-sort" : ""
+                        }
+                      >
+                        {integer.format(stats.highScore)}
+                      </td>
+                      <td
+                        className={metric === "fifties" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.fifties)}
+                      </td>
+                      <td
+                        className={metric === "hundreds" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.hundreds)}
+                      </td>
+                      <td className={metric === "fours" ? "active-sort" : ""}>
+                        {integer.format(stats.fours)}
+                      </td>
+                      <td className={metric === "sixes" ? "active-sort" : ""}>
+                        {integer.format(stats.sixes)}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td
+                        className={metric === "matches" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.matches.size)}
+                      </td>
+                      <td className={metric === "overs" ? "active-sort" : ""}>
+                        {overs(stats.balls)}
+                      </td>
+                      <td
+                        className={metric === "wickets" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.wickets)}
+                      </td>
+                      <td
+                        className={
+                          metric === "bowlingAverage" ? "active-sort" : ""
+                        }
+                      >
+                        {metrics.bowlingAverage.display(stats)}
+                      </td>
+                      <td
+                        className={metric === "economy" ? "active-sort" : ""}
+                      >
+                        {metrics.economy.display(stats)}
+                      </td>
+                      <td
+                        className={
+                          metric === "bestBowling" ? "active-sort" : ""
+                        }
+                      >
+                        {metrics.bestBowling.display(stats)}
+                      </td>
+                      <td
+                        className={metric === "catches" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.catches)}
+                      </td>
+                      <td
+                        className={metric === "stumpings" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.stumpings)}
+                      </td>
+                      <td
+                        className={metric === "runOuts" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.runOuts)}
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -1186,6 +1347,10 @@ export function RecordsExplorer() {
             <p className="empty-state">No matching performances.</p>
           )}
         </div>
+
+        {activeSection === "batting" && (
+          <p className="boundary-note">4s and 6s are career totals.</p>
+        )}
 
         {leaderboard.length > visibleLimit && (
           <div className="load-more">
@@ -1250,8 +1415,12 @@ export function RecordsExplorer() {
             <div className="record-filters">
               <div className="filters-heading">
                 <span>Filter this record</span>
-                <button type="button" onClick={resetRecordFilters}>
-                  Reset
+                <button
+                  className="clear-filters"
+                  type="button"
+                  onClick={resetRecordFilters}
+                >
+                  Clear filters
                 </button>
               </div>
               {renderPerformanceFilters(
@@ -1263,99 +1432,165 @@ export function RecordsExplorer() {
             </div>
 
             <div className="record-filter-context">
-              <span>
-                {yearLabel(recordFilters.startYear, recordFilters.endYear)}
-              </span>
-              <span>{recordFilters.team}</span>
-              <span>{recordFilters.matchType}</span>
+              {(recordFilters.startYear !== records.meta.seasonStart ||
+                recordFilters.endYear !== records.meta.seasonEnd) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecordFilters((current) => ({
+                      ...current,
+                      startYear: records.meta.seasonStart,
+                      endYear: records.meta.seasonEnd,
+                    }))
+                  }
+                  aria-label="Remove season filter"
+                >
+                  {yearLabel(recordFilters.startYear, recordFilters.endYear)}
+                  <span aria-hidden="true">×</span>
+                </button>
+              )}
+              {recordFilters.team !== "All teams" && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecordFilters((current) => ({
+                      ...current,
+                      team: "All teams",
+                    }))
+                  }
+                  aria-label={`Remove ${recordFilters.team} filter`}
+                >
+                  {recordFilters.team}
+                  <span aria-hidden="true">×</span>
+                </button>
+              )}
+              {recordFilters.matchType !== "All match types" && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecordFilters((current) => ({
+                      ...current,
+                      matchType: "All match types",
+                    }))
+                  }
+                  aria-label={`Remove ${recordFilters.matchType} filter`}
+                >
+                  {recordFilters.matchType}
+                  <span aria-hidden="true">×</span>
+                </button>
+              )}
               {recordFilters.opposition && (
-                <span>vs {recordFilters.opposition}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRecordFilters((current) => ({
+                      ...current,
+                      opposition: "",
+                    }))
+                  }
+                  aria-label={`Remove ${recordFilters.opposition} opposition filter`}
+                >
+                  vs {recordFilters.opposition}
+                  <span aria-hidden="true">×</span>
+                </button>
               )}
             </div>
 
             <div className="player-stat-grid">
-              <div>
-                <span>Matches</span>
-                <strong>{integer.format(selectedStats.matches.size)}</strong>
-              </div>
-              <div>
-                <span>Runs</span>
-                <strong>{integer.format(selectedStats.battingRuns)}</strong>
-              </div>
-              <div>
-                <span>Batting average</span>
-                <strong>
-                  {metrics.battingAverage.display(selectedStats)}
-                </strong>
-              </div>
-              <div>
-                <span>High score</span>
-                <strong>{integer.format(selectedStats.highScore)}</strong>
-              </div>
-              <div>
-                <span>Fifties</span>
-                <strong>{integer.format(selectedStats.fifties)}</strong>
-              </div>
-              <div>
-                <span>Hundreds</span>
-                <strong>{integer.format(selectedStats.hundreds)}</strong>
-              </div>
-              <div>
+              {profileStatCard(
+                "matches",
+                "Matches",
+                integer.format(selectedStats.matches.size),
+              )}
+              {profileStatCard(
+                "runs",
+                "Runs",
+                integer.format(selectedStats.battingRuns),
+              )}
+              {profileStatCard(
+                "battingAverage",
+                "Batting average",
+                metrics.battingAverage.display(selectedStats),
+              )}
+              {profileStatCard(
+                "highScore",
+                "High score",
+                integer.format(selectedStats.highScore),
+              )}
+              {profileStatCard(
+                "fifties",
+                "Fifties",
+                integer.format(selectedStats.fifties),
+              )}
+              {profileStatCard(
+                "hundreds",
+                "Hundreds",
+                integer.format(selectedStats.hundreds),
+              )}
+              <div className="static-stat" title="Career total">
                 <span>Fours (career)</span>
                 <strong>{integer.format(selectedBoundaries.fours)}</strong>
               </div>
-              <div>
+              <div className="static-stat" title="Career total">
                 <span>Sixes (career)</span>
                 <strong>{integer.format(selectedBoundaries.sixes)}</strong>
               </div>
-              <div>
-                <span>Wickets</span>
-                <strong>{integer.format(selectedStats.wickets)}</strong>
-              </div>
-              <div>
-                <span>Overs</span>
-                <strong>{overs(selectedStats.balls)}</strong>
-              </div>
-              <div>
-                <span>Bowling average</span>
-                <strong>
-                  {metrics.bowlingAverage.display(selectedStats)}
-                </strong>
-              </div>
-              <div>
-                <span>Economy</span>
-                <strong>{metrics.economy.display(selectedStats)}</strong>
-              </div>
-              <div>
-                <span>Best bowling</span>
-                <strong>{metrics.bestBowling.display(selectedStats)}</strong>
-              </div>
-              <div>
-                <span>Catches</span>
-                <strong>{integer.format(selectedStats.catches)}</strong>
-              </div>
-              <div>
-                <span>Stumpings</span>
-                <strong>{integer.format(selectedStats.stumpings)}</strong>
-              </div>
-              <div>
-                <span>Run outs</span>
-                <strong>{integer.format(selectedStats.runOuts)}</strong>
-              </div>
+              {profileStatCard(
+                "wickets",
+                "Wickets",
+                integer.format(selectedStats.wickets),
+              )}
+              {profileStatCard("overs", "Overs", overs(selectedStats.balls))}
+              {profileStatCard(
+                "bowlingAverage",
+                "Bowling average",
+                metrics.bowlingAverage.display(selectedStats),
+              )}
+              {profileStatCard(
+                "economy",
+                "Economy",
+                metrics.economy.display(selectedStats),
+              )}
+              {profileStatCard(
+                "bestBowling",
+                "Best bowling",
+                metrics.bestBowling.display(selectedStats),
+              )}
+              {profileStatCard(
+                "catches",
+                "Catches",
+                integer.format(selectedStats.catches),
+              )}
+              {profileStatCard(
+                "stumpings",
+                "Stumpings",
+                integer.format(selectedStats.stumpings),
+              )}
+              {profileStatCard(
+                "runOuts",
+                "Run outs",
+                integer.format(selectedStats.runOuts),
+              )}
             </div>
 
             <div className="chart-card">
               <div className="chart-title">
                 <div>
-                  <span>{metrics[metric].label} by season</span>
-                  <strong>{metrics[metric].display(selectedStats)}</strong>
+                  <span>
+                    {profileMetric === "bestBowling"
+                      ? "Best-performance wickets by season"
+                      : `${metrics[profileMetric].label} by season`}
+                  </span>
+                  <strong>
+                    {metrics[profileMetric].display(selectedStats)}
+                  </strong>
                 </div>
               </div>
               {chart.points.length > 0 ? (
                 <svg
                   viewBox={`0 0 ${chart.width} ${chart.height}`}
                   role="img"
-                  aria-label={`${metrics[metric].label} by season for ${openPlayer}`}
+                  aria-label={`${profileMetric === "bestBowling" ? "Best-performance wickets" : metrics[profileMetric].label} by season for ${openPlayer}`}
                 >
                   {[0, 0.5, 1].map((position) => {
                     const y = 22 + position * 236;
