@@ -36,6 +36,7 @@ def date_value(candidate):
 
 batting = []
 bowling = []
+boundaries = []
 players = set()
 seasons = set()
 teams = set()
@@ -86,12 +87,34 @@ for row in rows:
             ]
         )
 
+summary_sheet = workbook["All-Time Batting"]
+summary_rows = summary_sheet.iter_rows(values_only=True)
+summary_headers = next(summary_rows)
+summary_index = {
+    header: position for position, header in enumerate(summary_headers)
+}
+
+for row in summary_rows:
+    first_name = row[summary_index["First Name"]] or ""
+    surname = row[summary_index["Surname"]] or ""
+    player_name = " ".join(f"{first_name} {surname}".split())
+    fours = row[summary_index["Fours"]]
+    sixes = row[summary_index["Sixes"]]
+    if player_name:
+        boundaries.append(
+            [
+                player_name,
+                fours if isinstance(fours, (int, float)) else 0,
+                sixes if isinstance(sixes, (int, float)) else 0,
+            ]
+        )
+
 players = sorted(filter(None, players))
 seasons = sorted(filter(None, seasons))
 
 payload = {
     "meta": {
-        "title": "Edinburgh South CC Club Records",
+        "title": "The Inch Park Vault",
         "seasonStart": seasons[0],
         "seasonEnd": seasons[-1],
         "recordCount": len(batting) + len(bowling),
@@ -105,6 +128,7 @@ payload = {
     },
     "batting": batting,
     "bowling": bowling,
+    "boundaries": boundaries,
 }
 
 os.makedirs(os.path.dirname(output_path), exist_ok=True)

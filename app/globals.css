@@ -66,6 +66,15 @@ a {
   color: inherit;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .site-header {
   width: min(1600px, calc(100% - 64px));
   min-height: 92px;
@@ -275,6 +284,27 @@ a {
   text-transform: uppercase;
 }
 
+.ranking-title-select {
+  display: block;
+}
+
+.ranking-title-select select {
+  width: min(650px, 100%);
+  border: 0;
+  border-bottom: 3px solid var(--navy-950);
+  border-radius: 0;
+  background: transparent;
+  color: var(--navy-950);
+  padding: 0 45px 7px 0;
+  font-family: var(--font-display);
+  font-size: clamp(46px, 5vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
 .compact-search {
   width: min(410px, 100%);
 }
@@ -386,7 +416,7 @@ a {
   padding: 18px 0 14px;
 }
 
-.results-context span,
+.results-context button,
 .results-context strong,
 .record-filter-context span {
   border: 1px solid rgba(6, 16, 28, 0.16);
@@ -395,6 +425,25 @@ a {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.results-context button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: white;
+  color: var(--navy-950);
+  cursor: pointer;
+}
+
+.results-context button:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.results-context button span {
+  font-size: 14px;
+  line-height: 0.6;
 }
 
 .results-context strong {
@@ -984,6 +1033,11 @@ footer p {
     align-items: stretch;
     flex-direction: column;
     gap: 24px;
+  }
+
+  .ranking-title-select select {
+    width: 100%;
+    font-size: clamp(40px, 12vw, 58px);
   }
 
   .compact-search {

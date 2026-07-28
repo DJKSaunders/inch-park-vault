@@ -44,6 +44,7 @@ type RecordsData = {
   };
   batting: BattingRow[];
   bowling: BowlingRow[];
+  boundaries: [string, number, number][];
 };
 
 type PlayerStats = {
@@ -315,6 +316,60 @@ function aggregateRows(batting: BattingRow[], bowling: BowlingRow[]) {
   return stats;
 }
 
+function canonicalOpponent(rawOpponent: string) {
+  const raw = (rawOpponent || "").trim().replace(/\s+/g, " ");
+  if (!raw) return "Unknown opposition";
+
+  const aliases: [RegExp, string][] = [
+    [/^(?:intra[\s-]?club|interclub game)/i, "Edinburgh South"],
+    [/^edinburgh south\b/i, "Edinburgh South"],
+    [/^carlton\b/i, "Carlton"],
+    [/^edinburgh (?:accies|academicals)\b/i, "Edinburgh Academicals"],
+    [/^dunfermline\b/i, "Dunfermline & Carnegie"],
+    [/^drummond trin(?:ity|ithy)\b/i, "Drummond Trinity"],
+    [/^clackmann(?:an|on)(?: county)?\b/i, "Clackmannan County"],
+    [/^heriot(?:'s|s)\b/i, "Heriot's"],
+    [/^holy cross\b/i, "Holy Cross"],
+    [/^leith\b/i, "Leith FAB"],
+    [/^(?:kirk\s*brae|kirkbrae)\b/i, "Kirk Brae"],
+    [/^fauldhouse\b/i, "Fauldhouse"],
+    [/^e\s*=\s*mcc2?\b/i, "E=MCC"],
+    [/^esca\b/i, "ESCA"],
+    [/^ghk\b/i, "GHK"],
+    [/^mdafs\b/i, "MDAFS"],
+  ];
+  const directAlias = aliases.find(([pattern]) => pattern.test(raw));
+  if (directAlias) return directAlias[1];
+
+  let name = raw
+    .replace(/\s*\([^)]*\)\s*/g, " ")
+    .replace(/\bcricket club\b/gi, "")
+    .replace(/\bc\.?\s*c\.?\b/gi, "")
+    .replace(
+      /\s+(?:[1-6](?:st|nd|rd|th)?(?:\s*xi)?|[1-6](?:s|nds|rds|ths)|firsts?|seconds?|thirds?|fourths?|fifths?|sixths?|ii'?s?|xi|x1|development(?:\s+xi)?|ladies|women(?:'s)?)\b.*$/i,
+      "",
+    )
+    .replace(/\s*\/\s*mitres.*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const cleanedAlias = aliases.find(([pattern]) => pattern.test(name));
+  if (cleanedAlias) return cleanedAlias[1];
+  if (!name) return raw;
+
+  return name
+    .split(" ")
+    .map((word) => {
+      if (/^[A-Z&=]{2,}$/.test(word)) return word;
+      return `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}`;
+    })
+    .join(" ");
+}
+
+function playerKey(name: string) {
+  return name.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
 function rowPassesFilters(
   row: BattingRow | BowlingRow,
   filters: PerformanceFilters,
@@ -326,7 +381,7 @@ function rowPassesFilters(
     (filters.matchType === "All match types" ||
       row[3] === filters.matchType) &&
     (!filters.opposition.trim() ||
-      row[4]
+      canonicalOpponent(row[4])
         .toLowerCase()
         .includes(filters.opposition.trim().toLowerCase()))
   );
@@ -435,6 +490,27 @@ export function RecordsExplorer() {
     );
   }, [data]);
 
+  const canonicalOpponents = useMemo(() => {
+    if (!data) return [];
+    return [
+      ...new Set(
+        [...data.batting, ...data.bowling].map((row) =>
+          canonicalOpponent(row[4]),
+        ),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+  }, [data]);
+
+  const boundaryByPlayer = useMemo(() => {
+    if (!data) return new Map<string, { fours: number; sixes: number }>();
+    return new Map(
+      data.boundaries.map(([name, fours, sixes]) => [
+        playerKey(name),
+        { fours, sixes },
+      ]),
+    );
+  }, [data]);
+
   const leaderboard = useMemo(() => {
     const definition = metrics[metric];
     return [...statsByPlayer.values()]
@@ -518,6 +594,10 @@ export function RecordsExplorer() {
       newStats(openPlayer)
     );
   }, [openPlayer, selectedRows]);
+
+  const selectedBoundaries = openPlayer
+    ? boundaryByPlayer.get(playerKey(openPlayer)) ?? { fours: 0, sixes: 0 }
+    : { fours: 0, sixes: 0 };
 
   const seasonTrend = useMemo(() => {
     if (!openPlayer) return [];
@@ -627,10 +707,41 @@ export function RecordsExplorer() {
     );
   }
 
+  const records = data;
   const seasonOptions = Array.from(
-    { length: data.meta.seasonEnd - data.meta.seasonStart + 1 },
-    (_, index) => data.meta.seasonStart + index,
+    { length: records.meta.seasonEnd - records.meta.seasonStart + 1 },
+    (_, index) => records.meta.seasonStart + index,
   );
+
+  function renderMetricOptions() {
+    return (
+      <>
+        <optgroup label="General">
+          <option value="matches">Appearances</option>
+        </optgroup>
+        <optgroup label="Batting">
+          <option value="innings">Batting innings</option>
+          <option value="runs">Batting runs</option>
+          <option value="battingAverage">Batting average</option>
+          <option value="highScore">Highest score</option>
+          <option value="fifties">Fifties</option>
+          <option value="hundreds">Hundreds</option>
+        </optgroup>
+        <optgroup label="Bowling">
+          <option value="overs">Overs bowled</option>
+          <option value="wickets">Bowling wickets</option>
+          <option value="bowlingAverage">Bowling average</option>
+          <option value="economy">Economy rate</option>
+          <option value="bestBowling">Best bowling</option>
+        </optgroup>
+        <optgroup label="Fielding">
+          <option value="catches">Catches</option>
+          <option value="stumpings">Stumpings</option>
+          <option value="runOuts">Run outs</option>
+        </optgroup>
+      </>
+    );
+  }
 
   function updateFilters(
     setter: React.Dispatch<React.SetStateAction<PerformanceFilters>>,
@@ -692,7 +803,7 @@ export function RecordsExplorer() {
             }
           >
             <option>All teams</option>
-            {data.meta.teams.map((item) => (
+            {records.meta.teams.map((item) => (
               <option key={item}>{item}</option>
             ))}
           </select>
@@ -706,7 +817,7 @@ export function RecordsExplorer() {
             }
           >
             <option>All match types</option>
-            {data.meta.matchTypes.map((item) => (
+            {records.meta.matchTypes.map((item) => (
               <option key={item}>{item}</option>
             ))}
           </select>
@@ -722,7 +833,7 @@ export function RecordsExplorer() {
             placeholder="All opponents"
           />
           <datalist id={`${prefix}-oppositions`}>
-            {data.meta.oppositions.map((item) => (
+            {canonicalOpponents.map((item) => (
               <option value={item} key={item} />
             ))}
           </datalist>
@@ -752,8 +863,8 @@ export function RecordsExplorer() {
 
   function resetRankingFilters() {
     setFilters({
-      startYear: data.meta.seasonStart,
-      endYear: data.meta.seasonEnd,
+      startYear: records.meta.seasonStart,
+      endYear: records.meta.seasonEnd,
       team: "All teams",
       matchType: "All match types",
       opposition: "",
@@ -763,8 +874,8 @@ export function RecordsExplorer() {
 
   function resetRecordFilters() {
     setRecordFilters({
-      startYear: data.meta.seasonStart,
-      endYear: data.meta.seasonEnd,
+      startYear: records.meta.seasonStart,
+      endYear: records.meta.seasonEnd,
       team: "All teams",
       matchType: "All match types",
       opposition: "",
@@ -831,29 +942,7 @@ export function RecordsExplorer() {
               chooseMetric(event.target.value as MetricKey)
             }
           >
-            <optgroup label="General">
-              <option value="matches">Appearances</option>
-            </optgroup>
-            <optgroup label="Batting">
-              <option value="innings">Batting innings</option>
-              <option value="runs">Batting runs</option>
-              <option value="battingAverage">Batting average</option>
-              <option value="highScore">Highest score</option>
-              <option value="fifties">Fifties</option>
-              <option value="hundreds">Hundreds</option>
-            </optgroup>
-            <optgroup label="Bowling">
-              <option value="overs">Overs bowled</option>
-              <option value="wickets">Bowling wickets</option>
-              <option value="bowlingAverage">Bowling average</option>
-              <option value="economy">Economy rate</option>
-              <option value="bestBowling">Best bowling</option>
-            </optgroup>
-            <optgroup label="Fielding">
-              <option value="catches">Catches</option>
-              <option value="stumpings">Stumpings</option>
-              <option value="runOuts">Run outs</option>
-            </optgroup>
+            {renderMetricOptions()}
           </select>
           <small>
             {sortDirection === "asc" ? "Lowest first" : "Highest first"}
@@ -880,7 +969,17 @@ export function RecordsExplorer() {
         <div className="rankings-toolbar">
           <div>
             <p className="eyebrow">Player rankings</p>
-            <h2>{metrics[metric].label}</h2>
+            <label className="ranking-title-select">
+              <span className="visually-hidden">Ranking criterion</span>
+              <select
+                value={metric}
+                onChange={(event) =>
+                  chooseMetric(event.target.value as MetricKey)
+                }
+              >
+                {renderMetricOptions()}
+              </select>
+            </label>
           </div>
           <form className="compact-search" onSubmit={openSearchedPlayer}>
             <label htmlFor="player-search">Open player record</label>
@@ -911,12 +1010,71 @@ export function RecordsExplorer() {
         {renderPerformanceFilters(filters, setFilters, "ranking", true)}
 
         <div className="results-context" aria-live="polite">
-          <span>{yearLabel(filters.startYear, filters.endYear)}</span>
-          <span>{filters.team}</span>
-          <span>{filters.matchType}</span>
-          {filters.opposition && <span>vs {filters.opposition}</span>}
+          {(filters.startYear !== data.meta.seasonStart ||
+            filters.endYear !== data.meta.seasonEnd) && (
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((current) => ({
+                  ...current,
+                  startYear: data.meta.seasonStart,
+                  endYear: data.meta.seasonEnd,
+                }))
+              }
+              aria-label="Remove season filter"
+            >
+              {yearLabel(filters.startYear, filters.endYear)}
+              <span aria-hidden="true">×</span>
+            </button>
+          )}
+          {filters.team !== "All teams" && (
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((current) => ({ ...current, team: "All teams" }))
+              }
+              aria-label={`Remove ${filters.team} filter`}
+            >
+              {filters.team}
+              <span aria-hidden="true">×</span>
+            </button>
+          )}
+          {filters.matchType !== "All match types" && (
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((current) => ({
+                  ...current,
+                  matchType: "All match types",
+                }))
+              }
+              aria-label={`Remove ${filters.matchType} filter`}
+            >
+              {filters.matchType}
+              <span aria-hidden="true">×</span>
+            </button>
+          )}
+          {filters.opposition && (
+            <button
+              type="button"
+              onClick={() =>
+                setFilters((current) => ({ ...current, opposition: "" }))
+              }
+              aria-label={`Remove ${filters.opposition} opposition filter`}
+            >
+              vs {filters.opposition}
+              <span aria-hidden="true">×</span>
+            </button>
+          )}
           {minimumAppearances > 0 && (
-            <span>{minimumAppearances}+ club appearances</span>
+            <button
+              type="button"
+              onClick={() => setMinimumAppearances(0)}
+              aria-label="Remove club appearances filter"
+            >
+              {minimumAppearances}+ club appearances
+              <span aria-hidden="true">×</span>
+            </button>
           )}
           <strong>{integer.format(leaderboard.length)} players</strong>
         </div>
@@ -1135,8 +1293,28 @@ export function RecordsExplorer() {
                 <strong>{integer.format(selectedStats.highScore)}</strong>
               </div>
               <div>
+                <span>Fifties</span>
+                <strong>{integer.format(selectedStats.fifties)}</strong>
+              </div>
+              <div>
+                <span>Hundreds</span>
+                <strong>{integer.format(selectedStats.hundreds)}</strong>
+              </div>
+              <div>
+                <span>Fours (career)</span>
+                <strong>{integer.format(selectedBoundaries.fours)}</strong>
+              </div>
+              <div>
+                <span>Sixes (career)</span>
+                <strong>{integer.format(selectedBoundaries.sixes)}</strong>
+              </div>
+              <div>
                 <span>Wickets</span>
                 <strong>{integer.format(selectedStats.wickets)}</strong>
+              </div>
+              <div>
+                <span>Overs</span>
+                <strong>{overs(selectedStats.balls)}</strong>
               </div>
               <div>
                 <span>Bowling average</span>
@@ -1145,12 +1323,24 @@ export function RecordsExplorer() {
                 </strong>
               </div>
               <div>
+                <span>Economy</span>
+                <strong>{metrics.economy.display(selectedStats)}</strong>
+              </div>
+              <div>
                 <span>Best bowling</span>
                 <strong>{metrics.bestBowling.display(selectedStats)}</strong>
               </div>
               <div>
                 <span>Catches</span>
                 <strong>{integer.format(selectedStats.catches)}</strong>
+              </div>
+              <div>
+                <span>Stumpings</span>
+                <strong>{integer.format(selectedStats.stumpings)}</strong>
+              </div>
+              <div>
+                <span>Run outs</span>
+                <strong>{integer.format(selectedStats.runOuts)}</strong>
               </div>
             </div>
 
