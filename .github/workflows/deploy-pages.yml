@@ -25,18 +25,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.7.0
-
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: npm install --no-audit --no-fund
 
       - name: Restore archive assets
         run: |
@@ -48,7 +43,7 @@ jobs:
           touch public/.nojekyll
 
       - name: Build static site
-        run: pnpm run build:pages
+        run: npm run build:pages
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
