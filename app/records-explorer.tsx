@@ -39,6 +39,7 @@ type RecordsData = {
     recordCount: number;
     playerCount: number;
     seasonCount: number;
+    asOfDate?: string;
     teams: string[];
     matchTypes: string[];
     oppositions: string[];
@@ -48,6 +49,30 @@ type RecordsData = {
   bowling: BowlingRow[];
   boundaries: [string, number, number][];
 };
+
+function formatArchiveDate(value: string) {
+  if (!value) return "";
+
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+function latestRecordDate(records: RecordsData) {
+  if (records.meta.asOfDate) return records.meta.asOfDate;
+
+  let latest = "";
+  for (const row of [...records.batting, ...records.bowling]) {
+    if (row[5] > latest) latest = row[5];
+  }
+  return latest;
+}
 
 type PlayerStats = {
   name: string;
@@ -1041,6 +1066,7 @@ export function RecordsExplorer() {
   }
 
   const records = data;
+  const archiveDate = formatArchiveDate(latestRecordDate(records));
   const seasonOptions = Array.from(
     { length: records.meta.seasonEnd - records.meta.seasonStart + 1 },
     (_, index) => records.meta.seasonStart + index,
@@ -1268,7 +1294,8 @@ export function RecordsExplorer() {
           <span>
             <strong>The Inch Park Vault</strong>
             <small>
-              Edinburgh South Cricket Club Performance Archive – 2004–2025
+              Edinburgh South Cricket Club Performance Archive –{" "}
+              {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
             </small>
           </span>
         </a>
@@ -1287,13 +1314,18 @@ export function RecordsExplorer() {
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
           <p className="eyebrow">
-            Edinburgh South Cricket Club Performance Archive – 2004–2025
+            Edinburgh South Cricket Club Performance Archive –{" "}
+            {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
           </p>
           <h1>
             The Inch Park <em>Vault.</em>
           </h1>
         </div>
       </section>
+
+      <p className="archive-as-of">
+        Stats as of <strong>{archiveDate}</strong>
+      </p>
 
       <section className="rankings-shell" id="rankings">
         <div className="section-tabs" role="tablist" aria-label="Statistics">

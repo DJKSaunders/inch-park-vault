@@ -98,6 +98,12 @@ body.iframe-mode .rankings-shell {
   box-shadow: none;
 }
 
+body.iframe-mode .archive-as-of {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
 body.iframe-mode .section-tabs {
   margin-right: -8px;
   margin-left: -8px;
@@ -295,6 +301,23 @@ body.iframe-mode .table-scroll-hint {
   background: var(--cream);
   color: var(--navy-950);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+}
+
+.archive-as-of {
+  width: min(1600px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 13px 46px 12px;
+  background: var(--orange);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.archive-as-of strong {
+  color: var(--gold);
+  font-weight: 900;
 }
 
 .section-tabs {
@@ -1334,6 +1357,12 @@ footer p {
     padding: 30px 16px 24px;
   }
 
+  .archive-as-of {
+    width: calc(100% - 16px);
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
   .section-tabs {
     margin: -30px -16px 30px;
   }
@@ -1520,6 +1549,12 @@ footer p {
     width: 100%;
     padding: 18px 12px 22px;
     box-shadow: none;
+  }
+
+  .archive-as-of {
+    width: 100%;
+    padding: 10px 12px 9px;
+    font-size: 11px;
   }
 
   .section-tabs {

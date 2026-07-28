@@ -2,17 +2,20 @@ import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 from datetime import date, datetime
 
 from openpyxl import load_workbook
 
 
-if len(sys.argv) != 3:
+if len(sys.argv) not in (3, 6):
     raise SystemExit(
-        "Usage: export_site_data.py <records.xlsx> <output.json>"
+        "Usage: export_site_data.py <records.xlsx> <output.json> "
+        "[<season-batting.xml> <season-bowling.xml> <season-averages.xlsx>]"
     )
 
-workbook_path, output_path = sys.argv[1:]
+workbook_path, output_path = sys.argv[1:3]
+season_files = sys.argv[3:] if len(sys.argv) == 6 else None
 workbook = load_workbook(workbook_path, read_only=True, data_only=True)
 sheet = workbook["Unified Records"]
 rows = sheet.iter_rows(values_only=True)
@@ -49,7 +52,8 @@ def normalize_team(candidate):
 
 batting = []
 bowling = []
-boundaries = []
+boundary_totals = {}
+record_dates = []
 players = set()
 seasons = set()
 teams = set()
@@ -62,15 +66,18 @@ for row in rows:
     team = normalize_team(value(row, "Team"))
     match_type = value(row, "Match Type")
     opposition = value(row, "Opposition")
+    record_date = date_value(value(row, "Date"))
     common = [
         player,
         season,
         team,
         match_type,
         opposition,
-        date_value(value(row, "Date")),
+        record_date,
     ]
 
+    if record_date:
+        record_dates.append(record_date)
     players.add(player)
     seasons.add(season)
     teams.add(team)
@@ -114,16 +121,140 @@ for row in summary_rows:
     fours = row[summary_index["Fours"]]
     sixes = row[summary_index["Sixes"]]
     if player_name:
-        boundaries.append(
+        boundary_totals[player_name.casefold()] = [
+            player_name,
+            fours if isinstance(fours, (int, float)) else 0,
+            sixes if isinstance(sixes, (int, float)) else 0,
+        ]
+
+
+def xml_value(node, field):
+    return (node.findtext(field) or "").strip()
+
+
+def xml_number(node, field):
+    candidate = xml_value(node, field)
+    try:
+        return int(candidate)
+    except ValueError:
+        return 0
+
+
+def xml_boolean(node, field):
+    return xml_value(node, field).casefold() == "true"
+
+
+def xml_player_name(node):
+    return normalize_player_name(
+        " ".join(
+            f"{xml_value(node, 'FirstName')} {xml_value(node, 'Surname')}".split()
+        )
+    )
+
+
+def add_common_metadata(player, season, team, match_type, opposition, record_date):
+    players.add(player)
+    seasons.add(season)
+    teams.add(team)
+    match_types.add(match_type)
+    oppositions.add(opposition)
+    if record_date:
+        record_dates.append(record_date)
+
+
+if season_files:
+    batting_xml_path, bowling_xml_path, averages_path = season_files
+
+    batting_root = ET.parse(batting_xml_path).getroot()
+    for node in batting_root.findall("BattingPerfomance"):
+        player = xml_player_name(node)
+        record_date = xml_value(node, "FixDate")[:10]
+        season = int(record_date[:4])
+        team = normalize_team(xml_value(node, "TeamName"))
+        match_type = xml_value(node, "Type_Desc")
+        opposition = xml_value(node, "Opposition")
+        score = xml_value(node, "Score")
+        did_not_bat = score.casefold() == "dnb"
+
+        batting.append(
             [
-                player_name,
-                fours if isinstance(fours, (int, float)) else 0,
-                sixes if isinstance(sixes, (int, float)) else 0,
+                player,
+                season,
+                team,
+                match_type,
+                opposition,
+                record_date,
+                None if did_not_bat else int(score),
+                xml_boolean(node, "notout"),
+                did_not_bat,
+                xml_number(node, "catches"),
+                xml_number(node, "stumpings"),
+                xml_number(node, "runouts"),
             ]
         )
+        add_common_metadata(
+            player, season, team, match_type, opposition, record_date
+        )
+
+    bowling_root = ET.parse(bowling_xml_path).getroot()
+    for node in bowling_root.findall("Fixture"):
+        player = xml_player_name(node)
+        record_date = xml_value(node, "FixDate")[:10]
+        season = int(record_date[:4])
+        team = normalize_team(xml_value(node, "TeamName"))
+        match_type = xml_value(node, "Type_Desc")
+        opposition = xml_value(node, "Opposition")
+
+        bowling.append(
+            [
+                player,
+                season,
+                team,
+                match_type,
+                opposition,
+                record_date,
+                xml_number(node, "totalballs"),
+                xml_number(node, "Maidens"),
+                xml_number(node, "Runs"),
+                xml_number(node, "Wickets"),
+            ]
+        )
+        add_common_metadata(
+            player, season, team, match_type, opposition, record_date
+        )
+
+    averages_workbook = load_workbook(
+        averages_path, read_only=True, data_only=True
+    )
+    batting_sheet_name = next(
+        name
+        for name in averages_workbook.sheetnames
+        if name.strip().casefold().startswith("bat ")
+    )
+    averages_sheet = averages_workbook[batting_sheet_name]
+    averages_rows = averages_sheet.iter_rows(values_only=True)
+    averages_headers = next(averages_rows)
+    averages_index = {
+        str(header).casefold(): position
+        for position, header in enumerate(averages_headers)
+    }
+
+    for row in averages_rows:
+        first_name = row[averages_index["firstname"]] or ""
+        surname = row[averages_index["surname"]] or ""
+        player_name = normalize_player_name(
+            " ".join(f"{first_name} {surname}".split())
+        )
+        if not player_name:
+            continue
+        key = player_name.casefold()
+        existing = boundary_totals.setdefault(key, [player_name, 0, 0])
+        existing[1] += row[averages_index["fours"]] or 0
+        existing[2] += row[averages_index["sixes"]] or 0
 
 players = sorted(filter(None, players))
 seasons = sorted(filter(None, seasons))
+boundaries = sorted(boundary_totals.values(), key=lambda row: row[0].casefold())
 
 payload = {
     "meta": {
@@ -133,6 +264,7 @@ payload = {
         "recordCount": len(batting) + len(bowling),
         "playerCount": len(players),
         "seasonCount": len(seasons),
+        "asOfDate": max(record_dates) if record_dates else "",
         "teams": sorted(filter(None, teams)),
         "matchTypes": sorted(filter(None, match_types)),
         "oppositions": sorted(filter(None, oppositions)),
