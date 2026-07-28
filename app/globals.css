@@ -1431,7 +1431,7 @@ footer p {
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 900px) {
   body {
     background: var(--navy-950);
   }
@@ -1439,11 +1439,13 @@ footer p {
   .site-header,
   .ranking-hero,
   footer {
-    width: calc(100% - 28px);
+    width: 100%;
   }
 
   .site-header {
-    min-height: 64px;
+    min-height: 58px;
+    padding: 0 14px;
+    background: var(--navy-950);
   }
 
   .brand {
@@ -1479,18 +1481,7 @@ footer p {
   }
 
   .ranking-hero {
-    padding: 26px 0 24px;
-  }
-
-  .ranking-intro .eyebrow {
-    margin-bottom: 8px;
-    font-size: 8px;
-    letter-spacing: 0.13em;
-  }
-
-  .ranking-intro h1 {
-    font-size: clamp(46px, 12vw, 68px);
-    line-height: 0.86;
+    display: none;
   }
 
   .rankings-shell {
@@ -1518,8 +1509,15 @@ footer p {
   }
 
   .rankings-toolbar {
+    align-items: stretch;
+    flex-direction: column;
     gap: 16px;
     padding-bottom: 18px;
+  }
+
+  .criteria-menu,
+  .compact-search {
+    width: 100%;
   }
 
   .criteria-menu summary {
@@ -1556,6 +1554,7 @@ footer p {
   }
 
   .filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
   }
 
@@ -1690,8 +1689,7 @@ footer p {
   }
 
   footer {
-    margin-top: 26px;
-    padding: 24px 0 30px;
+    display: none;
   }
 
   .player-overlay {
@@ -1753,6 +1751,12 @@ footer p {
 
   .chart-card svg {
     min-width: 520px;
+  }
+}
+
+@media (max-width: 760px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
