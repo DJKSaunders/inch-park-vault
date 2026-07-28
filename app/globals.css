@@ -767,6 +767,19 @@ body.iframe-mode .table-scroll-hint {
   text-transform: inherit;
 }
 
+.leaderboard-table td,
+.leaderboard-table thead th:not(.player-col) {
+  text-align: center;
+}
+
+.leaderboard-table thead th:not(.player-col) button {
+  justify-content: center;
+}
+
+.leaderboard-table thead .player-col {
+  padding-left: 7px;
+}
+
 .stats-table thead th button span {
   color: var(--muted);
   font-size: 11px;
