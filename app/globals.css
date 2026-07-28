@@ -264,7 +264,7 @@ a {
 
 .section-tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   margin: -46px -46px 42px;
   background: var(--navy-950);
 }
@@ -277,7 +277,7 @@ a {
   color: var(--muted);
   padding: 18px 30px;
   font-family: var(--font-display);
-  font-size: clamp(36px, 4vw, 58px);
+  font-size: clamp(31px, 3.4vw, 52px);
   font-weight: 800;
   cursor: pointer;
   text-align: left;
@@ -391,6 +391,59 @@ a {
 .criteria-menu > div button:hover,
 .criteria-menu > div button[aria-selected="true"] {
   background: #fff1a9;
+}
+
+.performance-heading {
+  width: min(660px, 100%);
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-content: center;
+  border-bottom: 3px solid var(--navy-950);
+}
+
+.performance-heading > span {
+  grid-column: 1;
+  color: var(--orange);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.performance-heading > strong {
+  grid-column: 1;
+  font-family: var(--font-display);
+  font-size: clamp(42px, 4vw, 68px);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.performance-switch {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  display: flex;
+  gap: 4px;
+}
+
+.performance-switch button {
+  min-height: 42px;
+  border: 1px solid rgba(6, 16, 28, 0.25);
+  background: transparent;
+  color: var(--navy-950);
+  padding: 0 13px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.performance-switch button.active {
+  border-color: var(--navy-950);
+  background: var(--navy-950);
+  color: white;
 }
 
 .rankings-toolbar h2 {
@@ -606,12 +659,6 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-.boundary-note {
-  margin: 10px 0 0;
-  color: #6d7784;
-  font-size: 9px;
-}
-
 .stats-table caption {
   position: absolute;
   width: 1px;
@@ -711,6 +758,18 @@ a {
 
 .stats-table thead .active-sort {
   background: var(--gold);
+}
+
+.performance-table {
+  min-width: 1050px;
+}
+
+.performance-table .performance-score {
+  background: #fff1a9;
+  color: var(--navy-950);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
 }
 
 .stats-table tbody .player-col {
@@ -911,19 +970,70 @@ footer p {
   padding: 20px 32px 22px;
 }
 
-.player-stat-grid {
+.player-stat-sections {
   padding: 20px 32px 26px;
+}
+
+.player-stat-section {
+  border-top: 5px solid;
+}
+
+.player-stat-section h3 {
+  margin: 0;
+  padding: 10px 14px 8px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.batting-stats {
+  border-color: var(--gold);
+  background: #f6e8b5;
+}
+
+.bowling-stats {
+  border-color: var(--navy-700);
+  background: #dce6f0;
+}
+
+.fielding-stats {
+  border-color: var(--green);
+  background: #dcebe4;
+}
+
+.secondary-stat-sections {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 7fr 3fr;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.player-stat-grid {
+  display: grid;
   gap: 1px;
   background: rgba(6, 16, 28, 0.12);
 }
 
+.batting-stats .player-stat-grid {
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.bowling-stats .player-stat-grid {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.fielding-stats .player-stat-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .player-stat-grid > button,
 .player-stat-grid > div {
-  min-height: 106px;
+  min-width: 0;
+  min-height: 96px;
   border: 0;
-  padding: 19px;
+  padding: 14px 11px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -955,7 +1065,7 @@ footer p {
 
 .player-stat-grid strong {
   font-family: var(--font-display);
-  font-size: 37px;
+  font-size: 31px;
   line-height: 1;
 }
 
@@ -1194,8 +1304,8 @@ footer p {
 
   .section-tabs button {
     min-height: 76px;
-    padding: 14px 16px;
-    font-size: clamp(29px, 8vw, 42px);
+    padding: 12px 10px;
+    font-size: clamp(24px, 6vw, 36px);
   }
 
   .rankings-toolbar {
@@ -1218,6 +1328,15 @@ footer p {
 
   .criteria-menu > div {
     width: 100%;
+  }
+
+  .performance-heading {
+    width: 100%;
+    min-height: 82px;
+  }
+
+  .performance-heading > strong {
+    font-size: clamp(38px, 11vw, 58px);
   }
 
   .ranking-title-select select {
@@ -1283,8 +1402,17 @@ footer p {
     padding: 16px 18px 18px;
   }
 
-  .player-stat-grid {
+  .player-stat-sections {
     padding: 16px 18px 20px;
+  }
+
+  .secondary-stat-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .batting-stats .player-stat-grid,
+  .bowling-stats .player-stat-grid,
+  .fielding-stats .player-stat-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1336,6 +1464,18 @@ footer p {
   }
 
   .section-tabs button {
-    font-size: 27px;
+    font-size: 21px;
+  }
+
+  .performance-heading {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  .performance-switch {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
   }
 }
