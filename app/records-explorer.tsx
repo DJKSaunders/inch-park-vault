@@ -39,6 +39,7 @@ type RecordsData = {
     recordCount: number;
     playerCount: number;
     seasonCount: number;
+    asOfDate?: string;
     teams: string[];
     matchTypes: string[];
     oppositions: string[];
@@ -48,6 +49,30 @@ type RecordsData = {
   bowling: BowlingRow[];
   boundaries: [string, number, number][];
 };
+
+function formatArchiveDate(value: string) {
+  if (!value) return "";
+
+  const [year, month, day] = value.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+function latestRecordDate(records: RecordsData) {
+  if (records.meta.asOfDate) return records.meta.asOfDate;
+
+  let latest = "";
+  for (const row of [...records.batting, ...records.bowling]) {
+    if (row[5] > latest) latest = row[5];
+  }
+  return latest;
+}
 
 type PlayerStats = {
   name: string;
@@ -629,6 +654,14 @@ export function RecordsExplorer() {
   });
 
   useEffect(() => {
+    const iframeMode =
+      window.self !== window.top ||
+      new URLSearchParams(window.location.search).get("embed") === "1";
+    document.body.classList.toggle("iframe-mode", iframeMode);
+    return () => document.body.classList.remove("iframe-mode");
+  }, []);
+
+  useEffect(() => {
     let active = true;
     fetch(`${publicBasePath}/data/records.json`)
       .then((response) => {
@@ -814,6 +847,7 @@ export function RecordsExplorer() {
       return {
         performances: rows.length,
         players: new Set(rows.map((row) => row[0])).size,
+        matches: new Set(rows.map(matchKey)).size,
         seasons: new Set(rows.map((row) => row[1])).size,
       };
     }
@@ -844,6 +878,9 @@ export function RecordsExplorer() {
     return {
       performances: eligibleBatting.length + eligibleBowling.length,
       players: eligibleNames.size,
+      matches: new Set(
+        [...eligibleBatting, ...eligibleBowling].map(matchKey),
+      ).size,
       seasons: seasons.size,
     };
   }, [
@@ -1033,6 +1070,7 @@ export function RecordsExplorer() {
   }
 
   const records = data;
+  const archiveDate = formatArchiveDate(latestRecordDate(records));
   const seasonOptions = Array.from(
     { length: records.meta.seasonEnd - records.meta.seasonStart + 1 },
     (_, index) => records.meta.seasonStart + index,
@@ -1253,14 +1291,15 @@ export function RecordsExplorer() {
   }
 
   return (
-    <main>
+    <main className="vault-app">
       <header className="site-header">
         <a className="brand" href="#top" aria-label="The Inch Park Vault">
           <img src={`${publicBasePath}/escc-logo.png`} alt="" />
           <span>
             <strong>The Inch Park Vault</strong>
             <small>
-              Edinburgh South Cricket Club Performance Archive – 2004–2025
+              Edinburgh South Cricket Club Performance Archive –{" "}
+              {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
             </small>
           </span>
         </a>
@@ -1279,13 +1318,18 @@ export function RecordsExplorer() {
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
           <p className="eyebrow">
-            Edinburgh South Cricket Club Performance Archive – 2004–2025
+            Edinburgh South Cricket Club Performance Archive –{" "}
+            {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
           </p>
           <h1>
             The Inch Park <em>Vault.</em>
           </h1>
         </div>
       </section>
+
+      <p className="archive-as-of">
+        Stats as of <strong>{archiveDate}</strong>
+      </p>
 
       <section className="rankings-shell" id="rankings">
         <div className="section-tabs" role="tablist" aria-label="Statistics">
@@ -1476,11 +1520,18 @@ export function RecordsExplorer() {
             <span>Players</span>
           </div>
           <div>
+            <strong>{integer.format(archiveSummary.matches)}</strong>
+            <span>Matches</span>
+          </div>
+          <div>
             <strong>{integer.format(archiveSummary.seasons)}</strong>
             <span>Seasons</span>
           </div>
         </div>
 
+        <p className="table-scroll-hint">
+          <span aria-hidden="true">↔</span> Scroll sideways for every statistic
+        </p>
         <div className="stats-table-wrap">
           {activeSection === "performances" ? (
             <>
@@ -1496,7 +1547,7 @@ export function RecordsExplorer() {
                     <>
                       <th>Score</th>
                       <th>Team</th>
-                      <th>Opposition</th>
+                      <th className="opposition-col">Opposition</th>
                       <th>Date</th>
                       <th>Season</th>
                       <th>Type</th>
@@ -1507,7 +1558,7 @@ export function RecordsExplorer() {
                       <th>Overs</th>
                       <th>Maidens</th>
                       <th>Team</th>
-                      <th>Opposition</th>
+                      <th className="opposition-col">Opposition</th>
                       <th>Date</th>
                       <th>Season</th>
                       <th>Type</th>
@@ -1544,7 +1595,9 @@ export function RecordsExplorer() {
                           {row[7] ? "*" : ""}
                         </td>
                         <td>{row[2]}</td>
-                        <td>{canonicalOpponent(row[4])}</td>
+                        <td className="opposition-col">
+                          {canonicalOpponent(row[4])}
+                        </td>
                         <td>{matchDate(row[5])}</td>
                         <td>{row[1]}</td>
                         <td>{row[3]}</td>
@@ -1580,7 +1633,9 @@ export function RecordsExplorer() {
                         <td>{overs(row[6])}</td>
                         <td>{integer.format(row[7])}</td>
                         <td>{row[2]}</td>
-                        <td>{canonicalOpponent(row[4])}</td>
+                        <td className="opposition-col">
+                          {canonicalOpponent(row[4])}
+                        </td>
                         <td>{matchDate(row[5])}</td>
                         <td>{row[1]}</td>
                         <td>{row[3]}</td>
@@ -1594,7 +1649,7 @@ export function RecordsExplorer() {
             </>
           ) : (
             <>
-              <table className="stats-table">
+              <table className={`stats-table leaderboard-table ${activeSection}-table`}>
             <caption>
               Players ranked by {metrics[metric].label.toLowerCase()}.
             </caption>
