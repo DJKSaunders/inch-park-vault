@@ -600,7 +600,7 @@ a {
 
 .stats-table {
   width: 100%;
-  min-width: 1080px;
+  min-width: 1260px;
   border-collapse: separate;
   border-spacing: 0;
   font-variant-numeric: tabular-nums;
@@ -907,7 +907,8 @@ footer p {
 }
 
 .record-filter-context {
-  padding: 20px 32px 0;
+  min-height: 62px;
+  padding: 20px 32px 22px;
 }
 
 .player-stat-grid {
@@ -1278,7 +1279,8 @@ footer p {
   }
 
   .record-filter-context {
-    padding: 16px 18px 0;
+    min-height: 54px;
+    padding: 16px 18px 18px;
   }
 
   .player-stat-grid {

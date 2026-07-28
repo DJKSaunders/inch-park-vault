@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s | The Inch Park Vault",
   },
   description:
-    "The Edinburgh South Cricket Club performance archive.",
+    "Edinburgh South Cricket Club Performance Archive – 2004–2025",
   icons: {
     icon: "/escc-logo.png",
     shortcut: "/escc-logo.png",
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Inch Park Vault",
     description:
-      "The Edinburgh South Cricket Club performance archive.",
+      "Edinburgh South Cricket Club Performance Archive – 2004–2025",
     type: "website",
     images: [
       {
         url: "/og-vault.png",
         width: 1729,
         height: 910,
-        alt: "The Inch Park Vault — Edinburgh South CC performance archive",
+        alt: "The Inch Park Vault — Edinburgh South Cricket Club Performance Archive, 2004–2025",
       },
     ],
   },
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Inch Park Vault",
     description:
-      "The Edinburgh South Cricket Club performance archive.",
+      "Edinburgh South Cricket Club Performance Archive – 2004–2025",
     images: ["/og-vault.png"],
   },
 };

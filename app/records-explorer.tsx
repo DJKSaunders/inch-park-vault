@@ -66,6 +66,7 @@ type PlayerStats = {
   wickets: number;
   bestWickets: number;
   bestRuns: number;
+  fiveWicketHauls: number;
   matches: Set<string>;
 };
 
@@ -75,12 +76,15 @@ type MetricKey =
   | "runs"
   | "battingAverage"
   | "highScore"
+  | "notOuts"
   | "fifties"
   | "hundreds"
   | "fours"
   | "sixes"
   | "overs"
+  | "maidens"
   | "wickets"
+  | "fiveWicketHauls"
   | "bowlingAverage"
   | "economy"
   | "bestBowling"
@@ -168,6 +172,13 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.highScore,
     display: (stats) => integer.format(stats.highScore),
   },
+  notOuts: {
+    label: "Not outs",
+    shortLabel: "NO",
+    category: "batting",
+    value: (stats) => stats.innings - stats.outs,
+    display: (stats) => integer.format(stats.innings - stats.outs),
+  },
   fifties: {
     label: "Fifties",
     shortLabel: "50s",
@@ -203,12 +214,26 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: (stats) => stats.balls,
     display: (stats) => overs(stats.balls),
   },
+  maidens: {
+    label: "Maidens",
+    shortLabel: "Mdns",
+    category: "bowling",
+    value: (stats) => stats.maidens,
+    display: (stats) => integer.format(stats.maidens),
+  },
   wickets: {
     label: "Bowling wickets",
     shortLabel: "Wkts",
     category: "bowling",
     value: (stats) => stats.wickets,
     display: (stats) => integer.format(stats.wickets),
+  },
+  fiveWicketHauls: {
+    label: "Five-wicket hauls",
+    shortLabel: "5WI",
+    category: "bowling",
+    value: (stats) => stats.fiveWicketHauls,
+    display: (stats) => integer.format(stats.fiveWicketHauls),
   },
   bowlingAverage: {
     label: "Bowling average",
@@ -269,6 +294,7 @@ const battingMetricKeys: MetricKey[] = [
   "runs",
   "battingAverage",
   "highScore",
+  "notOuts",
   "fifties",
   "hundreds",
   "fours",
@@ -278,7 +304,9 @@ const battingMetricKeys: MetricKey[] = [
 const bowlingMetricKeys: MetricKey[] = [
   "matches",
   "overs",
+  "maidens",
   "wickets",
+  "fiveWicketHauls",
   "bowlingAverage",
   "economy",
   "bestBowling",
@@ -307,6 +335,7 @@ function newStats(name: string): PlayerStats {
     wickets: 0,
     bestWickets: 0,
     bestRuns: Number.POSITIVE_INFINITY,
+    fiveWicketHauls: 0,
     matches: new Set<string>(),
   };
 }
@@ -336,6 +365,7 @@ function addBowling(stats: PlayerStats, row: BowlingRow) {
   stats.maidens += row[7];
   stats.bowlingRuns += row[8];
   stats.wickets += row[9];
+  if (row[9] >= 5) stats.fiveWicketHauls += 1;
   if (
     row[9] > stats.bestWickets ||
     (row[9] === stats.bestWickets && row[8] < stats.bestRuns)
@@ -361,37 +391,117 @@ function aggregateRows(batting: BattingRow[], bowling: BowlingRow[]) {
   return stats;
 }
 
+const opponentCache = new Map<string, string>();
+
+const fuzzyOpponentAnchors = [
+  "Cask and Barrel",
+  "Clackmannan County",
+  "Drummond Trinity",
+  "Dunfermline & Carnegie",
+  "Kirk Brae",
+  "Old Contemptibles",
+  "Renfrew",
+  "Stenhousemuir",
+];
+
+function opponentMatchKey(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[.’']/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function editDistance(left: string, right: string) {
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let row = 1; row <= left.length; row += 1) {
+    const current = [row];
+    for (let column = 1; column <= right.length; column += 1) {
+      current[column] = Math.min(
+        current[column - 1] + 1,
+        previous[column] + 1,
+        previous[column - 1] +
+          (left[row - 1] === right[column - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[right.length];
+}
+
+function fuzzyOpponentAlias(name: string) {
+  const key = opponentMatchKey(name);
+  let closest: { name: string; distance: number } | null = null;
+  for (const anchor of fuzzyOpponentAnchors) {
+    const distance = editDistance(key, opponentMatchKey(anchor));
+    const threshold = key.length >= 12 ? 2 : 1;
+    if (
+      distance <= threshold &&
+      (!closest || distance < closest.distance)
+    ) {
+      closest = { name: anchor, distance };
+    }
+  }
+  return closest?.name ?? null;
+}
+
 function canonicalOpponent(rawOpponent: string) {
   const raw = (rawOpponent || "").trim().replace(/\s+/g, " ");
   if (!raw) return "Unknown opposition";
+  const cached = opponentCache.get(raw);
+  if (cached) return cached;
 
   const aliases: [RegExp, string][] = [
-    [/^(?:intra[\s-]?club|interclub game)/i, "Edinburgh South"],
+    [/(?:intra[\s-]?club|interclub game)/i, "Edinburgh South"],
     [/^edinburgh south\b/i, "Edinburgh South"],
     [/^carlton\b/i, "Carlton"],
     [/^edinburgh (?:accies|academicals)\b/i, "Edinburgh Academicals"],
+    [/^edinburgh (?:uni|university)\b/i, "Edinburgh University"],
     [/^dunfermline\b/i, "Dunfermline & Carnegie"],
     [/^drummond trin(?:ity|ithy)\b/i, "Drummond Trinity"],
     [/^clackmann(?:an|on)(?: county)?\b/i, "Clackmannan County"],
+    [/^(?:eccentric )?flamingoes\b/i, "Eccentric Flamingoes"],
+    [/^glasgow (?:academicals|accies)\b/i, "Glasgow Accies"],
+    [/^glasgow ghk\b/i, "GHK"],
+    [/^glasgow (?:uni|university) staff\b/i, "Glasgow University Staff"],
     [/^heriot(?:'s|s)\b/i, "Heriot's"],
     [/^holy cross\b/i, "Holy Cross"],
     [/^leith\b/i, "Leith FAB"],
+    [/^lismore\b/i, "Lismore"],
+    [/^livingston(?: & district)?\b/i, "Livingston"],
     [/^(?:kirk\s*brae|kirkbrae)\b/i, "Kirk Brae"],
     [/^fauldhouse\b/i, "Fauldhouse"],
-    [/^e\s*=\s*mcc2?\b/i, "E=MCC"],
+    [/^murrayfield[\s-]*dafs\b/i, "Murrayfield DAFS"],
+    [/^(?:rhc|rh corstorphine|royal high corstorphine)\b/i, "RH Corstorphine"],
+    [/^(?:smrh|stew[\s-]?mel|stewarts?'? melville)\b/i, "Stewart's Melville"],
+    [/^(?:scottish (?:&|and) newcastle|s&n tranent)\b/i, "Scottish & Newcastle"],
+    [/^stirling(?: county)?\b/i, "Stirling County"],
+    [/^(?:watsonian|watsonians|watsons college)\b/i, "Watsonians"],
+    [/^west(?: c\.?\s*c\.?)?$/i, "West of Scotland"],
+    [/^west of scotland\b/i, "West of Scotland"],
+    [/^west lothian\b/i, "West Lothian"],
+    [/^westquarter & redding\b/i, "Westquarter & Redding"],
+    [/^e\s*=\s*m(?:c{1,2})2?\b/i, "E=MCC"],
     [/^esca\b/i, "ESCA"],
     [/^ghk\b/i, "GHK"],
     [/^mdafs\b/i, "MDAFS"],
   ];
   const directAlias = aliases.find(([pattern]) => pattern.test(raw));
-  if (directAlias) return directAlias[1];
+  if (directAlias) {
+    opponentCache.set(raw, directAlias[1]);
+    return directAlias[1];
+  }
 
-  let name = raw
+  const name = raw
     .replace(/\s*\([^)]*\)\s*/g, " ")
+    .replace(/\s+-\s+.*$/g, " ")
     .replace(/\bcricket club\b/gi, "")
+    .replace(/\brugby club\b/gi, "")
+    .replace(/\br\.?\s*f\.?\s*c\.?\b/gi, "")
     .replace(/\bc\.?\s*c\.?\b/gi, "")
     .replace(
-      /\s+(?:[1-6](?:st|nd|rd|th)?(?:\s*xi)?|[1-6](?:s|nds|rds|ths)|firsts?|seconds?|thirds?|fourths?|fifths?|sixths?|ii'?s?|xi|x1|development(?:\s+xi)?|ladies|women(?:'s)?)\b.*$/i,
+      /\s+(?:[1-6](?:st|nd|rd|th)?(?:\s*xi)?|[1-6](?:s|nds|rds|ths)|firsts?|seconds?|thirds?|fourths?|fifths?|sixths?|ii'?s?|xi|x1|development(?:\s+xi)?|challengers?|ladies|women(?:'s)?)\b.*$/i,
       "",
     )
     .replace(/\s*\/\s*mitres.*$/i, "")
@@ -399,16 +509,27 @@ function canonicalOpponent(rawOpponent: string) {
     .trim();
 
   const cleanedAlias = aliases.find(([pattern]) => pattern.test(name));
-  if (cleanedAlias) return cleanedAlias[1];
+  if (cleanedAlias) {
+    opponentCache.set(raw, cleanedAlias[1]);
+    return cleanedAlias[1];
+  }
   if (!name) return raw;
 
-  return name
+  const fuzzyAlias = fuzzyOpponentAlias(name);
+  if (fuzzyAlias) {
+    opponentCache.set(raw, fuzzyAlias);
+    return fuzzyAlias;
+  }
+
+  const canonical = name
     .split(" ")
     .map((word) => {
       if (/^[A-Z&=]{2,}$/.test(word)) return word;
       return `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}`;
     })
     .join(" ");
+  opponentCache.set(raw, canonical);
+  return canonical;
 }
 
 function playerKey(name: string) {
@@ -513,6 +634,8 @@ export function RecordsExplorer() {
   }, [openPlayer]);
 
   useEffect(() => {
+    // Reset pagination whenever the ranking population or order changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisibleLimit(100);
   }, [filters, metric, minimumAppearances, sortDirection]);
 
@@ -693,12 +816,20 @@ export function RecordsExplorer() {
       for (const row of selectedRows.bowling) {
         if (row[1] === season) addBowling(seasonStats, row);
       }
-      const value = metrics[profileMetric].value(seasonStats);
+      const value =
+        profileMetric === "bestBowling"
+          ? seasonStats.bestWickets > 0
+            ? seasonStats.bestWickets
+            : null
+          : metrics[profileMetric].value(seasonStats);
       if (value !== null && Number.isFinite(value)) {
         points.push({
           season,
           value,
-          display: metrics[profileMetric].display(seasonStats),
+          display:
+            profileMetric === "bestBowling"
+              ? `${integer.format(seasonStats.bestWickets)} wickets`
+              : metrics[profileMetric].display(seasonStats),
         });
       }
     }
@@ -728,13 +859,19 @@ export function RecordsExplorer() {
       x: x(index),
       y: y(point.value),
     }));
+    const tickValues =
+      profileMetric === "bestBowling"
+        ? [maximum, Math.floor(maximum / 2), 0]
+        : [maximum, maximum - (maximum - minimum) / 2, minimum];
     return {
       width,
       height,
       points,
       path: points.map((point) => `${point.x},${point.y}`).join(" "),
-      maximum,
-      minimum,
+      ticks: [...new Set(tickValues)].map((value) => ({
+        value,
+        y: y(value),
+      })),
     };
   }, [profileMetric, seasonTrend]);
 
@@ -1023,7 +1160,9 @@ export function RecordsExplorer() {
           <img src="/escc-logo.png" alt="" />
           <span>
             <strong>The Inch Park Vault</strong>
-            <small>Edinburgh South CC performance archive</small>
+            <small>
+              Edinburgh South Cricket Club Performance Archive – 2004–2025
+            </small>
           </span>
         </a>
         <nav aria-label="Primary navigation">
@@ -1040,7 +1179,9 @@ export function RecordsExplorer() {
 
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
-          <p className="eyebrow">Edinburgh South CC performance archive</p>
+          <p className="eyebrow">
+            Edinburgh South Cricket Club Performance Archive – 2004–2025
+          </p>
           <h1>
             The Inch Park <em>Vault.</em>
           </h1>
@@ -1204,6 +1345,7 @@ export function RecordsExplorer() {
                     {sortableHeader("runs", "Runs")}
                     {sortableHeader("battingAverage", "Bat avg")}
                     {sortableHeader("highScore", "HS")}
+                    {sortableHeader("notOuts", "NO")}
                     {sortableHeader("fifties", "50s")}
                     {sortableHeader("hundreds", "100s")}
                     {sortableHeader("fours", "4s")}
@@ -1213,7 +1355,9 @@ export function RecordsExplorer() {
                   <>
                     {sortableHeader("matches", "Mat")}
                     {sortableHeader("overs", "Overs")}
+                    {sortableHeader("maidens", "Mdns")}
                     {sortableHeader("wickets", "Wkts")}
+                    {sortableHeader("fiveWicketHauls", "5WI")}
                     {sortableHeader("bowlingAverage", "Bowl avg")}
                     {sortableHeader("economy", "Econ")}
                     {sortableHeader("bestBowling", "BB")}
@@ -1272,6 +1416,11 @@ export function RecordsExplorer() {
                         {integer.format(stats.highScore)}
                       </td>
                       <td
+                        className={metric === "notOuts" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.innings - stats.outs)}
+                      </td>
+                      <td
                         className={metric === "fifties" ? "active-sort" : ""}
                       >
                         {integer.format(stats.fifties)}
@@ -1299,9 +1448,21 @@ export function RecordsExplorer() {
                         {overs(stats.balls)}
                       </td>
                       <td
+                        className={metric === "maidens" ? "active-sort" : ""}
+                      >
+                        {integer.format(stats.maidens)}
+                      </td>
+                      <td
                         className={metric === "wickets" ? "active-sort" : ""}
                       >
                         {integer.format(stats.wickets)}
+                      </td>
+                      <td
+                        className={
+                          metric === "fiveWicketHauls" ? "active-sort" : ""
+                        }
+                      >
+                        {integer.format(stats.fiveWicketHauls)}
                       </td>
                       <td
                         className={
@@ -1377,7 +1538,7 @@ export function RecordsExplorer() {
           <img src="/escc-logo.png" alt="" />
           <p>The Inch Park Vault</p>
         </div>
-        <p>Edinburgh South CC performance archive</p>
+        <p>Edinburgh South Cricket Club Performance Archive – 2004–2025</p>
       </footer>
 
       {openPlayer && selectedStats && (
@@ -1518,6 +1679,11 @@ export function RecordsExplorer() {
                 integer.format(selectedStats.highScore),
               )}
               {profileStatCard(
+                "notOuts",
+                "Not outs",
+                integer.format(selectedStats.innings - selectedStats.outs),
+              )}
+              {profileStatCard(
                 "fifties",
                 "Fifties",
                 integer.format(selectedStats.fifties),
@@ -1541,6 +1707,16 @@ export function RecordsExplorer() {
                 integer.format(selectedStats.wickets),
               )}
               {profileStatCard("overs", "Overs", overs(selectedStats.balls))}
+              {profileStatCard(
+                "maidens",
+                "Maidens",
+                integer.format(selectedStats.maidens),
+              )}
+              {profileStatCard(
+                "fiveWicketHauls",
+                "Five-wicket hauls",
+                integer.format(selectedStats.fiveWicketHauls),
+              )}
               {profileStatCard(
                 "bowlingAverage",
                 "Bowling average",
@@ -1582,7 +1758,9 @@ export function RecordsExplorer() {
                       : `${metrics[profileMetric].label} by season`}
                   </span>
                   <strong>
-                    {metrics[profileMetric].display(selectedStats)}
+                    {profileMetric === "bestBowling"
+                      ? `${integer.format(selectedStats.bestWickets)} wickets`
+                      : metrics[profileMetric].display(selectedStats)}
                   </strong>
                 </div>
               </div>
@@ -1592,22 +1770,16 @@ export function RecordsExplorer() {
                   role="img"
                   aria-label={`${profileMetric === "bestBowling" ? "Best-performance wickets" : metrics[profileMetric].label} by season for ${openPlayer}`}
                 >
-                  {[0, 0.5, 1].map((position) => {
-                    const y = 22 + position * 236;
-                    const value =
-                      chart.maximum -
-                      position * (chart.maximum - chart.minimum);
-                    return (
-                      <g key={position}>
-                        <line x1="42" x2="818" y1={y} y2={y} />
-                        <text x="4" y={y + 4}>
-                          {Number.isInteger(value)
-                            ? integer.format(value)
-                            : value.toFixed(1)}
-                        </text>
-                      </g>
-                    );
-                  })}
+                  {chart.ticks.map((tick) => (
+                    <g key={tick.value}>
+                      <line x1="42" x2="818" y1={tick.y} y2={tick.y} />
+                      <text x="4" y={tick.y + 4}>
+                        {Number.isInteger(tick.value)
+                          ? integer.format(tick.value)
+                          : tick.value.toFixed(1)}
+                      </text>
+                    </g>
+                  ))}
                   <polyline
                     className="chart-area"
                     points={`42,258 ${chart.path} 818,258`}
