@@ -1652,37 +1652,39 @@ footer p {
     border-left: 0;
   }
 
-  .stats-table,
   .leaderboard-table {
-    min-width: 940px;
+    min-width: 720px;
+    table-layout: fixed;
   }
 
   .bowling-table {
-    min-width: 980px;
+    min-width: 790px;
   }
 
   .performance-table {
-    min-width: 820px;
+    min-width: 720px;
+    table-layout: fixed;
   }
 
   .stats-table th,
   .stats-table td {
     height: 48px;
-    padding: 7px 8px;
-    font-size: 11px;
+    padding: 6px 4px;
+    font-size: 10px;
   }
 
   .stats-table thead th {
     height: 44px;
-    font-size: 9px;
+    font-size: 8px;
+    letter-spacing: 0.04em;
   }
 
   .stats-table .rank-col {
     position: sticky;
     left: 0;
     z-index: 3;
-    width: 42px;
-    min-width: 42px;
+    width: 36px;
+    min-width: 36px;
     background: #f2ecdf;
     box-shadow: inset -1px 0 rgba(6, 16, 28, 0.08);
   }
@@ -1693,9 +1695,9 @@ footer p {
   }
 
   .stats-table .player-col {
-    left: 42px;
-    width: 142px;
-    min-width: 142px;
+    left: 36px;
+    width: 118px;
+    min-width: 118px;
     box-shadow: 7px 0 11px rgba(6, 16, 28, 0.12);
   }
 
@@ -1706,25 +1708,26 @@ footer p {
   .player-col button {
     min-height: 48px;
     height: auto;
-    padding: 7px 8px;
+    padding: 6px;
   }
 
   .player-col button > span:first-child {
-    font-size: 10.5px;
+    font-size: 9.5px;
   }
 
   .performance-table .opposition-col {
-    width: 128px;
-    min-width: 128px;
-    max-width: 128px;
+    width: 108px;
+    min-width: 108px;
+    max-width: 108px;
     line-height: 1.2;
     overflow-wrap: anywhere;
     white-space: normal;
   }
 
   .player-link-icon {
-    width: 21px;
-    height: 21px;
+    width: 18px;
+    height: 18px;
+    font-size: 8px;
   }
 
   .load-more {
