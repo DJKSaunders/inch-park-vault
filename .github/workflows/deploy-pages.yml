@@ -36,10 +36,18 @@ jobs:
       - name: Restore archive assets
         run: |
           mkdir -p public/data
-          base64 --decode .github/pages-assets/records.json.gz.b64 | gzip --decompress > public/data/records.json
-          base64 --decode .github/pages-assets/escc-logo.png.b64 > public/escc-logo.png
-          curl --fail --location --output public/og-vault.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og-vault.png
-          curl --fail --location --output public/og.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og.png
+          if [ ! -f public/data/records.json ]; then
+            base64 --decode .github/pages-assets/records.json.gz.b64 | gzip --decompress > public/data/records.json
+          fi
+          if [ ! -f public/escc-logo.png ]; then
+            base64 --decode .github/pages-assets/escc-logo.png.b64 > public/escc-logo.png
+          fi
+          if [ ! -f public/og-vault.png ]; then
+            curl --fail --location --output public/og-vault.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og-vault.png
+          fi
+          if [ ! -f public/og.png ]; then
+            curl --fail --location --output public/og.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og.png
+          fi
           touch public/.nojekyll
 
       - name: Build static site
