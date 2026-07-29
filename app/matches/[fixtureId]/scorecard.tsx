@@ -203,6 +203,11 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                 <div className="scorecard-table-scroll">
                   <table className="scorecard-table batting-card">
                     <caption>{innings.battingTeam} batting</caption>
+                    <colgroup>
+                      <col className="scorecard-player-column" />
+                      <col className="scorecard-dismissal-column" />
+                      <col className="scorecard-stat-column" span={5} />
+                    </colgroup>
                     <thead>
                       <tr>
                         <th>Player</th>
@@ -258,6 +263,10 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                 <div className="scorecard-table-scroll">
                   <table className="scorecard-table bowling-card">
                     <caption>{innings.bowlingTeam} bowling</caption>
+                    <colgroup>
+                      <col className="scorecard-player-column" />
+                      <col className="scorecard-stat-column" span={5} />
+                    </colgroup>
                     <thead>
                       <tr>
                         <th>Bowler</th>

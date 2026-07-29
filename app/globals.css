@@ -2493,15 +2493,39 @@ footer p {
   text-align: left;
 }
 
-.scorecard-table tbody th {
+.batting-card tbody th {
   min-width: 170px;
   font-weight: 800;
 }
 
-.scorecard-table tbody td:nth-child(2) {
-  width: 46%;
+.batting-card tbody td:nth-child(2) {
   min-width: 240px;
   color: #526070;
+}
+
+.batting-card .scorecard-player-column {
+  width: 22%;
+}
+
+.batting-card .scorecard-dismissal-column {
+  width: auto;
+}
+
+.batting-card .scorecard-stat-column {
+  width: 7%;
+}
+
+.bowling-card tbody th {
+  min-width: 190px;
+  font-weight: 800;
+}
+
+.bowling-card .scorecard-player-column {
+  width: auto;
+}
+
+.bowling-card .scorecard-stat-column {
+  width: 11%;
 }
 
 .scorecard-table .scorecard-primary {
