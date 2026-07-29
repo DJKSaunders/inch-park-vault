@@ -1,0 +1,28 @@
+{
+  "authoritative": false,
+  "authority": {
+    "careerRecords": "public/data/records.json",
+    "scorecardEnrichment": "public/data/scorecards/"
+  },
+  "files": {
+    "appearances.json": "One row per ESCC player appearance per fixture.",
+    "batting-innings.json": "Every retained ESCC batting innings.",
+    "bowling-spells.json": "Every retained ESCC bowling spell.",
+    "coverage.json": "Field availability by season.",
+    "data-quality.json": "Suppression and normalization decisions.",
+    "index.json": "Compact searchable match index and filter values.",
+    "matches/{fixtureId}.json": "Normalized scorecard and provenance.",
+    "players/index.json": "Compact ESCC player index.",
+    "players/{playerId}.json": "Player appearances, innings and spells.",
+    "provenance.json": "Source identity, hashes and authority boundary."
+  },
+  "identityRules": {
+    "appearance": "One player per fixture, regardless of innings count.",
+    "battingInnings": "Every retained genuine batting row.",
+    "dnbOnly": "One appearance and zero batting innings.",
+    "dnbWithInnings": "A named DNB row is suppressed when the same player has a genuine innings in that team innings.",
+    "multipleInnings": "Multiple genuine batting rows in a fixture are retained as separate innings but share one appearance.",
+    "placeholders": "Placeholder rows receive fixture-local identities and are excluded from career player indexes."
+  },
+  "schemaVersion": "1.0.0"
+}

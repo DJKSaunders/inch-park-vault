@@ -40,3 +40,43 @@ python scripts/export_site_data.py \
 
 The archive's “Stats as of” date is set automatically from the newest match in
 the uploaded records. The season averages workbook supplies fours and sixes.
+
+## Scorecard enrichment pilot
+
+Public scorecards can be cached and parsed into a separate, non-authoritative
+dataset without changing `public/data/records.json`:
+
+```bash
+python3 scripts/scrape_scorecards.py
+```
+
+The default pilot samples five scorecards from 2004, 2010, 2016, 2022 and 2026.
+It writes structured scorecards, coverage, player matching and discrepancy
+reports to `data/scorecards/pilot/`. Original HTML is retained under the
+gitignored `data/scorecards/cache/` directory so interrupted work is resumable.
+
+After reviewing the pilot reports, a complete run can be started with:
+
+```bash
+python3 scripts/scrape_scorecards.py \
+  --all-seasons \
+  --sample-per-season 0 \
+  --output-dir data/scorecards/archive
+```
+
+The collector identifies itself, rate-limits requests, retries temporary
+failures and never overwrites the workbook-derived archive.
+
+## Production scorecard data
+
+Generate the website-ready, fixture-split scorecard dataset after refreshing
+the scraped archive:
+
+```bash
+python3 scripts/export_scorecard_data.py
+```
+
+This writes a compact match index, one JSON file per fixture, player histories,
+appearance and innings indexes, coverage metadata and a data-quality report to
+`public/data/scorecards/`. The existing `public/data/records.json` remains
+authoritative. See `docs/scorecard-data.md` for the schema and counting rules.

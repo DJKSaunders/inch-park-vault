@@ -41,3 +41,11 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# locally cached source pages for the scorecard enrichment pipeline
+/data/scorecards/cache/
+/data/scorecards/archive/
+/data/scorecards/pilot/
+
+# local backup packages are intentionally kept outside the deployed site
+/backups/

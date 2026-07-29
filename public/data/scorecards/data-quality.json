@@ -1,0 +1,292 @@
+{
+  "collapsedDuplicateDnbRows": [
+    {
+      "fixtureId": "30763",
+      "inningsNumber": 1,
+      "player": "James Brims",
+      "rowNumber": 8
+    },
+    {
+      "fixtureId": "30784",
+      "inningsNumber": 1,
+      "player": "Michael Dickson",
+      "rowNumber": 9
+    },
+    {
+      "fixtureId": "30785",
+      "inningsNumber": 1,
+      "player": "Fraser Gordon",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "30788",
+      "inningsNumber": 1,
+      "player": "Fraser Gordon",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "30789",
+      "inningsNumber": 1,
+      "player": "Fraser Gordon",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "30790",
+      "inningsNumber": 1,
+      "player": "N Kieran",
+      "rowNumber": 4
+    },
+    {
+      "fixtureId": "30801",
+      "inningsNumber": 1,
+      "player": "Fraser Gordon",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "30734",
+      "inningsNumber": 1,
+      "player": "Gerry Dodson",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "59239",
+      "inningsNumber": 2,
+      "player": "James Brims",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "676737",
+      "inningsNumber": 1,
+      "player": "Noah Body",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "player": "Kiran SV",
+      "rowNumber": 19
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "player": "Akshansh Tiwari",
+      "rowNumber": 21
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "player": "Russell Barnard",
+      "rowNumber": 22
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "player": "Frank Omozejele",
+      "rowNumber": 24
+    },
+    {
+      "fixtureId": "824847",
+      "inningsNumber": 1,
+      "player": "Raja Kumar",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "941773",
+      "inningsNumber": 1,
+      "player": "Hugo Dear",
+      "rowNumber": 11
+    }
+  ],
+  "competitionClassification": {
+    "date-team": 1,
+    "exact": 1472,
+    "missing": 1
+  },
+  "multipleBattingInnings": [
+    {
+      "fixtureId": "78596",
+      "inningsCount": 2,
+      "player": "Asanka De Silva",
+      "playerId": "p-asanka-de-silva-db160a4a"
+    },
+    {
+      "fixtureId": "489249",
+      "inningsCount": 2,
+      "player": "Charanjit Singh Wazir",
+      "playerId": "p-charanjit-singh-wazir-1ca62d60"
+    },
+    {
+      "fixtureId": "779649",
+      "inningsCount": 2,
+      "player": "Keshav Bhatnagar",
+      "playerId": "p-keshav-bhatnagar-01fe9234"
+    },
+    {
+      "fixtureId": "779649",
+      "inningsCount": 2,
+      "player": "Kiran SV",
+      "playerId": "p-kiran-sv-87ddf68c"
+    },
+    {
+      "fixtureId": "780720",
+      "inningsCount": 2,
+      "player": "Anura Suriyapperuma",
+      "playerId": "p-anura-suriyapperuma-b3356594"
+    },
+    {
+      "fixtureId": "780720",
+      "inningsCount": 2,
+      "player": "Jeremy Blood",
+      "playerId": "p-jeremy-blood-380e0c6b"
+    },
+    {
+      "fixtureId": "780720",
+      "inningsCount": 2,
+      "player": "Mohandoss Ilangovan",
+      "playerId": "p-mohandoss-ilangovan-1b36dcd8"
+    },
+    {
+      "fixtureId": "780720",
+      "inningsCount": 2,
+      "player": "Sidharth Kashyap",
+      "playerId": "p-sidharth-kashyap-a0f61d64"
+    },
+    {
+      "fixtureId": "781386",
+      "inningsCount": 2,
+      "player": "Kalyan Kallamadi",
+      "playerId": "p-kalyan-kallamadi-8fe15b47"
+    },
+    {
+      "fixtureId": "781386",
+      "inningsCount": 2,
+      "player": "Keshav Bhatnagar",
+      "playerId": "p-keshav-bhatnagar-01fe9234"
+    },
+    {
+      "fixtureId": "782086",
+      "inningsCount": 2,
+      "player": "Bailey Brookes",
+      "playerId": "p-bailey-brookes-41aca146"
+    },
+    {
+      "fixtureId": "831124",
+      "inningsCount": 2,
+      "player": "David Richardson",
+      "playerId": "p-david-richardson-0e407c2b"
+    },
+    {
+      "fixtureId": "831124",
+      "inningsCount": 2,
+      "player": "Eóghan Forde",
+      "playerId": "p-e-ghan-forde-711b9e92"
+    },
+    {
+      "fixtureId": "831124",
+      "inningsCount": 2,
+      "player": "Jaskaran Singh",
+      "playerId": "p-jaskaran-singh-db0fa705"
+    },
+    {
+      "fixtureId": "918736",
+      "inningsCount": 2,
+      "player": "Keshav Bhatnagar",
+      "playerId": "p-keshav-bhatnagar-01fe9234"
+    },
+    {
+      "fixtureId": "921441",
+      "inningsCount": 2,
+      "player": "Krish Talati",
+      "playerId": "p-krish-talati-44faf537"
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "sourceParseWarnings": [],
+  "summary": {
+    "appearanceCount": 15998,
+    "battingInningsCount": 12941,
+    "bowlingSpellCount": 9266,
+    "collapsedDuplicateDnbRows": 16,
+    "dnbOnlyAppearanceCount": 3025,
+    "fixtureCount": 1474,
+    "multipleBattingInningsAppearanceCount": 16,
+    "playerCount": 648,
+    "sourceParseWarningCount": 0,
+    "status": "passed",
+    "suppressedDnbRows": 10,
+    "uniqueAppearanceKeys": 15998,
+    "uniqueFixtureIds": 1474
+  },
+  "suppressedDnbRows": [
+    {
+      "fixtureId": "53925",
+      "inningsNumber": 1,
+      "player": "Fraser Gordon",
+      "reason": "genuine-innings-present",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "655029",
+      "inningsNumber": 1,
+      "player": "Karamjit Singh",
+      "reason": "genuine-innings-present",
+      "rowNumber": 8
+    },
+    {
+      "fixtureId": "676728",
+      "inningsNumber": 2,
+      "player": "J Parsonage",
+      "reason": "genuine-innings-present",
+      "rowNumber": 9
+    },
+    {
+      "fixtureId": "780961",
+      "inningsNumber": 1,
+      "player": "Kalyan Kallamadi",
+      "reason": "genuine-innings-present",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "792163",
+      "inningsNumber": 1,
+      "player": "Sam Kiely",
+      "reason": "genuine-innings-present",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "player": "Shail Thakker",
+      "reason": "genuine-innings-present",
+      "rowNumber": 20
+    },
+    {
+      "fixtureId": "879278",
+      "inningsNumber": 2,
+      "player": "Raja Kumar",
+      "reason": "genuine-innings-present",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "879266",
+      "inningsNumber": 2,
+      "player": "Muhallib Hassan",
+      "reason": "genuine-innings-present",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "933074",
+      "inningsNumber": 1,
+      "player": "Abdul Sabir",
+      "reason": "genuine-innings-present",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "941772",
+      "inningsNumber": 1,
+      "player": "Butt",
+      "reason": "genuine-innings-present",
+      "rowNumber": 9
+    }
+  ]
+}

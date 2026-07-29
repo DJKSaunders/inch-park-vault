@@ -1,0 +1,213 @@
+{
+  "note": "Counts describe scorecard enrichment coverage, not authority.",
+  "schemaVersion": "1.0.0",
+  "seasons": {
+    "2004": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 88,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 47,
+      "bowlingSpells": 47,
+      "fieldingAvailable": 27,
+      "matches": 10
+    },
+    "2005": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 143,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 77,
+      "bowlingSpells": 77,
+      "fieldingAvailable": 40,
+      "matches": 18
+    },
+    "2006": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 204,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 109,
+      "bowlingSpells": 109,
+      "fieldingAvailable": 53,
+      "matches": 21
+    },
+    "2007": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 279,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 175,
+      "bowlingSpells": 175,
+      "fieldingAvailable": 63,
+      "matches": 34
+    },
+    "2008": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 406,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 275,
+      "bowlingSpells": 275,
+      "fieldingAvailable": 99,
+      "matches": 49
+    },
+    "2009": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 469,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 334,
+      "bowlingSpells": 334,
+      "fieldingAvailable": 98,
+      "matches": 55
+    },
+    "2010": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 572,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 400,
+      "bowlingSpells": 400,
+      "fieldingAvailable": 167,
+      "matches": 62
+    },
+    "2011": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 619,
+      "boundariesAvailable": 0,
+      "bowlingBallsAvailable": 457,
+      "bowlingSpells": 457,
+      "fieldingAvailable": 148,
+      "matches": 71
+    },
+    "2012": {
+      "battingBallsAvailable": 18,
+      "battingInnings": 533,
+      "boundariesAvailable": 119,
+      "bowlingBallsAvailable": 354,
+      "bowlingSpells": 354,
+      "fieldingAvailable": 113,
+      "matches": 61
+    },
+    "2013": {
+      "battingBallsAvailable": 64,
+      "battingInnings": 737,
+      "boundariesAvailable": 259,
+      "bowlingBallsAvailable": 510,
+      "bowlingSpells": 510,
+      "fieldingAvailable": 150,
+      "matches": 98
+    },
+    "2014": {
+      "battingBallsAvailable": 96,
+      "battingInnings": 586,
+      "boundariesAvailable": 169,
+      "bowlingBallsAvailable": 393,
+      "bowlingSpells": 393,
+      "fieldingAvailable": 128,
+      "matches": 67
+    },
+    "2015": {
+      "battingBallsAvailable": 75,
+      "battingInnings": 601,
+      "boundariesAvailable": 196,
+      "bowlingBallsAvailable": 405,
+      "bowlingSpells": 405,
+      "fieldingAvailable": 128,
+      "matches": 64
+    },
+    "2016": {
+      "battingBallsAvailable": 157,
+      "battingInnings": 438,
+      "boundariesAvailable": 149,
+      "bowlingBallsAvailable": 302,
+      "bowlingSpells": 302,
+      "fieldingAvailable": 109,
+      "matches": 49
+    },
+    "2017": {
+      "battingBallsAvailable": 31,
+      "battingInnings": 293,
+      "boundariesAvailable": 46,
+      "bowlingBallsAvailable": 194,
+      "bowlingSpells": 194,
+      "fieldingAvailable": 46,
+      "matches": 31
+    },
+    "2018": {
+      "battingBallsAvailable": 0,
+      "battingInnings": 342,
+      "boundariesAvailable": 37,
+      "bowlingBallsAvailable": 253,
+      "bowlingSpells": 253,
+      "fieldingAvailable": 50,
+      "matches": 40
+    },
+    "2019": {
+      "battingBallsAvailable": 28,
+      "battingInnings": 342,
+      "boundariesAvailable": 93,
+      "bowlingBallsAvailable": 250,
+      "bowlingSpells": 250,
+      "fieldingAvailable": 74,
+      "matches": 39
+    },
+    "2020": {
+      "battingBallsAvailable": 11,
+      "battingInnings": 282,
+      "boundariesAvailable": 107,
+      "bowlingBallsAvailable": 230,
+      "bowlingSpells": 230,
+      "fieldingAvailable": 47,
+      "matches": 32
+    },
+    "2021": {
+      "battingBallsAvailable": 307,
+      "battingInnings": 653,
+      "boundariesAvailable": 262,
+      "bowlingBallsAvailable": 517,
+      "bowlingSpells": 517,
+      "fieldingAvailable": 166,
+      "matches": 79
+    },
+    "2022": {
+      "battingBallsAvailable": 387,
+      "battingInnings": 1011,
+      "boundariesAvailable": 386,
+      "bowlingBallsAvailable": 768,
+      "bowlingSpells": 768,
+      "fieldingAvailable": 216,
+      "matches": 112
+    },
+    "2023": {
+      "battingBallsAvailable": 458,
+      "battingInnings": 1056,
+      "boundariesAvailable": 320,
+      "bowlingBallsAvailable": 796,
+      "bowlingSpells": 796,
+      "fieldingAvailable": 198,
+      "matches": 120
+    },
+    "2024": {
+      "battingBallsAvailable": 879,
+      "battingInnings": 1225,
+      "boundariesAvailable": 530,
+      "bowlingBallsAvailable": 882,
+      "bowlingSpells": 882,
+      "fieldingAvailable": 347,
+      "matches": 131
+    },
+    "2025": {
+      "battingBallsAvailable": 919,
+      "battingInnings": 1115,
+      "boundariesAvailable": 612,
+      "bowlingBallsAvailable": 809,
+      "bowlingSpells": 809,
+      "fieldingAvailable": 288,
+      "matches": 121
+    },
+    "2026": {
+      "battingBallsAvailable": 768,
+      "battingInnings": 947,
+      "boundariesAvailable": 502,
+      "bowlingBallsAvailable": 729,
+      "bowlingSpells": 729,
+      "fieldingAvailable": 271,
+      "matches": 110
+    }
+  }
+}
