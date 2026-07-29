@@ -615,6 +615,77 @@ def build_player_data(
     )
 
 
+def build_records_player_map(
+    records: dict[str, Any], player_index: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Join authoritative record names to scorecard player identities."""
+
+    scorecard_by_name = {
+        normalized_name(player["name"]): player for player in player_index
+    }
+    record_names = sorted(
+        {
+            row[0]
+            for discipline in ("batting", "bowling")
+            for row in records[discipline]
+        },
+        key=str.casefold,
+    )
+    mappings = {}
+    for record_name in record_names:
+        scorecard_player = scorecard_by_name.get(normalized_name(record_name))
+        mappings[record_name] = (
+            {
+                "playerId": scorecard_player["playerId"],
+                "scorecardName": scorecard_player["name"],
+                "path": scorecard_player["path"],
+                "appearanceCount": scorecard_player["appearanceCount"],
+                "battingInningsCount": scorecard_player[
+                    "battingInningsCount"
+                ],
+                "bowlingSpellCount": scorecard_player["bowlingSpellCount"],
+                "matchMethod": "normalized-exact",
+            }
+            if scorecard_player
+            else None
+        )
+
+    matched_player_ids = {
+        mapping["playerId"] for mapping in mappings.values() if mapping
+    }
+    unmatched_scorecard_players = [
+        {
+            "playerId": player["playerId"],
+            "name": player["name"],
+            "path": player["path"],
+        }
+        for player in player_index
+        if player["playerId"] not in matched_player_ids
+    ]
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "matchMethod": "normalized-exact",
+        "summary": {
+            "recordPlayerCount": len(record_names),
+            "matchedRecordPlayerCount": sum(
+                mapping is not None for mapping in mappings.values()
+            ),
+            "matchedScorecardPlayerCount": len(matched_player_ids),
+            "unmatchedRecordPlayerCount": sum(
+                mapping is None for mapping in mappings.values()
+            ),
+            "unmatchedScorecardPlayerCount": len(
+                unmatched_scorecard_players
+            ),
+        },
+        "players": mappings,
+        "unmatchedRecordPlayers": [
+            name for name, mapping in mappings.items() if mapping is None
+        ],
+        "unmatchedScorecardPlayers": unmatched_scorecard_players,
+    }
+
+
 def schema_document() -> dict[str, Any]:
     return {
         "schemaVersion": SCHEMA_VERSION,
@@ -652,6 +723,10 @@ def schema_document() -> dict[str, Any]:
             "matches/{fixtureId}.json": "Normalized scorecard and provenance.",
             "players/index.json": "Compact ESCC player index.",
             "players/{playerId}.json": "Player appearances, innings and spells.",
+            "records-player-map.json": (
+                "Exact normalized-name links from authoritative Vault players "
+                "to scorecard player histories."
+            ),
             "appearances.json": "One row per ESCC player appearance per fixture.",
             "batting-innings.json": "Every retained ESCC batting innings.",
             "bowling-spells.json": "Every retained ESCC bowling spell.",
@@ -806,6 +881,7 @@ def export(
         batting_innings,
         bowling_spells,
     ) = build_player_data(matches)
+    player_map = build_records_player_map(records, player_index)
     validation = validate_export(
         matches, player_index, appearances, batting_innings, quality
     )
@@ -835,6 +911,7 @@ def export(
         "calculatedInningsOversCount": len(
             quality["calculatedInningsOvers"]
         ),
+        **player_map["summary"],
     }
 
     output_path = output_path.resolve()
@@ -897,6 +974,7 @@ def export(
                 "players": player_index,
             },
         )
+        readable_json(temp_path / "records-player-map.json", player_map)
         compact_json(temp_path / "appearances.json", appearances)
         compact_json(temp_path / "batting-innings.json", batting_innings)
         compact_json(temp_path / "bowling-spells.json", bowling_spells)

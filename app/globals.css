@@ -1225,6 +1225,265 @@ footer p {
   color: var(--muted);
 }
 
+.scorecard-history {
+  margin: 0 32px 32px;
+  border-top: 5px solid var(--orange);
+  background: white;
+}
+
+.scorecard-history-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 22px;
+  background: #ebe4d7;
+}
+
+.scorecard-history-heading .eyebrow {
+  margin: 0 0 3px;
+  color: var(--orange);
+}
+
+.scorecard-history-heading h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 31px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.scorecard-history-heading > span {
+  color: #526070;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.history-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid rgba(6, 16, 28, 0.14);
+}
+
+.history-summary > div {
+  min-height: 86px;
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid rgba(6, 16, 28, 0.14);
+}
+
+.history-summary > div:last-child {
+  border-right: 0;
+}
+
+.history-summary span {
+  color: #667280;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.history-summary strong {
+  font-family: var(--font-display);
+  font-size: 31px;
+  line-height: 1;
+}
+
+.scorecard-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.85fr);
+  gap: 1px;
+  background: rgba(6, 16, 28, 0.14);
+  border-bottom: 1px solid rgba(6, 16, 28, 0.14);
+}
+
+.recent-form,
+.scorecard-season-view {
+  min-width: 0;
+  padding: 20px 22px;
+  background: #f7f3ea;
+}
+
+.scorecard-form h4 {
+  margin: 0 0 13px;
+  color: #526070;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.recent-form > div {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.recent-form a {
+  min-width: 0;
+  min-height: 104px;
+  padding: 11px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  color: var(--navy-950);
+  text-decoration: none;
+}
+
+.recent-form a:hover {
+  background: #fff8d4;
+}
+
+.recent-form span,
+.recent-form small {
+  color: #667280;
+  font-size: 9px;
+}
+
+.recent-form strong {
+  margin: 7px 0 auto;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+}
+
+.recent-form small {
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+.scorecard-season-view > div {
+  max-height: 190px;
+  overflow-y: auto;
+}
+
+.scorecard-season-row {
+  display: grid;
+  grid-template-columns: 42px minmax(90px, 1fr) minmax(90px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  border-bottom: 1px solid rgba(6, 16, 28, 0.09);
+  font-size: 9px;
+}
+
+.scorecard-season-row:last-child {
+  border-bottom: 0;
+}
+
+.scorecard-season-row > span {
+  position: relative;
+  overflow: hidden;
+  padding: 5px 7px;
+  background: #e8e1d5;
+  white-space: nowrap;
+}
+
+.scorecard-season-row i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  opacity: 0.2;
+}
+
+.scorecard-season-row .runs-bar {
+  background: var(--gold);
+}
+
+.scorecard-season-row .wickets-bar {
+  background: var(--navy-700);
+}
+
+.scorecard-season-row small {
+  color: #667280;
+  white-space: nowrap;
+}
+
+.history-table-scroll {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.history-table th,
+.history-table td {
+  height: 48px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(6, 16, 28, 0.1);
+  text-align: left;
+}
+
+.history-table thead th {
+  height: 38px;
+  background: var(--navy-900);
+  color: var(--cream-2);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.history-table td:nth-child(4),
+.history-table td:nth-child(5) {
+  font-weight: 800;
+}
+
+.history-table td:last-child {
+  text-align: right;
+}
+
+.history-table a {
+  color: var(--orange);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.history-table a:hover {
+  text-decoration: underline;
+}
+
+.history-state,
+.history-note {
+  margin: 0;
+  padding: 22px;
+  color: #526070;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.history-note {
+  border-top: 1px solid rgba(6, 16, 28, 0.12);
+}
+
+.history-more {
+  margin: 18px 22px;
+  border: 1px solid var(--navy-950);
+  background: transparent;
+  color: var(--navy-950);
+  padding: 11px 16px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.history-more:hover {
+  background: var(--navy-950);
+  color: var(--cream);
+}
+
 .status-screen {
   min-height: 100vh;
   display: grid;
@@ -1502,6 +1761,48 @@ footer p {
 
   .chart-card svg {
     min-width: 650px;
+  }
+
+  .scorecard-history {
+    margin: 0 18px 18px;
+  }
+
+  .scorecard-history-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 17px 16px;
+  }
+
+  .history-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .history-summary > div {
+    min-height: 70px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(6, 16, 28, 0.14);
+  }
+
+  .history-summary > div:last-child {
+    border-bottom: 0;
+  }
+
+  .scorecard-form {
+    grid-template-columns: 1fr;
+  }
+
+  .recent-form > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scorecard-season-row {
+    grid-template-columns: 38px minmax(80px, 1fr) minmax(80px, 1fr);
+  }
+
+  .scorecard-season-row small {
+    grid-column: 2 / -1;
+    padding-bottom: 7px;
   }
 }
 

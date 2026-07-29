@@ -14,7 +14,8 @@
     "matches/{fixtureId}.json": "Normalized scorecard and provenance.",
     "players/index.json": "Compact ESCC player index.",
     "players/{playerId}.json": "Player appearances, innings and spells.",
-    "provenance.json": "Source identity, hashes and authority boundary."
+    "provenance.json": "Source identity, hashes and authority boundary.",
+    "records-player-map.json": "Exact normalized-name links from authoritative Vault players to scorecard player histories."
   },
   "identityRules": {
     "appearance": "One player per fixture, regardless of innings count.",

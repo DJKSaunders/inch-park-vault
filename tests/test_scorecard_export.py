@@ -142,6 +142,28 @@ class ScorecardExportTests(unittest.TestCase):
         rows = [bowler("Bowler One", 48), bowler("Bowler Two", None)]
         self.assertIsNone(MODULE.overs_from_bowling(rows))
 
+    def test_record_names_map_to_normalized_scorecard_identities(self):
+        records = {
+            "batting": [["Test  Player"]],
+            "bowling": [["Unmatched Player"]],
+        }
+        players = [
+            {
+                "playerId": "p-test-player",
+                "name": "Test Player",
+                "path": "players/p-test-player.json",
+                "appearanceCount": 3,
+                "battingInningsCount": 2,
+                "bowlingSpellCount": 1,
+            }
+        ]
+        result = MODULE.build_records_player_map(records, players)
+        self.assertEqual(
+            result["players"]["Test  Player"]["playerId"], "p-test-player"
+        )
+        self.assertIsNone(result["players"]["Unmatched Player"])
+        self.assertEqual(result["summary"]["matchedRecordPlayerCount"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

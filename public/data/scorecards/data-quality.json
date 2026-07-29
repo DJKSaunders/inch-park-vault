@@ -3207,13 +3207,18 @@
     "collapsedDuplicateDnbRows": 16,
     "dnbOnlyAppearanceCount": 3025,
     "fixtureCount": 1474,
+    "matchedRecordPlayerCount": 650,
+    "matchedScorecardPlayerCount": 647,
     "multipleBattingInningsAppearanceCount": 16,
     "playerCount": 648,
+    "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedDnbRows": 10,
     "uniqueAppearanceKeys": 15998,
-    "uniqueFixtureIds": 1474
+    "uniqueFixtureIds": 1474,
+    "unmatchedRecordPlayerCount": 10,
+    "unmatchedScorecardPlayerCount": 1
   },
   "suppressedDnbRows": [
     {
