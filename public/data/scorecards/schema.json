@@ -12,6 +12,7 @@
     "data-quality.json": "Suppression and normalization decisions.",
     "index.json": "Compact searchable match index and filter values.",
     "matches/{fixtureId}.json": "Normalized scorecard and provenance.",
+    "player-directory.json": "Stable profile routes for authoritative Vault players, with record-name aliases and optional scorecard-history links.",
     "players/index.json": "Compact ESCC player index.",
     "players/{playerId}.json": "Player appearances, innings and spells.",
     "provenance.json": "Source identity, hashes and authority boundary.",

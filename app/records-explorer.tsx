@@ -78,8 +78,11 @@ type ScorecardAppearance = {
 
 type ScorecardBattingInnings = {
   fixtureId: string;
+  season: number;
   runs: number | null;
   notOut: boolean;
+  fours: number | null;
+  sixes: number | null;
 };
 
 type ScorecardBowlingSpell = {
@@ -1003,14 +1006,63 @@ export function RecordsExplorer() {
     ? boundaryByPlayer.get(playerKey(openPlayer)) ?? { fours: 0, sixes: 0 }
     : { fours: 0, sixes: 0 };
 
+  const selectedIdentity =
+    openPlayer && identityMap ? identityMap.players[openPlayer] : null;
+  const activeScorecardHistory =
+    selectedIdentity &&
+    scorecardHistory?.playerId === selectedIdentity.playerId
+      ? scorecardHistory
+      : null;
+
   const seasonTrend = useMemo(() => {
     if (!openPlayer) return [];
     const points: { season: number; value: number; display: string }[] = [];
+    const boundaryMetric =
+      profileMetric === "fours" || profileMetric === "sixes"
+        ? profileMetric
+        : null;
+    const eligibleFixtures = new Set(
+      (activeScorecardHistory?.appearances ?? [])
+        .filter(
+          (appearance) =>
+            appearance.season >= recordFilters.startYear &&
+            appearance.season <= recordFilters.endYear &&
+            (recordFilters.team === "All teams" ||
+              appearance.team === recordFilters.team) &&
+            (recordFilters.matchType === "All match types" ||
+              appearance.competition === recordFilters.matchType) &&
+            (!recordFilters.opposition ||
+              canonicalOpponent(appearance.opposition ?? "")
+                .toLocaleLowerCase()
+                .includes(recordFilters.opposition.toLocaleLowerCase())),
+        )
+        .map((appearance) => appearance.fixtureId),
+    );
     for (
       let season = recordFilters.startYear;
       season <= recordFilters.endYear;
       season += 1
     ) {
+      if (boundaryMetric) {
+        const available = (activeScorecardHistory?.battingInnings ?? []).filter(
+          (innings) =>
+            innings.season === season &&
+            eligibleFixtures.has(innings.fixtureId) &&
+            innings[boundaryMetric] !== null,
+        );
+        if (available.length > 0) {
+          const value = available.reduce(
+            (total, innings) => total + (innings[boundaryMetric] ?? 0),
+            0,
+          );
+          points.push({
+            season,
+            value,
+            display: integer.format(value),
+          });
+        }
+        continue;
+      }
       const seasonStats = newStats(openPlayer);
       for (const row of selectedRows.batting) {
         if (row[1] === season) addBatting(seasonStats, row);
@@ -1036,15 +1088,13 @@ export function RecordsExplorer() {
       }
     }
     return points;
-  }, [openPlayer, profileMetric, recordFilters, selectedRows]);
-
-  const selectedIdentity =
-    openPlayer && identityMap ? identityMap.players[openPlayer] : null;
-  const activeScorecardHistory =
-    selectedIdentity &&
-    scorecardHistory?.playerId === selectedIdentity.playerId
-      ? scorecardHistory
-      : null;
+  }, [
+    activeScorecardHistory,
+    openPlayer,
+    profileMetric,
+    recordFilters,
+    selectedRows,
+  ]);
 
   const scorecardHistoryRows = useMemo(() => {
     if (!activeScorecardHistory) return [];
@@ -1208,11 +1258,7 @@ export function RecordsExplorer() {
     setRecordFilters(filters);
     setHistoryLimit(12);
     setHistoryErrorPlayerId(null);
-    setProfileMetric(
-      preferredMetric === "fours" || preferredMetric === "sixes"
-        ? "runs"
-        : preferredMetric,
-    );
+    setProfileMetric(preferredMetric);
     setOpenPlayer(name);
   }
 
@@ -2213,14 +2259,16 @@ export function RecordsExplorer() {
                     "Hundreds",
                     integer.format(selectedStats.hundreds),
                   )}
-                  <div className="static-stat">
-                    <span>Fours</span>
-                    <strong>{integer.format(selectedBoundaries.fours)}</strong>
-                  </div>
-                  <div className="static-stat">
-                    <span>Sixes</span>
-                    <strong>{integer.format(selectedBoundaries.sixes)}</strong>
-                  </div>
+                  {profileStatCard(
+                    "fours",
+                    "Fours",
+                    integer.format(selectedBoundaries.fours),
+                  )}
+                  {profileStatCard(
+                    "sixes",
+                    "Sixes",
+                    integer.format(selectedBoundaries.sixes),
+                  )}
                 </div>
               </section>
 
@@ -2300,6 +2348,9 @@ export function RecordsExplorer() {
                   <strong>
                     {profileMetric === "bestBowling"
                       ? `${integer.format(selectedStats.bestWickets)} wickets`
+                      : profileMetric === "fours" ||
+                          profileMetric === "sixes"
+                        ? integer.format(selectedBoundaries[profileMetric])
                       : metrics[profileMetric].display(selectedStats)}
                   </strong>
                 </div>
@@ -2349,6 +2400,13 @@ export function RecordsExplorer() {
               ) : (
                 <p className="empty-state">No data for this selection.</p>
               )}
+              {(profileMetric === "fours" || profileMetric === "sixes") && (
+                <p className="chart-coverage-note">
+                  Season chart uses scorecards that provide boundary detail.
+                  The career total above remains the authoritative archive
+                  figure.
+                </p>
+              )}
             </div>
 
             <section className="scorecard-history">
@@ -2358,10 +2416,17 @@ export function RecordsExplorer() {
                   <h3>Match-by-match history</h3>
                 </div>
                 {selectedIdentity && (
-                  <span>
-                    {integer.format(selectedIdentity.appearanceCount)} linked
-                    appearances
-                  </span>
+                  <div className="history-heading-actions">
+                    <span>
+                      {integer.format(selectedIdentity.appearanceCount)} linked
+                      appearances
+                    </span>
+                    <a
+                      href={`${publicBasePath}/players/${selectedIdentity.playerId}/`}
+                    >
+                      Full profile →
+                    </a>
+                  </div>
                 )}
               </div>
 

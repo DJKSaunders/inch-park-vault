@@ -23,6 +23,9 @@ from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRAPER_PATH = ROOT / "scripts" / "scrape_scorecards.py"
+COMPETITION_OVERRIDES_PATH = (
+    ROOT / "data" / "scorecards" / "competition-overrides.json"
+)
 SCHEMA_VERSION = "1.0.0"
 PLACEHOLDER_NAMES = {
     "a.n. other",
@@ -710,6 +713,7 @@ def build_records_player_map(
         key=str.casefold,
     )
     mappings = {}
+    directory_by_id: dict[str, dict[str, Any]] = {}
     for record_name in record_names:
         scorecard_player = scorecard_by_name.get(normalized_name(record_name))
         mappings[record_name] = (
@@ -727,6 +731,32 @@ def build_records_player_map(
             if scorecard_player
             else None
         )
+        record_player_id = canonical_player_id(record_name)
+        directory_entry = directory_by_id.setdefault(
+            record_player_id,
+            {
+                "playerId": record_player_id,
+                "name": display_name(record_name),
+                "aliases": [],
+                "scorecardPlayerId": None,
+                "scorecardPath": None,
+            },
+        )
+        directory_entry["aliases"].append(record_name)
+        if scorecard_player:
+            directory_entry["scorecardPlayerId"] = scorecard_player["playerId"]
+            directory_entry["scorecardPath"] = scorecard_player["path"]
+
+    directory = sorted(
+        (
+            {
+                **entry,
+                "aliases": sorted(set(entry["aliases"]), key=str.casefold),
+            }
+            for entry in directory_by_id.values()
+        ),
+        key=lambda entry: entry["name"].casefold(),
+    )
 
     matched_player_ids = {
         mapping["playerId"] for mapping in mappings.values() if mapping
@@ -757,6 +787,7 @@ def build_records_player_map(
             ),
         },
         "players": mappings,
+        "directory": directory,
         "unmatchedRecordPlayers": [
             name for name, mapping in mappings.items() if mapping is None
         ],
@@ -815,6 +846,10 @@ def schema_document() -> dict[str, Any]:
             "records-player-map.json": (
                 "Exact normalized-name links from authoritative Vault players "
                 "to scorecard player histories."
+            ),
+            "player-directory.json": (
+                "Stable profile routes for authoritative Vault players, with "
+                "record-name aliases and optional scorecard-history links."
             ),
             "appearances.json": "One row per ESCC player appearance per fixture.",
             "batting-innings.json": "Every retained ESCC batting innings.",
@@ -939,6 +974,11 @@ def export(
 ) -> dict[str, Any]:
     source = json.loads(source_path.read_text(encoding="utf-8"))
     records = json.loads(records_path.read_text(encoding="utf-8"))
+    competition_overrides = (
+        json.loads(COMPETITION_OVERRIDES_PATH.read_text(encoding="utf-8"))
+        if COMPETITION_OVERRIDES_PATH.exists()
+        else {}
+    )
     exact, fallback = competition_lookup(records)
     quality: dict[str, Any] = {
         "schemaVersion": SCHEMA_VERSION,
@@ -955,6 +995,12 @@ def export(
         competition, competition_source = competition_for_match(
             raw_match, exact, fallback
         )
+        if (
+            competition is None
+            and raw_match["fixtureId"] in competition_overrides
+        ):
+            competition = competition_overrides[raw_match["fixtureId"]]
+            competition_source = "curated-fixture"
         quality["competitionClassification"][competition_source] += 1
         if raw_match.get("parseWarnings"):
             quality["sourceParseWarnings"].append(
@@ -1077,6 +1123,14 @@ def export(
             },
         )
         readable_json(temp_path / "records-player-map.json", player_map)
+        compact_json(
+            temp_path / "player-directory.json",
+            {
+                "schemaVersion": SCHEMA_VERSION,
+                "playerCount": len(player_map["directory"]),
+                "players": player_map["directory"],
+            },
+        )
         compact_json(temp_path / "appearances.json", appearances)
         compact_json(temp_path / "batting-innings.json", batting_innings)
         compact_json(temp_path / "bowling-spells.json", bowling_spells)

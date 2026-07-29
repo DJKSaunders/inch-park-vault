@@ -1,0 +1,1376 @@
+{
+  "fixtureCount": 15,
+  "removedPlayerCount": 108,
+  "removedRowCount": 152,
+  "removedRows": [
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Daniel Saunders",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Dipen Vithalani",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Eóghan Forde",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Graham Smith",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Harry Barratt",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Kunal Vohra",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Naga Chaitanya Malapati",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Rahul Dhar",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Sajad Ali",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Sriram Govindan",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2023-07-29",
+      "discipline": "batting",
+      "fixtureId": "845790",
+      "opposition": "Edinburgh CC 3rds",
+      "player": "Vipin Gupta",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Abdul Sabir",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Akshansh Tiwari",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Cameron Walker",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Dan Hackney",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Dharmesh Parekh",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Martin Richardson",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Peter DaBell",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Philip Broadbent",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Rod Hunt",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Sidharth Kashyap",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-05",
+      "discipline": "batting",
+      "fixtureId": "908087",
+      "opposition": "Dunfermline & Carnegie 4ths",
+      "player": "Srini M",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Dan Hackney",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Dharmesh Parekh",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Gordon Brown",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Junaid Sahi",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Martin Ali",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Martin Richardson",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Owen Gorman",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Peter DaBell",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Philip Broadbent",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Sidharth Kashyap",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2025-07-12",
+      "discipline": "batting",
+      "fixtureId": "908088",
+      "opposition": "Livingston 4ths",
+      "player": "Stephen Willis",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "5th XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Paul Reddish",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Charlie Barratt",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Amin Peerani",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Chris Cannings",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Ian Astley",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Abhishek Desai",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Will George",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Nagadurgarao Rayudu",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Calum Raine",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Ramanathan Kumarappan",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2012-07-03",
+      "discipline": "batting",
+      "fixtureId": "280042",
+      "opposition": "Scottish and Newcastle CC",
+      "player": "Andy Fyffe",
+      "result": "Edinburgh South Cricket Club Won Forfeit",
+      "team": "1st XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Colin Mills",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Colin Mills",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Peter Fyfe",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Asanka De Silva",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Sohail Rupani",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Gus McLean",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Gus McLean",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Sohail Rupani",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Asanka De Silva",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Gerry Dodson",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Bill Polson",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Alastair Jack",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Alastair Jack",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Bill Polson",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Luke Johnson",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Shah Jehan",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Akshay Bhat",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Paul Murphy",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Ian Irving",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Ian Irving",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Luke Johnson",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Paul Murphy",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Ross Welsh",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Craig Taylor",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Ian Ross",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Pete Kingsley",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Calum Raine",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Ayyapan Kumaraperumal",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Calum Raine",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Pete Kingsley",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Ross Welsh",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Craig Taylor",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Ian Ross",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Ian Irving",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Andrew Barrie",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Dominic Dobson",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Dale Cooper",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Peter Geoghegan",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Eric Fraser",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Maneesh Varshney",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Adam McIlwaine",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-01",
+      "discipline": "batting",
+      "fixtureId": "314916",
+      "opposition": "Boroughmuir 2nds",
+      "player": "Vivek Kumar",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Akash Pandey",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Maneesh Varshney",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-22",
+      "discipline": "batting",
+      "fixtureId": "314919",
+      "opposition": "Musselburgh 2nds",
+      "player": "Punit Bhudia",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Sudip Biswas",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Kishore Damodharan",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-29",
+      "discipline": "batting",
+      "fixtureId": "314938",
+      "opposition": "Preston Village 2nds",
+      "player": "Naveen Krishna Ranganathan",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Darren Young",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Ross Byford",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Brendon Hillyard",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-08-03",
+      "discipline": "batting",
+      "fixtureId": "314943",
+      "opposition": "Largo 4ths",
+      "player": "Jamie MacQueen",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Kishore Damodharan",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Darren Young",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Noah Body",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Annotra-no Body",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Mo Nouman",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Sudip Biswas",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-06-08",
+      "discipline": "batting",
+      "fixtureId": "314962",
+      "opposition": "Preston Village 2nds",
+      "player": "Andy Barker",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Annotra-no Body",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Noah Body",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Mikey Hay-Smith",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "James Buchanan",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2013-07-27",
+      "discipline": "batting",
+      "fixtureId": "314977",
+      "opposition": "Largo 4ths",
+      "player": "Thiru Varathan",
+      "result": "Edinburgh South Cricket Club Won by forfeit",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Peter Fyfe",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Gerry Dodson",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Miles Ede",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Andrew Murray",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Hamish Skene",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Andy Barker",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Robert Edwards",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Richard Tresidder",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Mark Quinn",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Vishal Vatts",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2014-07-12",
+      "discipline": "batting",
+      "fixtureId": "385325",
+      "opposition": "Tranent 3rds",
+      "player": "Bradley Bonthrone",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded",
+      "team": "4th XI"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Paul Reddish",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Abhishek Desai",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Luke Johnson",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Katie McGill",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Jamie Shepherd",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Dibayendu  Dey",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Eóghan Forde",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Brandon Ogilvie",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Rahul Dhar",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Karamjit Singh",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2018-05-03",
+      "discipline": "batting",
+      "fixtureId": "634743",
+      "opposition": "Edinburgh Uni Staff CC",
+      "player": "Farhan Sheikh",
+      "result": "Edinburgh South Cricket Club Won by walkover",
+      "team": "Mitres"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Jeremy Blood",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Rahul Dhar",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Prabhneet Singh",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Sriram Govindan",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Rod Hunt",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Kiran SV",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Vipin Gupta",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Daniel Saunders",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Praful Pant",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Dean Penrose",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Jaskaran Singh",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Kamran ud Din",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Frank Omozejele",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "George O’Neill",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-25",
+      "discipline": "batting",
+      "fixtureId": "933049",
+      "opposition": "Kelso CC",
+      "player": "Moawiyah Nawaz",
+      "result": "Edinburgh South Cricket Club Won by Concession",
+      "team": "2nd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Ansh Bisht",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Sajad Ali",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Ankur Sharma",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Abdul Sabir",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Jubayer Ahmed",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Radeesh Manickam Kanagasabapathy",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    },
+    {
+      "date": "2026-07-11",
+      "discipline": "batting",
+      "fixtureId": "933065",
+      "opposition": "Gala 2nds",
+      "player": "Srini M",
+      "result": "Edinburgh South Cricket Club Won by concession",
+      "team": "3rd XI"
+    }
+  ],
+  "rule": "concession-forfeit-or-walkover"
+}

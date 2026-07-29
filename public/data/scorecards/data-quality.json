@@ -3063,8 +3063,9 @@
     }
   ],
   "competitionClassification": {
+    "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1472,
+    "exact": 1458,
     "missing": 1
   },
   "multipleBattingInnings": [
@@ -3179,7 +3180,7 @@
     "matchedScorecardPlayerCount": 645,
     "multipleBattingInningsAppearanceCount": 16,
     "playerCount": 646,
-    "recordPlayerCount": 660,
+    "recordPlayerCount": 659,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedAdministrativeFixtureCount": 15,
@@ -3187,7 +3188,7 @@
     "suppressedUnplayedInningsCount": 44,
     "uniqueAppearanceKeys": 15536,
     "uniqueFixtureIds": 1474,
-    "unmatchedRecordPlayerCount": 12,
+    "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
   "suppressedAdministrativeFixtures": [

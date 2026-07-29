@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { RecordsExplorer } from "./records-explorer";
+import matchIndex from "../public/data/scorecards/index.json";
+import playerDirectory from "../public/data/scorecards/player-directory.json";
+import records from "../public/data/records.json";
+import { AdaptiveHome } from "./adaptive-home";
 
 export const metadata: Metadata = {
   title: {
@@ -10,5 +13,32 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <RecordsExplorer />;
+  const latestMatches = [...matchIndex.matches]
+    .sort(
+      (left, right) =>
+        right.date.localeCompare(left.date) ||
+        right.fixtureId.localeCompare(left.fixtureId),
+    )
+    .slice(0, 4)
+    .map((match) => ({
+      fixtureId: match.fixtureId,
+      date: match.date,
+      team: match.esccTeam,
+      opposition: match.opposition,
+      result: match.result,
+    }));
+
+  return (
+    <AdaptiveHome
+      summary={{
+        seasons: records.meta.seasonCount,
+        players: playerDirectory.playerCount,
+        performances: records.meta.recordCount,
+        matches: matchIndex.meta.matchCount,
+        seasonStart: records.meta.seasonStart,
+        seasonEnd: records.meta.seasonEnd,
+      }}
+      latestMatches={latestMatches}
+    />
+  );
 }

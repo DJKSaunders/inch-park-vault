@@ -278,6 +278,15 @@ class ScorecardExportTests(unittest.TestCase):
         )
         self.assertIsNone(result["players"]["Unmatched Player"])
         self.assertEqual(result["summary"]["matchedRecordPlayerCount"], 1)
+        directory = {
+            player["name"]: player for player in result["directory"]
+        }
+        self.assertEqual(
+            directory["Test Player"]["playerId"], "p-test-player-d1969d47"
+        )
+        self.assertEqual(
+            directory["Test Player"]["scorecardPlayerId"], "p-test-player"
+        )
 
 
 if __name__ == "__main__":

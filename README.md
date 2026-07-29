@@ -24,7 +24,10 @@ python scripts/export_site_data.py \
 ```
 
 Run `pnpm run build` after every data refresh. The importer expects the
-`Unified Records` worksheet and its existing column names.
+`Unified Records` worksheet and its existing column names. When the scorecard
+quality index is present, fixtures decided by concession, forfeit or walkover
+are retained as results but their team-sheet rows are automatically excluded
+from player records.
 
 To append the latest season before it is folded into the main records workbook,
 provide the batting XML, bowling XML and season averages workbook:
@@ -80,3 +83,16 @@ This writes a compact match index, one JSON file per fixture, player histories,
 appearance and innings indexes, coverage metadata and a data-quality report to
 `public/data/scorecards/`. The existing `public/data/records.json` remains
 authoritative. See `docs/scorecard-data.md` for the schema and counting rules.
+
+If scorecard result classifications change after the main records export, apply
+the same no-play rules to the existing compact dataset and then regenerate the
+scorecard enrichment:
+
+```bash
+python3 scripts/apply_records_quality_rules.py
+python3 scripts/export_scorecard_data.py
+```
+
+`data/scorecards/competition-overrides.json` preserves reviewed fixture
+classifications when a no-play result has no remaining performance row from
+which to infer its competition.

@@ -29,8 +29,44 @@ test("server-renders The Inch Park Vault", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>The Inch Park Vault<\/title>/i);
-  assert.match(html, /Opening the vault/);
+  assert.match(html, /Every season/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
+});
+
+test("server-renders the records explorer route", async () => {
+  const response = await render("/records");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /<title>Records \| The Inch Park Vault<\/title>/i);
+  assert.match(html, /Opening the vault/i);
+});
+
+test("server-renders the player directory", async () => {
+  const response = await render("/players");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /<title>Players \| The Inch Park Vault<\/title>/i);
+  assert.match(html, /Opening the player archive/i);
+});
+
+test("server-renders a permanent player profile route", async () => {
+  const response = await render("/players/p-daniel-saunders-f7eb7048");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Daniel Saunders/i);
+  assert.match(html, /Opening .*profile/i);
+});
+
+test("server-renders the insights route", async () => {
+  const response = await render("/insights");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /<title>Insights \| The Inch Park Vault<\/title>/i);
+  assert.match(html, /Building the insight dashboards/i);
 });
 
 test("server-renders the match archive", async () => {
