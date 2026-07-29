@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     absolute: "The Inch Park Vault",
   },
   description:
-    "Edinburgh South Cricket Club Performance Archive – 2004–2025",
+    "Edinburgh South Cricket Club Performance Archive – 2004–2026",
 };
 
 export default function Home() {

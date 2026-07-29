@@ -6,6 +6,9 @@ Phase 1 prepares the scraped scorecards for safe use by the Vault. It does not
 replace the existing workbook-derived career records or add public-facing
 scorecard pages yet.
 
+Current status: complete. Site version 18 was published to the public Vault on
+29 July 2026.
+
 ## Progress
 
 - [x] Preserve and back up the complete scraped archive
@@ -17,7 +20,7 @@ scorecard pages yet.
 - [x] Generate provenance, coverage and data-quality reports
 - [x] Validate duplicate, DNB and multi-innings handling
 - [x] Run the production website build
-- [ ] Publish the validated Phase 1 version
+- [x] Publish the validated Phase 1 version
 
 ## Agreed counting rules
 

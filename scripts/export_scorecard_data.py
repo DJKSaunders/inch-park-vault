@@ -380,6 +380,23 @@ def score_summary(match: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def match_index_row(match: dict[str, Any]) -> dict[str, Any]:
+    players = sorted(
+        {
+            row["player"]
+            for innings in match["innings"]
+            for row in (
+                innings["batting"]
+                if innings["battingTeamRole"] == "escc"
+                else []
+            )
+            + (
+                innings["bowling"]
+                if innings["bowlingTeamRole"] == "escc"
+                else []
+            )
+            if not row["isPlaceholder"]
+        }
+    )
     return {
         "fixtureId": match["fixtureId"],
         "date": match["date"],
@@ -390,6 +407,7 @@ def match_index_row(match: dict[str, Any]) -> dict[str, Any]:
         "outcome": match["result"]["outcome"],
         "result": match["result"]["summary"],
         "teams": match["teams"],
+        "players": players,
         "scores": score_summary(match),
         "path": f"matches/{match['fixtureId']}.json",
     }

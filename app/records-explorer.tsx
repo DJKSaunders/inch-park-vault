@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { SiteHeader } from "./site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -1292,28 +1293,7 @@ export function RecordsExplorer() {
 
   return (
     <main className="vault-app">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="The Inch Park Vault">
-          <img src={`${publicBasePath}/escc-logo.png`} alt="" />
-          <span>
-            <strong>The Inch Park Vault</strong>
-            <small>
-              Edinburgh South Cricket Club Performance Archive –{" "}
-              {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
-            </small>
-          </span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#rankings">Rankings</a>
-          <a
-            href="https://www.edinburghsouthcc.org"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Club website <span aria-hidden="true">↗</span>
-          </a>
-        </nav>
-      </header>
+      <SiteHeader active="records" />
 
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
@@ -1877,7 +1857,7 @@ export function RecordsExplorer() {
           <img src={`${publicBasePath}/escc-logo.png`} alt="" />
           <p>The Inch Park Vault</p>
         </div>
-        <p>Edinburgh South Cricket Club Performance Archive – 2004–2025</p>
+        <p>Edinburgh South Cricket Club Performance Archive – 2004–2026</p>
       </footer>
 
       {openPlayer && selectedStats && (
