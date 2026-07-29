@@ -160,19 +160,26 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
       </section>
 
       <section className="scorecard-shell">
-        <div className="innings-summary" aria-label="Match scores">
-          {match.innings.map((innings) => (
-            <div key={innings.id}>
-              <span>{innings.battingTeam}</span>
-              <strong>{totalLabel(innings)}</strong>
-              <small>
-                {innings.total?.overs
-                  ? `${innings.total.overs} overs`
-                  : "Overs unavailable"}
-              </small>
-            </div>
-          ))}
-        </div>
+        {match.innings.length > 0 ? (
+          <div className="innings-summary" aria-label="Match scores">
+            {match.innings.map((innings) => (
+              <div key={innings.id}>
+                <span>{innings.battingTeam}</span>
+                <strong>{totalLabel(innings)}</strong>
+                <small>
+                  {innings.total?.overs
+                    ? `${innings.total.overs} overs`
+                    : "Overs unavailable"}
+                </small>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-innings">
+            <strong>No innings were played.</strong>
+            <span>The teams and result are retained from the fixture record.</span>
+          </div>
+        )}
 
         {match.innings.map((innings) => {
           const batters = innings.batting.filter(

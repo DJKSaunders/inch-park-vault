@@ -166,6 +166,23 @@ def overs_from_bowling(rows: list[dict[str, Any]]) -> str | None:
     return f"{balls // 6}.{balls % 6}"
 
 
+def is_unplayed_innings(batting: dict[str, Any] | None) -> bool:
+    """Identify empty scorecard templates that do not represent an innings."""
+
+    if not batting:
+        return False
+    total = batting.get("total") or {}
+    players = batting.get("players") or []
+    overs = total.get("overs")
+    return (
+        bool(players)
+        and all(player.get("didNotBat") for player in players)
+        and (total.get("runs") or 0) == 0
+        and (total.get("wickets") or 0) == 0
+        and (overs is None or str(overs) in {"0", "0.0"})
+    )
+
+
 def normalize_batting_rows(
     rows: list[dict[str, Any]],
     fixture_id: str,
@@ -296,6 +313,20 @@ def normalize_match(
     for index in range(section_count):
         batting = batting_sections[index] if index < len(batting_sections) else None
         bowling = bowling_sections[index] if index < len(bowling_sections) else None
+        if is_unplayed_innings(batting):
+            quality["suppressedUnplayedInnings"].append(
+                {
+                    "fixtureId": match["fixtureId"],
+                    "sourceInningsNumber": index + 1,
+                    "battingTeam": batting.get("team"),
+                    "battingRows": len(batting.get("players") or []),
+                    "bowlingRows": len(bowling.get("players") or [])
+                    if bowling
+                    else 0,
+                    "reason": "zero-total-all-dnb-template",
+                }
+            )
+            continue
         batting_team = batting["team"] if batting else None
         bowling_team = bowling["team"] if bowling else None
         role, archive_team = (
@@ -304,7 +335,7 @@ def normalize_match(
         bowling_role, escc_bowling_team = (
             side_role(bowling_team) if bowling_team else ("unknown", None)
         )
-        innings_number = index + 1
+        innings_number = len(innings) + 1
         batting_rows = normalize_batting_rows(
             batting.get("players", []) if batting else [],
             match["fixtureId"],
@@ -359,12 +390,22 @@ def normalize_match(
 
     escc_team = next(
         (
-            section["esccTeam"]
+            section["esccTeam"] or section["esccBowlingTeam"]
             for section in innings
             if section["esccTeam"] is not None
+            or section["esccBowlingTeam"] is not None
         ),
         None,
     )
+    if escc_team is None:
+        escc_team = next(
+            (
+                SCRAPER.archive_team(team)
+                for team in match["teams"]
+                if SCRAPER.archive_team(team)
+            ),
+            None,
+        )
     opposition = SCRAPER.match_opposition(match)
     return {
         "schemaVersion": SCHEMA_VERSION,
@@ -717,6 +758,12 @@ def schema_document() -> dict[str, Any]:
                 "has a ball count, overs are calculated from the summed "
                 "balls using six-ball overs."
             ),
+            "unplayedInnings": (
+                "A zero-run, zero-wicket section with no overs and every "
+                "listed batter marked did-not-bat is treated as an unused "
+                "scorecard template, not a played innings. Its paired "
+                "bowling rows are suppressed with it."
+            ),
         },
         "files": {
             "index.json": "Compact searchable match index and filter values.",
@@ -851,6 +898,7 @@ def export(
         "suppressedDnbRows": [],
         "collapsedDuplicateDnbRows": [],
         "calculatedInningsOvers": [],
+        "suppressedUnplayedInnings": [],
         "competitionClassification": Counter(),
         "sourceParseWarnings": [],
     }
@@ -910,6 +958,9 @@ def export(
         "sourceParseWarningCount": len(quality["sourceParseWarnings"]),
         "calculatedInningsOversCount": len(
             quality["calculatedInningsOvers"]
+        ),
+        "suppressedUnplayedInningsCount": len(
+            quality["suppressedUnplayedInnings"]
         ),
         **player_map["summary"],
     }

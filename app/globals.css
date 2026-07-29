@@ -2688,6 +2688,28 @@ footer p {
   font-weight: 700;
 }
 
+.no-innings {
+  margin-bottom: 38px;
+  padding: 28px 32px;
+  display: grid;
+  gap: 5px;
+  background: var(--navy-900);
+  color: var(--cream);
+}
+
+.no-innings strong {
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 31px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.no-innings span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .innings-card {
   margin-bottom: 44px;
   border: 1px solid rgba(6, 16, 28, 0.18);

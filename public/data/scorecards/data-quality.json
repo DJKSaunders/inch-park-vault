@@ -2746,11 +2746,6 @@
       "overs": "20.0"
     },
     {
-      "fixtureId": "925519",
-      "inningsNumber": 2,
-      "overs": "0.0"
-    },
-    {
       "fixtureId": "933041",
       "inningsNumber": 1,
       "overs": "36.4"
@@ -2794,16 +2789,6 @@
       "fixtureId": "933096",
       "inningsNumber": 1,
       "overs": "40.0"
-    },
-    {
-      "fixtureId": "940266",
-      "inningsNumber": 2,
-      "overs": "0.0"
-    },
-    {
-      "fixtureId": "941770",
-      "inningsNumber": 2,
-      "overs": "0.0"
     },
     {
       "fixtureId": "945110",
@@ -2989,11 +2974,6 @@
       "fixtureId": "933067",
       "inningsNumber": 1,
       "overs": "40.0"
-    },
-    {
-      "fixtureId": "945978",
-      "inningsNumber": 2,
-      "overs": "0.0"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3020,18 +3000,6 @@
       "inningsNumber": 1,
       "player": "Fraser Gordon",
       "rowNumber": 10
-    },
-    {
-      "fixtureId": "30789",
-      "inningsNumber": 1,
-      "player": "Fraser Gordon",
-      "rowNumber": 11
-    },
-    {
-      "fixtureId": "30790",
-      "inningsNumber": 1,
-      "player": "N Kieran",
-      "rowNumber": 4
     },
     {
       "fixtureId": "30801",
@@ -3200,24 +3168,25 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15998,
+    "appearanceCount": 15557,
     "battingInningsCount": 12941,
     "bowlingSpellCount": 9266,
-    "calculatedInningsOversCount": 599,
-    "collapsedDuplicateDnbRows": 16,
-    "dnbOnlyAppearanceCount": 3025,
+    "calculatedInningsOversCount": 595,
+    "collapsedDuplicateDnbRows": 14,
+    "dnbOnlyAppearanceCount": 2436,
     "fixtureCount": 1474,
-    "matchedRecordPlayerCount": 650,
-    "matchedScorecardPlayerCount": 647,
+    "matchedRecordPlayerCount": 649,
+    "matchedScorecardPlayerCount": 646,
     "multipleBattingInningsAppearanceCount": 16,
-    "playerCount": 648,
+    "playerCount": 647,
     "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedDnbRows": 10,
-    "uniqueAppearanceKeys": 15998,
+    "suppressedUnplayedInningsCount": 57,
+    "uniqueAppearanceKeys": 15557,
     "uniqueFixtureIds": 1474,
-    "unmatchedRecordPlayerCount": 10,
+    "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
   "suppressedDnbRows": [
@@ -3290,6 +3259,464 @@
       "player": "Butt",
       "reason": "genuine-innings-present",
       "rowNumber": 9
+    }
+  ],
+  "suppressedUnplayedInnings": [
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "30761",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "30789",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "30790",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "32484",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "32488",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "32490",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "37128",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "53911",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "53496",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "53919",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "78582",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "78568",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "179702",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "179733",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "279766",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "280042",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "279008",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "323657",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "323658",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "317623",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "319060",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "314916",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 4th XI",
+      "bowlingRows": 0,
+      "fixtureId": "314962",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "314675",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "314938",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "357850",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "314943",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "384896",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 4th XI",
+      "bowlingRows": 0,
+      "fixtureId": "385325",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "384909",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "454494",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "511034",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "511047",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "570977",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "782029",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club Mitres",
+      "bowlingRows": 0,
+      "fixtureId": "634743",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "784788",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club Mitres",
+      "bowlingRows": 0,
+      "fixtureId": "791407",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "784795",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "845746",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "845808",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "845770",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "845789",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "845790",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 4th XI",
+      "bowlingRows": 0,
+      "fixtureId": "845840",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "845792",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 5th XI",
+      "bowlingRows": 0,
+      "fixtureId": "850383",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 0,
+      "fixtureId": "893405",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 5th XI",
+      "bowlingRows": 0,
+      "fixtureId": "908087",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "908052",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 5th XI",
+      "bowlingRows": 0,
+      "fixtureId": "908088",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 11,
+      "fixtureId": "925519",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 1st XI",
+      "bowlingRows": 11,
+      "fixtureId": "940266",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 11,
+      "fixtureId": "941770",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
+      "bowlingRows": 0,
+      "fixtureId": "933065",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 0,
+      "fixtureId": "933049",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 1
+    },
+    {
+      "battingRows": 11,
+      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
+      "bowlingRows": 11,
+      "fixtureId": "945978",
+      "reason": "zero-total-all-dnb-template",
+      "sourceInningsNumber": 2
     }
   ]
 }

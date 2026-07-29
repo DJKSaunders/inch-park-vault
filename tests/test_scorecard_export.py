@@ -142,6 +142,54 @@ class ScorecardExportTests(unittest.TestCase):
         rows = [bowler("Bowler One", 48), bowler("Bowler Two", None)]
         self.assertIsNone(MODULE.overs_from_bowling(rows))
 
+    def test_all_dnb_zero_total_is_an_unplayed_innings(self):
+        batting = {
+            "team": "Edinburgh South Cricket Club 1st XI",
+            "total": {"runs": 0, "wickets": 0, "overs": None},
+            "players": [
+                batter("Player One", did_not_bat=True),
+                batter("Player Two", did_not_bat=True),
+            ],
+        }
+        self.assertTrue(MODULE.is_unplayed_innings(batting))
+
+    def test_zero_total_with_a_batting_innings_is_retained(self):
+        batting = {
+            "team": "Edinburgh South Cricket Club 1st XI",
+            "total": {"runs": 0, "wickets": 1, "overs": "0.1"},
+            "players": [batter("Player One", runs=0)],
+        }
+        self.assertFalse(MODULE.is_unplayed_innings(batting))
+
+    def test_suppressed_only_innings_still_preserves_escc_team(self):
+        match = {
+            "fixtureId": "200",
+            "date": "2026-06-01",
+            "season": 2026,
+            "title": "Abandoned fixture",
+            "teams": [
+                "Edinburgh South Cricket Club 1st XI",
+                "Visitors",
+            ],
+            "result": {"summary": "Match was Abandoned", "outcome": "abandoned"},
+            "batting": [
+                {
+                    "team": "Edinburgh South Cricket Club 1st XI",
+                    "total": {"runs": 0, "wickets": 0, "overs": None},
+                    "players": [batter("Player One", did_not_bat=True)],
+                }
+            ],
+            "bowling": [{"team": "Visitors", "players": []}],
+            "sourceUrl": "https://example.test/scorecard",
+            "sourceSha256": "test",
+            "parseWarnings": [],
+        }
+        quality = {"suppressedUnplayedInnings": []}
+        normalized = MODULE.normalize_match(match, "League", "exact", quality)
+        self.assertEqual(normalized["innings"], [])
+        self.assertEqual(normalized["esccTeam"], "1st XI")
+        self.assertEqual(len(quality["suppressedUnplayedInnings"]), 1)
+
     def test_record_names_map_to_normalized_scorecard_identities(self):
         records = {
             "batting": [["Test  Player"]],
