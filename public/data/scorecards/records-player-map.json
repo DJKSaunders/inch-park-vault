@@ -263,7 +263,7 @@
       "scorecardName": "Ajaykumar Jangiti"
     },
     "Akash Pandey": {
-      "appearanceCount": 2,
+      "appearanceCount": 1,
       "battingInningsCount": 1,
       "bowlingSpellCount": 1,
       "matchMethod": "normalized-exact",
@@ -299,7 +299,7 @@
       "scorecardName": "Alasdair Slack"
     },
     "Alastair Jack": {
-      "appearanceCount": 31,
+      "appearanceCount": 30,
       "battingInningsCount": 26,
       "bowlingSpellCount": 0,
       "matchMethod": "normalized-exact",
@@ -615,7 +615,7 @@
     },
     "Ankush Sehgal": null,
     "Annotra-no Body": {
-      "appearanceCount": 8,
+      "appearanceCount": 7,
       "battingInningsCount": 0,
       "bowlingSpellCount": 0,
       "matchMethod": "normalized-exact",
@@ -696,7 +696,7 @@
       "scorecardName": "Asad Amir"
     },
     "Asanka De Silva": {
-      "appearanceCount": 132,
+      "appearanceCount": 131,
       "battingInningsCount": 120,
       "bowlingSpellCount": 105,
       "matchMethod": "normalized-exact",
@@ -885,7 +885,7 @@
       "scorecardName": "Bilal Shah"
     },
     "Bill Polson": {
-      "appearanceCount": 65,
+      "appearanceCount": 64,
       "battingInningsCount": 45,
       "bowlingSpellCount": 28,
       "matchMethod": "normalized-exact",
@@ -1326,7 +1326,7 @@
       "scorecardName": "D Templeton"
     },
     "Dale Cooper": {
-      "appearanceCount": 39,
+      "appearanceCount": 38,
       "battingInningsCount": 33,
       "bowlingSpellCount": 13,
       "matchMethod": "normalized-exact",
@@ -1750,7 +1750,7 @@
       "scorecardName": "Eric Foggitt"
     },
     "Eric Fraser": {
-      "appearanceCount": 9,
+      "appearanceCount": 8,
       "battingInningsCount": 7,
       "bowlingSpellCount": 2,
       "matchMethod": "normalized-exact",
@@ -2137,7 +2137,7 @@
       "scorecardName": "Gus Bartlett"
     },
     "Gus McLean": {
-      "appearanceCount": 110,
+      "appearanceCount": 109,
       "battingInningsCount": 74,
       "bowlingSpellCount": 107,
       "matchMethod": "normalized-exact",
@@ -2399,7 +2399,7 @@
       "scorecardName": "Ian Astley"
     },
     "Ian Irving": {
-      "appearanceCount": 69,
+      "appearanceCount": 68,
       "battingInningsCount": 49,
       "bowlingSpellCount": 65,
       "matchMethod": "normalized-exact",
@@ -2606,7 +2606,7 @@
       "scorecardName": "James Brims"
     },
     "James Buchanan": {
-      "appearanceCount": 3,
+      "appearanceCount": 2,
       "battingInningsCount": 1,
       "bowlingSpellCount": 0,
       "matchMethod": "normalized-exact",
@@ -3327,7 +3327,7 @@
       "scorecardName": "Lucy Forrester-Smith"
     },
     "Luke Johnson": {
-      "appearanceCount": 104,
+      "appearanceCount": 103,
       "battingInningsCount": 71,
       "bowlingSpellCount": 87,
       "matchMethod": "normalized-exact",
@@ -3390,7 +3390,7 @@
       "scorecardName": "Malcolm Kane"
     },
     "Maneesh Varshney": {
-      "appearanceCount": 40,
+      "appearanceCount": 39,
       "battingInningsCount": 34,
       "bowlingSpellCount": 37,
       "matchMethod": "normalized-exact",
@@ -3633,7 +3633,7 @@
       "scorecardName": "Michael Tucker"
     },
     "Mikey Hay-Smith": {
-      "appearanceCount": 4,
+      "appearanceCount": 3,
       "battingInningsCount": 3,
       "bowlingSpellCount": 3,
       "matchMethod": "normalized-exact",
@@ -4049,7 +4049,7 @@
     "No Player /  One off player": null,
     "No Player / One off player": null,
     "Noah Body": {
-      "appearanceCount": 24,
+      "appearanceCount": 23,
       "battingInningsCount": 2,
       "bowlingSpellCount": 2,
       "matchMethod": "normalized-exact",
@@ -4214,7 +4214,7 @@
     },
     "Paul Middleton": null,
     "Paul Murphy": {
-      "appearanceCount": 74,
+      "appearanceCount": 73,
       "battingInningsCount": 65,
       "bowlingSpellCount": 18,
       "matchMethod": "normalized-exact",
@@ -4277,7 +4277,7 @@
       "scorecardName": "Peter DaBell"
     },
     "Peter Fyfe": {
-      "appearanceCount": 227,
+      "appearanceCount": 226,
       "battingInningsCount": 208,
       "bowlingSpellCount": 50,
       "matchMethod": "normalized-exact",
@@ -4286,7 +4286,7 @@
       "scorecardName": "Peter Fyfe"
     },
     "Peter Geoghegan": {
-      "appearanceCount": 35,
+      "appearanceCount": 34,
       "battingInningsCount": 31,
       "bowlingSpellCount": 16,
       "matchMethod": "normalized-exact",
@@ -4439,7 +4439,7 @@
       "scorecardName": "Praveen Kumar Padma"
     },
     "Punit Bhudia": {
-      "appearanceCount": 5,
+      "appearanceCount": 4,
       "battingInningsCount": 2,
       "bowlingSpellCount": 4,
       "matchMethod": "normalized-exact",
@@ -4736,7 +4736,7 @@
       "scorecardName": "Ross Henderson"
     },
     "Ross Welsh": {
-      "appearanceCount": 84,
+      "appearanceCount": 83,
       "battingInningsCount": 79,
       "bowlingSpellCount": 21,
       "matchMethod": "normalized-exact",
@@ -5276,7 +5276,7 @@
       "scorecardName": "Siva Kavati"
     },
     "Sohail Rupani": {
-      "appearanceCount": 124,
+      "appearanceCount": 123,
       "battingInningsCount": 117,
       "bowlingSpellCount": 28,
       "matchMethod": "normalized-exact",
@@ -5501,15 +5501,7 @@
       "playerId": "p-terry-stephens-764b8a7e",
       "scorecardName": "Terry Stephens"
     },
-    "Thiru Varathan": {
-      "appearanceCount": 1,
-      "battingInningsCount": 0,
-      "bowlingSpellCount": 0,
-      "matchMethod": "normalized-exact",
-      "path": "players/p-thiru-varathan-e1f716b2.json",
-      "playerId": "p-thiru-varathan-e1f716b2",
-      "scorecardName": "Thiru Varathan"
-    },
+    "Thiru Varathan": null,
     "Thishana Manchanayake": {
       "appearanceCount": 5,
       "battingInningsCount": 5,
@@ -5856,10 +5848,10 @@
   },
   "schemaVersion": "1.0.0",
   "summary": {
-    "matchedRecordPlayerCount": 649,
-    "matchedScorecardPlayerCount": 646,
+    "matchedRecordPlayerCount": 648,
+    "matchedScorecardPlayerCount": 645,
     "recordPlayerCount": 660,
-    "unmatchedRecordPlayerCount": 11,
+    "unmatchedRecordPlayerCount": 12,
     "unmatchedScorecardPlayerCount": 1
   },
   "unmatchedRecordPlayers": [
@@ -5873,6 +5865,7 @@
     "Oliver Rafe Armstrong Hughes",
     "Paul Middleton",
     "Syed Kabbir",
+    "Thiru Varathan",
     "Zaki Yusaf"
   ],
   "unmatchedScorecardPlayers": [

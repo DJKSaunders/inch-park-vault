@@ -3168,27 +3168,165 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15557,
+    "appearanceCount": 15536,
     "battingInningsCount": 12941,
     "bowlingSpellCount": 9266,
     "calculatedInningsOversCount": 595,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2436,
+    "dnbOnlyAppearanceCount": 2415,
     "fixtureCount": 1474,
-    "matchedRecordPlayerCount": 649,
-    "matchedScorecardPlayerCount": 646,
+    "matchedRecordPlayerCount": 648,
+    "matchedScorecardPlayerCount": 645,
     "multipleBattingInningsAppearanceCount": 16,
-    "playerCount": 647,
+    "playerCount": 646,
     "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
     "status": "passed",
+    "suppressedAdministrativeFixtureCount": 15,
     "suppressedDnbRows": 10,
-    "suppressedUnplayedInningsCount": 57,
-    "uniqueAppearanceKeys": 15557,
+    "suppressedUnplayedInningsCount": 44,
+    "uniqueAppearanceKeys": 15536,
     "uniqueFixtureIds": 1474,
-    "unmatchedRecordPlayerCount": 11,
+    "unmatchedRecordPlayerCount": 12,
     "unmatchedScorecardPlayerCount": 1
   },
+  "suppressedAdministrativeFixtures": [
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "280042",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won Forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "319060",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314916",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314962",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314919",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314938",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won - PV 2s conceded"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314977",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "314943",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by forfeit"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "385325",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won - opposition conceded"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "634743",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by walkover"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "845790",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by concession"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "908087",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by concession"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "908088",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by concession"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "933065",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by concession"
+    },
+    {
+      "battingRows": 11,
+      "battingSections": 2,
+      "bowlingRows": 0,
+      "bowlingSections": 2,
+      "fixtureId": "933049",
+      "reason": "concession-forfeit-or-walkover",
+      "result": "Edinburgh South Cricket Club Won by Concession"
+    }
+  ],
   "suppressedDnbRows": [
     {
       "fixtureId": "53925",
@@ -3386,14 +3524,6 @@
       "battingRows": 11,
       "battingTeam": "Edinburgh South Cricket Club 1st XI",
       "bowlingRows": 0,
-      "fixtureId": "280042",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 1st XI",
-      "bowlingRows": 0,
       "fixtureId": "279008",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 1
@@ -3424,43 +3554,11 @@
     },
     {
       "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
-      "bowlingRows": 0,
-      "fixtureId": "319060",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
-      "bowlingRows": 0,
-      "fixtureId": "314916",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 4th XI",
-      "bowlingRows": 0,
-      "fixtureId": "314962",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
       "battingTeam": "Edinburgh South Cricket Club 1st XI",
       "bowlingRows": 0,
       "fixtureId": "314675",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 2
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
-      "bowlingRows": 0,
-      "fixtureId": "314938",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
     },
     {
       "battingRows": 11,
@@ -3472,27 +3570,11 @@
     },
     {
       "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
-      "bowlingRows": 0,
-      "fixtureId": "314943",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
       "battingTeam": "Edinburgh South Cricket Club 1st XI",
       "bowlingRows": 0,
       "fixtureId": "384896",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 2
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 4th XI",
-      "bowlingRows": 0,
-      "fixtureId": "385325",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
     },
     {
       "battingRows": 11,
@@ -3541,14 +3623,6 @@
       "fixtureId": "782029",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 2
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club Mitres",
-      "bowlingRows": 0,
-      "fixtureId": "634743",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
     },
     {
       "battingRows": 11,
@@ -3608,14 +3682,6 @@
     },
     {
       "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
-      "bowlingRows": 0,
-      "fixtureId": "845790",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
       "battingTeam": "Edinburgh South Cricket Club 4th XI",
       "bowlingRows": 0,
       "fixtureId": "845840",
@@ -3648,25 +3714,9 @@
     },
     {
       "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 5th XI",
-      "bowlingRows": 0,
-      "fixtureId": "908087",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
       "battingTeam": "Edinburgh South Cricket Club 3rd XI",
       "bowlingRows": 0,
       "fixtureId": "908052",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 5th XI",
-      "bowlingRows": 0,
-      "fixtureId": "908088",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 1
     },
@@ -3693,22 +3743,6 @@
       "fixtureId": "941770",
       "reason": "zero-total-all-dnb-template",
       "sourceInningsNumber": 2
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 3rd XI",
-      "bowlingRows": 0,
-      "fixtureId": "933065",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
-    },
-    {
-      "battingRows": 11,
-      "battingTeam": "Edinburgh South Cricket Club 2nd XI",
-      "bowlingRows": 0,
-      "fixtureId": "933049",
-      "reason": "zero-total-all-dnb-template",
-      "sourceInningsNumber": 1
     },
     {
       "battingRows": 11,

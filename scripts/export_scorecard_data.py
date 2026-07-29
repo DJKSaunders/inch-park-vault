@@ -31,6 +31,10 @@ PLACEHOLDER_NAMES = {
     "selected member not found",
     "tbc",
 }
+ADMINISTRATIVE_NO_PLAY_RESULT = re.compile(
+    r"\b(?:conced(?:e|ed|es|ing)?|concession|forfeit(?:ed)?|walk[\s-]?over)\b",
+    flags=re.IGNORECASE,
+)
 
 
 def load_scraper_module():
@@ -183,6 +187,16 @@ def is_unplayed_innings(batting: dict[str, Any] | None) -> bool:
     )
 
 
+def is_administrative_no_play_result(match: dict[str, Any]) -> bool:
+    """Identify fixtures awarded without any cricket being played."""
+
+    result = match.get("result") or {}
+    return (
+        result.get("outcome") in {"concession", "forfeit", "walkover"}
+        or bool(ADMINISTRATIVE_NO_PLAY_RESULT.search(result.get("summary") or ""))
+    )
+
+
 def normalize_batting_rows(
     rows: list[dict[str, Any]],
     fixture_id: str,
@@ -309,7 +323,30 @@ def normalize_match(
     innings = []
     batting_sections = match.get("batting", [])
     bowling_sections = match.get("bowling", [])
-    section_count = max(len(batting_sections), len(bowling_sections))
+    administrative_no_play = is_administrative_no_play_result(match)
+    if administrative_no_play:
+        quality["suppressedAdministrativeFixtures"].append(
+            {
+                "fixtureId": match["fixtureId"],
+                "result": match["result"]["summary"],
+                "battingSections": len(batting_sections),
+                "bowlingSections": len(bowling_sections),
+                "battingRows": sum(
+                    len(section.get("players") or [])
+                    for section in batting_sections
+                ),
+                "bowlingRows": sum(
+                    len(section.get("players") or [])
+                    for section in bowling_sections
+                ),
+                "reason": "concession-forfeit-or-walkover",
+            }
+        )
+    section_count = (
+        0
+        if administrative_no_play
+        else max(len(batting_sections), len(bowling_sections))
+    )
     for index in range(section_count):
         batting = batting_sections[index] if index < len(batting_sections) else None
         bowling = bowling_sections[index] if index < len(bowling_sections) else None
@@ -753,6 +790,11 @@ def schema_document() -> dict[str, Any]:
             ),
         },
         "normalizationRules": {
+            "administrativeResults": (
+                "Fixtures decided by concession, forfeit or walkover retain "
+                "their fixture and result but have no innings, appearances or "
+                "performances."
+            ),
             "inningsOvers": (
                 "When the innings total omits overs and every bowling row "
                 "has a ball count, overs are calculated from the summed "
@@ -854,6 +896,11 @@ def validate_export(
                 f"{appearance['fixtureId']} {appearance['player']}"
             )
     for match in matches:
+        if is_administrative_no_play_result(match) and match["innings"]:
+            raise ValueError(
+                "Administrative no-play fixture retains innings: "
+                f"{match['fixtureId']}"
+            )
         for innings in match["innings"]:
             named_real = {
                 row["playerId"]
@@ -899,6 +946,7 @@ def export(
         "collapsedDuplicateDnbRows": [],
         "calculatedInningsOvers": [],
         "suppressedUnplayedInnings": [],
+        "suppressedAdministrativeFixtures": [],
         "competitionClassification": Counter(),
         "sourceParseWarnings": [],
     }
@@ -961,6 +1009,9 @@ def export(
         ),
         "suppressedUnplayedInningsCount": len(
             quality["suppressedUnplayedInnings"]
+        ),
+        "suppressedAdministrativeFixtureCount": len(
+            quality["suppressedAdministrativeFixtures"]
         ),
         **player_map["summary"],
     }

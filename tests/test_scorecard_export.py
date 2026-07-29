@@ -161,6 +161,73 @@ class ScorecardExportTests(unittest.TestCase):
         }
         self.assertFalse(MODULE.is_unplayed_innings(batting))
 
+    def test_concession_forfeit_and_walkover_are_no_play_results(self):
+        for summary, outcome in (
+            ("Edinburgh South Won - opposition conceded", "concession"),
+            ("Edinburgh South Won by forfeit", "win"),
+            ("Edinburgh South Won by walkover", "win"),
+        ):
+            with self.subTest(summary=summary):
+                self.assertTrue(
+                    MODULE.is_administrative_no_play_result(
+                        {"result": {"summary": summary, "outcome": outcome}}
+                    )
+                )
+
+    def test_ordinary_win_is_not_an_administrative_result(self):
+        self.assertFalse(
+            MODULE.is_administrative_no_play_result(
+                {
+                    "result": {
+                        "summary": "Edinburgh South won by 6 wickets",
+                        "outcome": "win",
+                    }
+                }
+            )
+        )
+
+    def test_concession_retains_fixture_but_removes_all_innings(self):
+        match = {
+            "fixtureId": "201",
+            "date": "2026-06-02",
+            "season": 2026,
+            "title": "Conceded fixture",
+            "teams": [
+                "Edinburgh South Cricket Club 1st XI",
+                "Visitors",
+            ],
+            "result": {
+                "summary": "Edinburgh South Cricket Club Won by forfeit",
+                "outcome": "win",
+            },
+            "batting": [
+                {
+                    "team": "Edinburgh South Cricket Club 1st XI",
+                    "total": {"runs": 1, "wickets": 0, "overs": None},
+                    "players": [batter("Player One", did_not_bat=True)],
+                }
+            ],
+            "bowling": [{"team": "Visitors", "players": []}],
+            "sourceUrl": "https://example.test/scorecard",
+            "sourceSha256": "test",
+            "parseWarnings": [],
+        }
+        quality = {
+            "suppressedUnplayedInnings": [],
+            "suppressedAdministrativeFixtures": [],
+        }
+        normalized = MODULE.normalize_match(match, "League", "exact", quality)
+        self.assertEqual(normalized["innings"], [])
+        self.assertEqual(normalized["esccTeam"], "1st XI")
+        self.assertEqual(len(quality["suppressedAdministrativeFixtures"]), 1)
+        players, _, appearances, batting, bowling = MODULE.build_player_data(
+            [normalized]
+        )
+        self.assertEqual(players, [])
+        self.assertEqual(appearances, [])
+        self.assertEqual(batting, [])
+        self.assertEqual(bowling, [])
+
     def test_suppressed_only_innings_still_preserves_escc_team(self):
         match = {
             "fixtureId": "200",
