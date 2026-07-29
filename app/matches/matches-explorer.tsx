@@ -289,7 +289,7 @@ export function MatchesExplorer() {
           {matches.slice(0, visible).map((match) => (
             <a
               className="match-card"
-              href={`${publicBasePath}/matches/${match.fixtureId}/`}
+              href={`${publicBasePath}/matches/${match.fixtureId}`}
               key={match.fixtureId}
             >
               <div className="match-card-date">
