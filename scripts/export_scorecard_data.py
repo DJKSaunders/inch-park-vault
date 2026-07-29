@@ -157,6 +157,15 @@ def normalize_total(total: dict[str, Any] | None) -> dict[str, Any] | None:
     }
 
 
+def overs_from_bowling(rows: list[dict[str, Any]]) -> str | None:
+    """Calculate cricket overs from a complete set of bowling ball counts."""
+
+    if not rows or any(row.get("balls") is None for row in rows):
+        return None
+    balls = sum(int(row["balls"]) for row in rows)
+    return f"{balls // 6}.{balls % 6}"
+
+
 def normalize_batting_rows(
     rows: list[dict[str, Any]],
     fixture_id: str,
@@ -307,6 +316,19 @@ def normalize_match(
             match["fixtureId"],
             innings_number,
         )
+        total = normalize_total(batting.get("total") if batting else None)
+        if total and not total["overs"]:
+            calculated_overs = overs_from_bowling(bowling_rows)
+            if calculated_overs is not None:
+                total["overs"] = calculated_overs
+                total["oversSource"] = "calculated-from-bowling"
+                quality["calculatedInningsOvers"].append(
+                    {
+                        "fixtureId": match["fixtureId"],
+                        "inningsNumber": innings_number,
+                        "overs": calculated_overs,
+                    }
+                )
         innings.append(
             {
                 "id": f"{match['fixtureId']}-{innings_number}",
@@ -317,7 +339,7 @@ def normalize_match(
                 "esccTeam": archive_team,
                 "bowlingTeamRole": bowling_role,
                 "esccBowlingTeam": escc_bowling_team,
-                "total": normalize_total(batting.get("total") if batting else None),
+                "total": total,
                 "batting": batting_rows,
                 "bowling": bowling_rows,
             }
@@ -618,6 +640,13 @@ def schema_document() -> dict[str, Any]:
                 "excluded from career player indexes."
             ),
         },
+        "normalizationRules": {
+            "inningsOvers": (
+                "When the innings total omits overs and every bowling row "
+                "has a ball count, overs are calculated from the summed "
+                "balls using six-ball overs."
+            ),
+        },
         "files": {
             "index.json": "Compact searchable match index and filter values.",
             "matches/{fixtureId}.json": "Normalized scorecard and provenance.",
@@ -746,6 +775,7 @@ def export(
         "schemaVersion": SCHEMA_VERSION,
         "suppressedDnbRows": [],
         "collapsedDuplicateDnbRows": [],
+        "calculatedInningsOvers": [],
         "competitionClassification": Counter(),
         "sourceParseWarnings": [],
     }
@@ -802,6 +832,9 @@ def export(
             quality["multipleBattingInnings"]
         ),
         "sourceParseWarningCount": len(quality["sourceParseWarnings"]),
+        "calculatedInningsOversCount": len(
+            quality["calculatedInningsOvers"]
+        ),
     }
 
     output_path = output_path.resolve()

@@ -32,6 +32,20 @@ def batter(name, runs=None, did_not_bat=False, member_id="1"):
     }
 
 
+def bowler(name, balls):
+    return {
+        "player": name,
+        "memberId": None,
+        "overs": None,
+        "balls": balls,
+        "maidens": 0,
+        "runs": 0,
+        "wickets": 0,
+        "average": None,
+        "economy": None,
+    }
+
+
 class ScorecardExportTests(unittest.TestCase):
     def quality(self):
         return {
@@ -119,6 +133,14 @@ class ScorecardExportTests(unittest.TestCase):
         self.assertEqual(len(appearances), 1)
         self.assertEqual(len(innings), 2)
         self.assertEqual(appearances[0]["battingInningsCount"], 2)
+
+    def test_innings_overs_are_calculated_from_bowling_balls(self):
+        rows = [bowler("Bowler One", 48), bowler("Bowler Two", 32)]
+        self.assertEqual(MODULE.overs_from_bowling(rows), "13.2")
+
+    def test_innings_overs_are_not_calculated_from_incomplete_bowling(self):
+        rows = [bowler("Bowler One", 48), bowler("Bowler Two", None)]
+        self.assertIsNone(MODULE.overs_from_bowling(rows))
 
 
 if __name__ == "__main__":

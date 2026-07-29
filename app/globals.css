@@ -2460,6 +2460,11 @@ footer p {
   font-size: 12px;
 }
 
+.batting-card,
+.bowling-card {
+  table-layout: fixed;
+}
+
 .scorecard-table caption {
   position: absolute;
   width: 1px;
@@ -2499,33 +2504,40 @@ footer p {
 }
 
 .batting-card tbody td:nth-child(2) {
-  min-width: 240px;
   color: #526070;
+  overflow-wrap: anywhere;
 }
 
 .batting-card .scorecard-player-column {
-  width: 22%;
+  width: 23%;
 }
 
 .batting-card .scorecard-dismissal-column {
-  width: auto;
+  width: 35%;
 }
 
 .batting-card .scorecard-stat-column {
-  width: 7%;
+  width: 8.4%;
 }
 
 .bowling-card tbody th {
-  min-width: 190px;
   font-weight: 800;
 }
 
 .bowling-card .scorecard-player-column {
-  width: auto;
+  width: 40%;
 }
 
 .bowling-card .scorecard-stat-column {
-  width: 11%;
+  width: 12%;
+}
+
+.batting-card th:nth-child(n + 3),
+.batting-card td:nth-child(n + 3),
+.bowling-card th:nth-child(n + 2),
+.bowling-card td:nth-child(n + 2) {
+  padding-right: 7px;
+  padding-left: 7px;
 }
 
 .scorecard-table .scorecard-primary {

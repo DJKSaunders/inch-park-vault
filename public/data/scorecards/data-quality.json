@@ -1,4 +1,3001 @@
 {
+  "calculatedInningsOvers": [
+    {
+      "fixtureId": "32733",
+      "inningsNumber": 1,
+      "overs": "33.0"
+    },
+    {
+      "fixtureId": "45033",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "128404",
+      "inningsNumber": 1,
+      "overs": "36.0"
+    },
+    {
+      "fixtureId": "127956",
+      "inningsNumber": 1,
+      "overs": "36.0"
+    },
+    {
+      "fixtureId": "141916",
+      "inningsNumber": 2,
+      "overs": "22.1"
+    },
+    {
+      "fixtureId": "142082",
+      "inningsNumber": 2,
+      "overs": "15.0"
+    },
+    {
+      "fixtureId": "171864",
+      "inningsNumber": 1,
+      "overs": "18.0"
+    },
+    {
+      "fixtureId": "179750",
+      "inningsNumber": 1,
+      "overs": "36.2"
+    },
+    {
+      "fixtureId": "179753",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "179759",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "179723",
+      "inningsNumber": 1,
+      "overs": "35.2"
+    },
+    {
+      "fixtureId": "179760",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "179762",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "179730",
+      "inningsNumber": 2,
+      "overs": "42.0"
+    },
+    {
+      "fixtureId": "179773",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "179780",
+      "inningsNumber": 1,
+      "overs": "34.4"
+    },
+    {
+      "fixtureId": "187027",
+      "inningsNumber": 1,
+      "overs": "28.2"
+    },
+    {
+      "fixtureId": "179787",
+      "inningsNumber": 2,
+      "overs": "32.4"
+    },
+    {
+      "fixtureId": "179778",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "262610",
+      "inningsNumber": 2,
+      "overs": "40.3"
+    },
+    {
+      "fixtureId": "262611",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "265918",
+      "inningsNumber": 2,
+      "overs": "37.0"
+    },
+    {
+      "fixtureId": "238995",
+      "inningsNumber": 1,
+      "overs": "27.0"
+    },
+    {
+      "fixtureId": "238996",
+      "inningsNumber": 2,
+      "overs": "21.0"
+    },
+    {
+      "fixtureId": "265869",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "239014",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "260694",
+      "inningsNumber": 1,
+      "overs": "28.3"
+    },
+    {
+      "fixtureId": "265870",
+      "inningsNumber": 2,
+      "overs": "34.0"
+    },
+    {
+      "fixtureId": "275864",
+      "inningsNumber": 1,
+      "overs": "17.2"
+    },
+    {
+      "fixtureId": "238980",
+      "inningsNumber": 2,
+      "overs": "13.0"
+    },
+    {
+      "fixtureId": "238999",
+      "inningsNumber": 1,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "265872",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "265873",
+      "inningsNumber": 2,
+      "overs": "38.5"
+    },
+    {
+      "fixtureId": "265874",
+      "inningsNumber": 1,
+      "overs": "27.0"
+    },
+    {
+      "fixtureId": "239022",
+      "inningsNumber": 1,
+      "overs": "2.2"
+    },
+    {
+      "fixtureId": "260699",
+      "inningsNumber": 2,
+      "overs": "17.5"
+    },
+    {
+      "fixtureId": "265878",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "265879",
+      "inningsNumber": 1,
+      "overs": "36.3"
+    },
+    {
+      "fixtureId": "239010",
+      "inningsNumber": 2,
+      "overs": "45.0"
+    },
+    {
+      "fixtureId": "286867",
+      "inningsNumber": 2,
+      "overs": "17.0"
+    },
+    {
+      "fixtureId": "316101",
+      "inningsNumber": 2,
+      "overs": "26.0"
+    },
+    {
+      "fixtureId": "314533",
+      "inningsNumber": 1,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "335810",
+      "inningsNumber": 2,
+      "overs": "22.2"
+    },
+    {
+      "fixtureId": "314929",
+      "inningsNumber": 2,
+      "overs": "37.0"
+    },
+    {
+      "fixtureId": "314930",
+      "inningsNumber": 1,
+      "overs": "31.3"
+    },
+    {
+      "fixtureId": "314955",
+      "inningsNumber": 1,
+      "overs": "15.2"
+    },
+    {
+      "fixtureId": "314931",
+      "inningsNumber": 2,
+      "overs": "29.1"
+    },
+    {
+      "fixtureId": "314933",
+      "inningsNumber": 2,
+      "overs": "30.2"
+    },
+    {
+      "fixtureId": "348043",
+      "inningsNumber": 2,
+      "overs": "32.5"
+    },
+    {
+      "fixtureId": "314934",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "314673",
+      "inningsNumber": 1,
+      "overs": "43.3"
+    },
+    {
+      "fixtureId": "314935",
+      "inningsNumber": 2,
+      "overs": "39.0"
+    },
+    {
+      "fixtureId": "314667",
+      "inningsNumber": 2,
+      "overs": "33.2"
+    },
+    {
+      "fixtureId": "314918",
+      "inningsNumber": 2,
+      "overs": "40.5"
+    },
+    {
+      "fixtureId": "314936",
+      "inningsNumber": 2,
+      "overs": "13.3"
+    },
+    {
+      "fixtureId": "314963",
+      "inningsNumber": 1,
+      "overs": "21.1"
+    },
+    {
+      "fixtureId": "318531",
+      "inningsNumber": 2,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "314937",
+      "inningsNumber": 2,
+      "overs": "19.4"
+    },
+    {
+      "fixtureId": "314920",
+      "inningsNumber": 2,
+      "overs": "10.0"
+    },
+    {
+      "fixtureId": "314677",
+      "inningsNumber": 2,
+      "overs": "25.4"
+    },
+    {
+      "fixtureId": "314939",
+      "inningsNumber": 2,
+      "overs": "27.2"
+    },
+    {
+      "fixtureId": "314940",
+      "inningsNumber": 2,
+      "overs": "32.2"
+    },
+    {
+      "fixtureId": "314941",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "314924",
+      "inningsNumber": 1,
+      "overs": "44.2"
+    },
+    {
+      "fixtureId": "314942",
+      "inningsNumber": 2,
+      "overs": "21.1"
+    },
+    {
+      "fixtureId": "314925",
+      "inningsNumber": 2,
+      "overs": "31.3"
+    },
+    {
+      "fixtureId": "314946",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "314683",
+      "inningsNumber": 2,
+      "overs": "18.4"
+    },
+    {
+      "fixtureId": "314927",
+      "inningsNumber": 1,
+      "overs": "36.5"
+    },
+    {
+      "fixtureId": "314949",
+      "inningsNumber": 1,
+      "overs": "38.1"
+    },
+    {
+      "fixtureId": "314928",
+      "inningsNumber": 1,
+      "overs": "45.0"
+    },
+    {
+      "fixtureId": "314953",
+      "inningsNumber": 2,
+      "overs": "6.0"
+    },
+    {
+      "fixtureId": "314989",
+      "inningsNumber": 1,
+      "overs": "10.3"
+    },
+    {
+      "fixtureId": "401350",
+      "inningsNumber": 2,
+      "overs": "25.5"
+    },
+    {
+      "fixtureId": "384910",
+      "inningsNumber": 2,
+      "overs": "32.0"
+    },
+    {
+      "fixtureId": "385293",
+      "inningsNumber": 1,
+      "overs": "34.0"
+    },
+    {
+      "fixtureId": "384889",
+      "inningsNumber": 2,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "384911",
+      "inningsNumber": 2,
+      "overs": "27.1"
+    },
+    {
+      "fixtureId": "385294",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "385298",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "384913",
+      "inningsNumber": 2,
+      "overs": "36.0"
+    },
+    {
+      "fixtureId": "384915",
+      "inningsNumber": 1,
+      "overs": "45.0"
+    },
+    {
+      "fixtureId": "385301",
+      "inningsNumber": 2,
+      "overs": "7.4"
+    },
+    {
+      "fixtureId": "384916",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "385320",
+      "inningsNumber": 2,
+      "overs": "15.3"
+    },
+    {
+      "fixtureId": "384917",
+      "inningsNumber": 2,
+      "overs": "16.4"
+    },
+    {
+      "fixtureId": "385303",
+      "inningsNumber": 2,
+      "overs": "31.4"
+    },
+    {
+      "fixtureId": "385304",
+      "inningsNumber": 1,
+      "overs": "34.3"
+    },
+    {
+      "fixtureId": "385305",
+      "inningsNumber": 1,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "385324",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "424194",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "385306",
+      "inningsNumber": 2,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "385307",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "385308",
+      "inningsNumber": 2,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "385311",
+      "inningsNumber": 2,
+      "overs": "13.0"
+    },
+    {
+      "fixtureId": "385312",
+      "inningsNumber": 1,
+      "overs": "15.4"
+    },
+    {
+      "fixtureId": "385313",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "428139",
+      "inningsNumber": 1,
+      "overs": "35.2"
+    },
+    {
+      "fixtureId": "454481",
+      "inningsNumber": 2,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "454482",
+      "inningsNumber": 2,
+      "overs": "31.4"
+    },
+    {
+      "fixtureId": "454483",
+      "inningsNumber": 2,
+      "overs": "32.4"
+    },
+    {
+      "fixtureId": "454484",
+      "inningsNumber": 2,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "454485",
+      "inningsNumber": 1,
+      "overs": "37.5"
+    },
+    {
+      "fixtureId": "454486",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "454487",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "454470",
+      "inningsNumber": 2,
+      "overs": "39.2"
+    },
+    {
+      "fixtureId": "454488",
+      "inningsNumber": 2,
+      "overs": "5.5"
+    },
+    {
+      "fixtureId": "454489",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "454490",
+      "inningsNumber": 2,
+      "overs": "29.4"
+    },
+    {
+      "fixtureId": "454491",
+      "inningsNumber": 1,
+      "overs": "15.3"
+    },
+    {
+      "fixtureId": "454492",
+      "inningsNumber": 2,
+      "overs": "33.0"
+    },
+    {
+      "fixtureId": "454493",
+      "inningsNumber": 2,
+      "overs": "10.3"
+    },
+    {
+      "fixtureId": "458400",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "454496",
+      "inningsNumber": 2,
+      "overs": "37.3"
+    },
+    {
+      "fixtureId": "454497",
+      "inningsNumber": 2,
+      "overs": "29.4"
+    },
+    {
+      "fixtureId": "454498",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "495863",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "511050",
+      "inningsNumber": 1,
+      "overs": "20.1"
+    },
+    {
+      "fixtureId": "511051",
+      "inningsNumber": 2,
+      "overs": "18.2"
+    },
+    {
+      "fixtureId": "511052",
+      "inningsNumber": 2,
+      "overs": "32.1"
+    },
+    {
+      "fixtureId": "511053",
+      "inningsNumber": 1,
+      "overs": "27.1"
+    },
+    {
+      "fixtureId": "511054",
+      "inningsNumber": 1,
+      "overs": "26.0"
+    },
+    {
+      "fixtureId": "511037",
+      "inningsNumber": 2,
+      "overs": "8.0"
+    },
+    {
+      "fixtureId": "511055",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "511058",
+      "inningsNumber": 1,
+      "overs": "25.0"
+    },
+    {
+      "fixtureId": "511059",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "511060",
+      "inningsNumber": 2,
+      "overs": "38.1"
+    },
+    {
+      "fixtureId": "511061",
+      "inningsNumber": 1,
+      "overs": "24.2"
+    },
+    {
+      "fixtureId": "511062",
+      "inningsNumber": 2,
+      "overs": "33.3"
+    },
+    {
+      "fixtureId": "511063",
+      "inningsNumber": 2,
+      "overs": "38.5"
+    },
+    {
+      "fixtureId": "511081",
+      "inningsNumber": 1,
+      "overs": "33.2"
+    },
+    {
+      "fixtureId": "511064",
+      "inningsNumber": 1,
+      "overs": "31.1"
+    },
+    {
+      "fixtureId": "511082",
+      "inningsNumber": 1,
+      "overs": "24.5"
+    },
+    {
+      "fixtureId": "511083",
+      "inningsNumber": 2,
+      "overs": "22.0"
+    },
+    {
+      "fixtureId": "511066",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "555114",
+      "inningsNumber": 2,
+      "overs": "36.0"
+    },
+    {
+      "fixtureId": "571012",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "571015",
+      "inningsNumber": 2,
+      "overs": "37.5"
+    },
+    {
+      "fixtureId": "622332",
+      "inningsNumber": 2,
+      "overs": "0.0"
+    },
+    {
+      "fixtureId": "622364",
+      "inningsNumber": 1,
+      "overs": "22.3"
+    },
+    {
+      "fixtureId": "622367",
+      "inningsNumber": 2,
+      "overs": "12.1"
+    },
+    {
+      "fixtureId": "622368",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "622371",
+      "inningsNumber": 2,
+      "overs": "16.3"
+    },
+    {
+      "fixtureId": "666121",
+      "inningsNumber": 2,
+      "overs": "22.2"
+    },
+    {
+      "fixtureId": "622375",
+      "inningsNumber": 2,
+      "overs": "32.1"
+    },
+    {
+      "fixtureId": "622376",
+      "inningsNumber": 2,
+      "overs": "28.3"
+    },
+    {
+      "fixtureId": "622377",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "622380",
+      "inningsNumber": 2,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "676728",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "676729",
+      "inningsNumber": 2,
+      "overs": "28.0"
+    },
+    {
+      "fixtureId": "700912",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "676712",
+      "inningsNumber": 1,
+      "overs": "33.5"
+    },
+    {
+      "fixtureId": "676730",
+      "inningsNumber": 1,
+      "overs": "12.3"
+    },
+    {
+      "fixtureId": "676714",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "676733",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "703497",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "702429",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "676735",
+      "inningsNumber": 1,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "676736",
+      "inningsNumber": 1,
+      "overs": "21.5"
+    },
+    {
+      "fixtureId": "676737",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "676738",
+      "inningsNumber": 1,
+      "overs": "37.4"
+    },
+    {
+      "fixtureId": "676739",
+      "inningsNumber": 1,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "676740",
+      "inningsNumber": 2,
+      "overs": "34.3"
+    },
+    {
+      "fixtureId": "676742",
+      "inningsNumber": 1,
+      "overs": "21.4"
+    },
+    {
+      "fixtureId": "703500",
+      "inningsNumber": 2,
+      "overs": "17.5"
+    },
+    {
+      "fixtureId": "676745",
+      "inningsNumber": 2,
+      "overs": "36.3"
+    },
+    {
+      "fixtureId": "676781",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "750490",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "750485",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "753754",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "753337",
+      "inningsNumber": 1,
+      "overs": "41.0"
+    },
+    {
+      "fixtureId": "754911",
+      "inningsNumber": 2,
+      "overs": "32.2"
+    },
+    {
+      "fixtureId": "754106",
+      "inningsNumber": 1,
+      "overs": "16.0"
+    },
+    {
+      "fixtureId": "750488",
+      "inningsNumber": 2,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "779649",
+      "inningsNumber": 1,
+      "overs": "24.0"
+    },
+    {
+      "fixtureId": "781386",
+      "inningsNumber": 1,
+      "overs": "24.0"
+    },
+    {
+      "fixtureId": "781394",
+      "inningsNumber": 1,
+      "overs": "31.0"
+    },
+    {
+      "fixtureId": "783630",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "784456",
+      "inningsNumber": 2,
+      "overs": "24.5"
+    },
+    {
+      "fixtureId": "780964",
+      "inningsNumber": 2,
+      "overs": "30.4"
+    },
+    {
+      "fixtureId": "780961",
+      "inningsNumber": 1,
+      "overs": "25.3"
+    },
+    {
+      "fixtureId": "780966",
+      "inningsNumber": 2,
+      "overs": "32.5"
+    },
+    {
+      "fixtureId": "780962",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "786514",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "784782",
+      "inningsNumber": 2,
+      "overs": "36.1"
+    },
+    {
+      "fixtureId": "784809",
+      "inningsNumber": 1,
+      "overs": "37.2"
+    },
+    {
+      "fixtureId": "784824",
+      "inningsNumber": 1,
+      "overs": "39.3"
+    },
+    {
+      "fixtureId": "787299",
+      "inningsNumber": 1,
+      "overs": "11.0"
+    },
+    {
+      "fixtureId": "784783",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "784810",
+      "inningsNumber": 1,
+      "overs": "15.0"
+    },
+    {
+      "fixtureId": "784825",
+      "inningsNumber": 1,
+      "overs": "3.3"
+    },
+    {
+      "fixtureId": "787476",
+      "inningsNumber": 2,
+      "overs": "15.2"
+    },
+    {
+      "fixtureId": "784784",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "784811",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "784826",
+      "inningsNumber": 2,
+      "overs": "26.1"
+    },
+    {
+      "fixtureId": "784785",
+      "inningsNumber": 2,
+      "overs": "19.2"
+    },
+    {
+      "fixtureId": "788697",
+      "inningsNumber": 2,
+      "overs": "16.4"
+    },
+    {
+      "fixtureId": "784786",
+      "inningsNumber": 1,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "784813",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "784829",
+      "inningsNumber": 2,
+      "overs": "31.3"
+    },
+    {
+      "fixtureId": "788699",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "789622",
+      "inningsNumber": 2,
+      "overs": "16.0"
+    },
+    {
+      "fixtureId": "784814",
+      "inningsNumber": 1,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "784830",
+      "inningsNumber": 2,
+      "overs": "27.0"
+    },
+    {
+      "fixtureId": "784787",
+      "inningsNumber": 2,
+      "overs": "20.3"
+    },
+    {
+      "fixtureId": "789799",
+      "inningsNumber": 2,
+      "overs": "13.5"
+    },
+    {
+      "fixtureId": "784789",
+      "inningsNumber": 2,
+      "overs": "22.3"
+    },
+    {
+      "fixtureId": "784817",
+      "inningsNumber": 2,
+      "overs": "31.0"
+    },
+    {
+      "fixtureId": "784835",
+      "inningsNumber": 1,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "790427",
+      "inningsNumber": 2,
+      "overs": "19.1"
+    },
+    {
+      "fixtureId": "784790",
+      "inningsNumber": 1,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "784818",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "784836",
+      "inningsNumber": 2,
+      "overs": "36.1"
+    },
+    {
+      "fixtureId": "784819",
+      "inningsNumber": 2,
+      "overs": "19.2"
+    },
+    {
+      "fixtureId": "784837",
+      "inningsNumber": 2,
+      "overs": "15.3"
+    },
+    {
+      "fixtureId": "791103",
+      "inningsNumber": 2,
+      "overs": "18.2"
+    },
+    {
+      "fixtureId": "784792",
+      "inningsNumber": 1,
+      "overs": "13.0"
+    },
+    {
+      "fixtureId": "784820",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "784838",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "784793",
+      "inningsNumber": 2,
+      "overs": "37.3"
+    },
+    {
+      "fixtureId": "784821",
+      "inningsNumber": 2,
+      "overs": "26.5"
+    },
+    {
+      "fixtureId": "784839",
+      "inningsNumber": 2,
+      "overs": "37.1"
+    },
+    {
+      "fixtureId": "791067",
+      "inningsNumber": 1,
+      "overs": "29.0"
+    },
+    {
+      "fixtureId": "790423",
+      "inningsNumber": 1,
+      "overs": "16.5"
+    },
+    {
+      "fixtureId": "784794",
+      "inningsNumber": 2,
+      "overs": "34.0"
+    },
+    {
+      "fixtureId": "792692",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "790530",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "790430",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "784796",
+      "inningsNumber": 2,
+      "overs": "30.5"
+    },
+    {
+      "fixtureId": "784841",
+      "inningsNumber": 1,
+      "overs": "22.2"
+    },
+    {
+      "fixtureId": "792920",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "793644",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "794331",
+      "inningsNumber": 2,
+      "overs": "28.5"
+    },
+    {
+      "fixtureId": "817885",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "804351",
+      "inningsNumber": 1,
+      "overs": "31.2"
+    },
+    {
+      "fixtureId": "811157",
+      "inningsNumber": 2,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "814521",
+      "inningsNumber": 1,
+      "overs": "32.2"
+    },
+    {
+      "fixtureId": "811158",
+      "inningsNumber": 2,
+      "overs": "39.0"
+    },
+    {
+      "fixtureId": "811176",
+      "inningsNumber": 2,
+      "overs": "13.3"
+    },
+    {
+      "fixtureId": "811159",
+      "inningsNumber": 2,
+      "overs": "28.2"
+    },
+    {
+      "fixtureId": "811177",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "811214",
+      "inningsNumber": 1,
+      "overs": "30.3"
+    },
+    {
+      "fixtureId": "825634",
+      "inningsNumber": 1,
+      "overs": "19.3"
+    },
+    {
+      "fixtureId": "811160",
+      "inningsNumber": 2,
+      "overs": "44.1"
+    },
+    {
+      "fixtureId": "811178",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "811197",
+      "inningsNumber": 2,
+      "overs": "32.5"
+    },
+    {
+      "fixtureId": "811161",
+      "inningsNumber": 2,
+      "overs": "27.5"
+    },
+    {
+      "fixtureId": "811179",
+      "inningsNumber": 2,
+      "overs": "17.5"
+    },
+    {
+      "fixtureId": "824625",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "811162",
+      "inningsNumber": 2,
+      "overs": "42.2"
+    },
+    {
+      "fixtureId": "811180",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "826457",
+      "inningsNumber": 1,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "811163",
+      "inningsNumber": 2,
+      "overs": "13.3"
+    },
+    {
+      "fixtureId": "811181",
+      "inningsNumber": 1,
+      "overs": "39.5"
+    },
+    {
+      "fixtureId": "811200",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "811182",
+      "inningsNumber": 2,
+      "overs": "37.3"
+    },
+    {
+      "fixtureId": "811164",
+      "inningsNumber": 2,
+      "overs": "40.1"
+    },
+    {
+      "fixtureId": "827222",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "811165",
+      "inningsNumber": 1,
+      "overs": "0.0"
+    },
+    {
+      "fixtureId": "811183",
+      "inningsNumber": 2,
+      "overs": "11.1"
+    },
+    {
+      "fixtureId": "811166",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "811184",
+      "inningsNumber": 1,
+      "overs": "39.5"
+    },
+    {
+      "fixtureId": "827176",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "826191",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "811167",
+      "inningsNumber": 1,
+      "overs": "44.2"
+    },
+    {
+      "fixtureId": "811185",
+      "inningsNumber": 2,
+      "overs": "31.1"
+    },
+    {
+      "fixtureId": "812867",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "827741",
+      "inningsNumber": 2,
+      "overs": "16.2"
+    },
+    {
+      "fixtureId": "811168",
+      "inningsNumber": 1,
+      "overs": "45.0"
+    },
+    {
+      "fixtureId": "811186",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "828813",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "826188",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "826187",
+      "inningsNumber": 2,
+      "overs": "13.5"
+    },
+    {
+      "fixtureId": "811169",
+      "inningsNumber": 1,
+      "overs": "41.5"
+    },
+    {
+      "fixtureId": "811187",
+      "inningsNumber": 1,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "828771",
+      "inningsNumber": 2,
+      "overs": "15.3"
+    },
+    {
+      "fixtureId": "811170",
+      "inningsNumber": 2,
+      "overs": "33.4"
+    },
+    {
+      "fixtureId": "811188",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "811171",
+      "inningsNumber": 2,
+      "overs": "34.1"
+    },
+    {
+      "fixtureId": "811172",
+      "inningsNumber": 1,
+      "overs": "45.0"
+    },
+    {
+      "fixtureId": "829359",
+      "inningsNumber": 1,
+      "overs": "28.5"
+    },
+    {
+      "fixtureId": "811173",
+      "inningsNumber": 2,
+      "overs": "23.4"
+    },
+    {
+      "fixtureId": "811192",
+      "inningsNumber": 2,
+      "overs": "33.2"
+    },
+    {
+      "fixtureId": "811210",
+      "inningsNumber": 2,
+      "overs": "35.2"
+    },
+    {
+      "fixtureId": "811174",
+      "inningsNumber": 1,
+      "overs": "44.4"
+    },
+    {
+      "fixtureId": "811193",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "830112",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "831111",
+      "inningsNumber": 1,
+      "overs": "16.0"
+    },
+    {
+      "fixtureId": "840908",
+      "inningsNumber": 2,
+      "overs": "7.1"
+    },
+    {
+      "fixtureId": "855612",
+      "inningsNumber": 1,
+      "overs": "3.0"
+    },
+    {
+      "fixtureId": "840909",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "845776",
+      "inningsNumber": 2,
+      "overs": "39.5"
+    },
+    {
+      "fixtureId": "845796",
+      "inningsNumber": 2,
+      "overs": "28.1"
+    },
+    {
+      "fixtureId": "845828",
+      "inningsNumber": 2,
+      "overs": "32.5"
+    },
+    {
+      "fixtureId": "845749",
+      "inningsNumber": 2,
+      "overs": "14.2"
+    },
+    {
+      "fixtureId": "845777",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "845797",
+      "inningsNumber": 2,
+      "overs": "26.5"
+    },
+    {
+      "fixtureId": "845829",
+      "inningsNumber": 1,
+      "overs": "40.2"
+    },
+    {
+      "fixtureId": "837298",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "845751",
+      "inningsNumber": 2,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "845778",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "845830",
+      "inningsNumber": 1,
+      "overs": "30.5"
+    },
+    {
+      "fixtureId": "845798",
+      "inningsNumber": 1,
+      "overs": "22.5"
+    },
+    {
+      "fixtureId": "848616",
+      "inningsNumber": 2,
+      "overs": "14.2"
+    },
+    {
+      "fixtureId": "845753",
+      "inningsNumber": 1,
+      "overs": "32.0"
+    },
+    {
+      "fixtureId": "845799",
+      "inningsNumber": 2,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "845831",
+      "inningsNumber": 1,
+      "overs": "32.3"
+    },
+    {
+      "fixtureId": "848617",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "845755",
+      "inningsNumber": 2,
+      "overs": "39.4"
+    },
+    {
+      "fixtureId": "845781",
+      "inningsNumber": 2,
+      "overs": "32.4"
+    },
+    {
+      "fixtureId": "845800",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "845832",
+      "inningsNumber": 2,
+      "overs": "25.1"
+    },
+    {
+      "fixtureId": "848618",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "859508",
+      "inningsNumber": 2,
+      "overs": "19.4"
+    },
+    {
+      "fixtureId": "845757",
+      "inningsNumber": 2,
+      "overs": "46.4"
+    },
+    {
+      "fixtureId": "845782",
+      "inningsNumber": 1,
+      "overs": "39.3"
+    },
+    {
+      "fixtureId": "845801",
+      "inningsNumber": 2,
+      "overs": "34.1"
+    },
+    {
+      "fixtureId": "845833",
+      "inningsNumber": 2,
+      "overs": "30.5"
+    },
+    {
+      "fixtureId": "845759",
+      "inningsNumber": 2,
+      "overs": "23.0"
+    },
+    {
+      "fixtureId": "845802",
+      "inningsNumber": 1,
+      "overs": "39.4"
+    },
+    {
+      "fixtureId": "845834",
+      "inningsNumber": 1,
+      "overs": "36.5"
+    },
+    {
+      "fixtureId": "845783",
+      "inningsNumber": 2,
+      "overs": "37.3"
+    },
+    {
+      "fixtureId": "837299",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "845761",
+      "inningsNumber": 1,
+      "overs": "27.3"
+    },
+    {
+      "fixtureId": "845784",
+      "inningsNumber": 2,
+      "overs": "10.0"
+    },
+    {
+      "fixtureId": "845803",
+      "inningsNumber": 1,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "859604",
+      "inningsNumber": 2,
+      "overs": "39.2"
+    },
+    {
+      "fixtureId": "845763",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "845785",
+      "inningsNumber": 1,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "845804",
+      "inningsNumber": 1,
+      "overs": "19.5"
+    },
+    {
+      "fixtureId": "845766",
+      "inningsNumber": 1,
+      "overs": "43.3"
+    },
+    {
+      "fixtureId": "845786",
+      "inningsNumber": 1,
+      "overs": "39.5"
+    },
+    {
+      "fixtureId": "845805",
+      "inningsNumber": 2,
+      "overs": "28.5"
+    },
+    {
+      "fixtureId": "845768",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "845787",
+      "inningsNumber": 2,
+      "overs": "21.1"
+    },
+    {
+      "fixtureId": "845807",
+      "inningsNumber": 2,
+      "overs": "32.1"
+    },
+    {
+      "fixtureId": "861615",
+      "inningsNumber": 1,
+      "overs": "1.0"
+    },
+    {
+      "fixtureId": "845769",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "845788",
+      "inningsNumber": 2,
+      "overs": "7.0"
+    },
+    {
+      "fixtureId": "845809",
+      "inningsNumber": 1,
+      "overs": "24.1"
+    },
+    {
+      "fixtureId": "845771",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "845810",
+      "inningsNumber": 2,
+      "overs": "27.1"
+    },
+    {
+      "fixtureId": "861396",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "845772",
+      "inningsNumber": 1,
+      "overs": "49.2"
+    },
+    {
+      "fixtureId": "845811",
+      "inningsNumber": 2,
+      "overs": "34.1"
+    },
+    {
+      "fixtureId": "862953",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "845773",
+      "inningsNumber": 1,
+      "overs": "49.4"
+    },
+    {
+      "fixtureId": "845812",
+      "inningsNumber": 2,
+      "overs": "19.5"
+    },
+    {
+      "fixtureId": "861585",
+      "inningsNumber": 2,
+      "overs": "14.0"
+    },
+    {
+      "fixtureId": "845774",
+      "inningsNumber": 2,
+      "overs": "16.4"
+    },
+    {
+      "fixtureId": "845793",
+      "inningsNumber": 2,
+      "overs": "21.3"
+    },
+    {
+      "fixtureId": "845842",
+      "inningsNumber": 2,
+      "overs": "21.2"
+    },
+    {
+      "fixtureId": "845775",
+      "inningsNumber": 2,
+      "overs": "18.5"
+    },
+    {
+      "fixtureId": "845814",
+      "inningsNumber": 1,
+      "overs": "19.2"
+    },
+    {
+      "fixtureId": "845843",
+      "inningsNumber": 1,
+      "overs": "34.1"
+    },
+    {
+      "fixtureId": "863241",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "863597",
+      "inningsNumber": 2,
+      "overs": "26.4"
+    },
+    {
+      "fixtureId": "862837",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "870864",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "888229",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878691",
+      "inningsNumber": 2,
+      "overs": "23.3"
+    },
+    {
+      "fixtureId": "878692",
+      "inningsNumber": 1,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "878922",
+      "inningsNumber": 2,
+      "overs": "34.5"
+    },
+    {
+      "fixtureId": "879329",
+      "inningsNumber": 2,
+      "overs": "26.4"
+    },
+    {
+      "fixtureId": "879270",
+      "inningsNumber": 2,
+      "overs": "37.0"
+    },
+    {
+      "fixtureId": "886050",
+      "inningsNumber": 2,
+      "overs": "15.5"
+    },
+    {
+      "fixtureId": "889328",
+      "inningsNumber": 2,
+      "overs": "15.5"
+    },
+    {
+      "fixtureId": "878693",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "878923",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879252",
+      "inningsNumber": 2,
+      "overs": "34.5"
+    },
+    {
+      "fixtureId": "879330",
+      "inningsNumber": 2,
+      "overs": "32.3"
+    },
+    {
+      "fixtureId": "888531",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "879500",
+      "inningsNumber": 2,
+      "overs": "18.3"
+    },
+    {
+      "fixtureId": "879253",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879331",
+      "inningsNumber": 1,
+      "overs": "23.1"
+    },
+    {
+      "fixtureId": "878924",
+      "inningsNumber": 2,
+      "overs": "25.0"
+    },
+    {
+      "fixtureId": "879501",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878925",
+      "inningsNumber": 2,
+      "overs": "16.2"
+    },
+    {
+      "fixtureId": "879278",
+      "inningsNumber": 2,
+      "overs": "25.2"
+    },
+    {
+      "fixtureId": "878926",
+      "inningsNumber": 2,
+      "overs": "28.0"
+    },
+    {
+      "fixtureId": "879279",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879255",
+      "inningsNumber": 1,
+      "overs": "23.4"
+    },
+    {
+      "fixtureId": "890413",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878927",
+      "inningsNumber": 1,
+      "overs": "40.1"
+    },
+    {
+      "fixtureId": "879256",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879283",
+      "inningsNumber": 1,
+      "overs": "34.1"
+    },
+    {
+      "fixtureId": "889738",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878698",
+      "inningsNumber": 1,
+      "overs": "48.4"
+    },
+    {
+      "fixtureId": "878928",
+      "inningsNumber": 1,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "878699",
+      "inningsNumber": 2,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "878929",
+      "inningsNumber": 1,
+      "overs": "33.3"
+    },
+    {
+      "fixtureId": "879258",
+      "inningsNumber": 2,
+      "overs": "24.3"
+    },
+    {
+      "fixtureId": "879281",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "890741",
+      "inningsNumber": 2,
+      "overs": "21.5"
+    },
+    {
+      "fixtureId": "878700",
+      "inningsNumber": 1,
+      "overs": "46.2"
+    },
+    {
+      "fixtureId": "878930",
+      "inningsNumber": 2,
+      "overs": "17.5"
+    },
+    {
+      "fixtureId": "879259",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879285",
+      "inningsNumber": 2,
+      "overs": "6.1"
+    },
+    {
+      "fixtureId": "879338",
+      "inningsNumber": 1,
+      "overs": "16.5"
+    },
+    {
+      "fixtureId": "887502",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "891398",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "891630",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878701",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "878931",
+      "inningsNumber": 2,
+      "overs": "37.2"
+    },
+    {
+      "fixtureId": "879260",
+      "inningsNumber": 2,
+      "overs": "30.2"
+    },
+    {
+      "fixtureId": "891823",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878702",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "879262",
+      "inningsNumber": 1,
+      "overs": "38.2"
+    },
+    {
+      "fixtureId": "878932",
+      "inningsNumber": 2,
+      "overs": "18.4"
+    },
+    {
+      "fixtureId": "891795",
+      "inningsNumber": 2,
+      "overs": "7.2"
+    },
+    {
+      "fixtureId": "891670",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "868738",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "878703",
+      "inningsNumber": 2,
+      "overs": "14.4"
+    },
+    {
+      "fixtureId": "878933",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879261",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "879288",
+      "inningsNumber": 1,
+      "overs": "35.4"
+    },
+    {
+      "fixtureId": "878704",
+      "inningsNumber": 1,
+      "overs": "41.4"
+    },
+    {
+      "fixtureId": "878934",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879263",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "878705",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "879265",
+      "inningsNumber": 2,
+      "overs": "38.4"
+    },
+    {
+      "fixtureId": "878935",
+      "inningsNumber": 1,
+      "overs": "20.2"
+    },
+    {
+      "fixtureId": "892045",
+      "inningsNumber": 2,
+      "overs": "19.4"
+    },
+    {
+      "fixtureId": "892371",
+      "inningsNumber": 2,
+      "overs": "18.0"
+    },
+    {
+      "fixtureId": "878706",
+      "inningsNumber": 1,
+      "overs": "29.2"
+    },
+    {
+      "fixtureId": "878936",
+      "inningsNumber": 2,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "879266",
+      "inningsNumber": 2,
+      "overs": "37.5"
+    },
+    {
+      "fixtureId": "879291",
+      "inningsNumber": 2,
+      "overs": "30.4"
+    },
+    {
+      "fixtureId": "878707",
+      "inningsNumber": 1,
+      "overs": "38.4"
+    },
+    {
+      "fixtureId": "878937",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "879267",
+      "inningsNumber": 1,
+      "overs": "35.4"
+    },
+    {
+      "fixtureId": "879292",
+      "inningsNumber": 1,
+      "overs": "39.1"
+    },
+    {
+      "fixtureId": "878708",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "878938",
+      "inningsNumber": 2,
+      "overs": "24.3"
+    },
+    {
+      "fixtureId": "879268",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "893039",
+      "inningsNumber": 2,
+      "overs": "22.0"
+    },
+    {
+      "fixtureId": "893766",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "894163",
+      "inningsNumber": 1,
+      "overs": "49.5"
+    },
+    {
+      "fixtureId": "901074",
+      "inningsNumber": 2,
+      "overs": "38.1"
+    },
+    {
+      "fixtureId": "908422",
+      "inningsNumber": 2,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "909379",
+      "inningsNumber": 2,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "909341",
+      "inningsNumber": 2,
+      "overs": "30.2"
+    },
+    {
+      "fixtureId": "901072",
+      "inningsNumber": 1,
+      "overs": "34.5"
+    },
+    {
+      "fixtureId": "908022",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908060",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908078",
+      "inningsNumber": 2,
+      "overs": "40.1"
+    },
+    {
+      "fixtureId": "908042",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "896934",
+      "inningsNumber": 1,
+      "overs": "45.1"
+    },
+    {
+      "fixtureId": "908023",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908043",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908061",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "916791",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "896935",
+      "inningsNumber": 2,
+      "overs": "49.4"
+    },
+    {
+      "fixtureId": "908044",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908062",
+      "inningsNumber": 1,
+      "overs": "37.4"
+    },
+    {
+      "fixtureId": "906988",
+      "inningsNumber": 2,
+      "overs": "44.1"
+    },
+    {
+      "fixtureId": "908024",
+      "inningsNumber": 2,
+      "overs": "34.2"
+    },
+    {
+      "fixtureId": "911891",
+      "inningsNumber": 1,
+      "overs": "17.5"
+    },
+    {
+      "fixtureId": "914066",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "896936",
+      "inningsNumber": 1,
+      "overs": "33.2"
+    },
+    {
+      "fixtureId": "908025",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908045",
+      "inningsNumber": 2,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "908082",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "906976",
+      "inningsNumber": 1,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "896937",
+      "inningsNumber": 2,
+      "overs": "31.2"
+    },
+    {
+      "fixtureId": "908026",
+      "inningsNumber": 2,
+      "overs": "33.1"
+    },
+    {
+      "fixtureId": "908046",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908064",
+      "inningsNumber": 2,
+      "overs": "33.2"
+    },
+    {
+      "fixtureId": "918476",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "911892",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "896938",
+      "inningsNumber": 1,
+      "overs": "43.4"
+    },
+    {
+      "fixtureId": "908027",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908047",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908066",
+      "inningsNumber": 1,
+      "overs": "26.0"
+    },
+    {
+      "fixtureId": "911893",
+      "inningsNumber": 2,
+      "overs": "19.4"
+    },
+    {
+      "fixtureId": "896939",
+      "inningsNumber": 1,
+      "overs": "44.3"
+    },
+    {
+      "fixtureId": "908028",
+      "inningsNumber": 2,
+      "overs": "21.0"
+    },
+    {
+      "fixtureId": "908065",
+      "inningsNumber": 1,
+      "overs": "37.3"
+    },
+    {
+      "fixtureId": "908084",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "911894",
+      "inningsNumber": 2,
+      "overs": "13.5"
+    },
+    {
+      "fixtureId": "896941",
+      "inningsNumber": 2,
+      "overs": "36.3"
+    },
+    {
+      "fixtureId": "908031",
+      "inningsNumber": 1,
+      "overs": "38.1"
+    },
+    {
+      "fixtureId": "908050",
+      "inningsNumber": 2,
+      "overs": "11.3"
+    },
+    {
+      "fixtureId": "908068",
+      "inningsNumber": 1,
+      "overs": "39.4"
+    },
+    {
+      "fixtureId": "919149",
+      "inningsNumber": 2,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "896942",
+      "inningsNumber": 2,
+      "overs": "45.4"
+    },
+    {
+      "fixtureId": "908032",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908051",
+      "inningsNumber": 1,
+      "overs": "29.4"
+    },
+    {
+      "fixtureId": "908069",
+      "inningsNumber": 1,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "908086",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "896943",
+      "inningsNumber": 2,
+      "overs": "44.2"
+    },
+    {
+      "fixtureId": "908033",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908070",
+      "inningsNumber": 1,
+      "overs": "13.0"
+    },
+    {
+      "fixtureId": "920350",
+      "inningsNumber": 1,
+      "overs": "19.3"
+    },
+    {
+      "fixtureId": "896944",
+      "inningsNumber": 1,
+      "overs": "42.3"
+    },
+    {
+      "fixtureId": "908053",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908034",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908071",
+      "inningsNumber": 1,
+      "overs": "34.0"
+    },
+    {
+      "fixtureId": "920257",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "919882",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "896946",
+      "inningsNumber": 2,
+      "overs": "39.3"
+    },
+    {
+      "fixtureId": "908036",
+      "inningsNumber": 1,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "908055",
+      "inningsNumber": 2,
+      "overs": "32.0"
+    },
+    {
+      "fixtureId": "908073",
+      "inningsNumber": 2,
+      "overs": "32.0"
+    },
+    {
+      "fixtureId": "908090",
+      "inningsNumber": 2,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "920588",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "896947",
+      "inningsNumber": 2,
+      "overs": "39.4"
+    },
+    {
+      "fixtureId": "908037",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908075",
+      "inningsNumber": 2,
+      "overs": "27.0"
+    },
+    {
+      "fixtureId": "908059",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "920860",
+      "inningsNumber": 2,
+      "overs": "18.0"
+    },
+    {
+      "fixtureId": "896948",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "908056",
+      "inningsNumber": 2,
+      "overs": "37.2"
+    },
+    {
+      "fixtureId": "908091",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908038",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908074",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "896949",
+      "inningsNumber": 2,
+      "overs": "45.1"
+    },
+    {
+      "fixtureId": "908057",
+      "inningsNumber": 2,
+      "overs": "22.4"
+    },
+    {
+      "fixtureId": "908076",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "908092",
+      "inningsNumber": 2,
+      "overs": "32.3"
+    },
+    {
+      "fixtureId": "908039",
+      "inningsNumber": 2,
+      "overs": "21.4"
+    },
+    {
+      "fixtureId": "896950",
+      "inningsNumber": 1,
+      "overs": "49.3"
+    },
+    {
+      "fixtureId": "908040",
+      "inningsNumber": 1,
+      "overs": "35.0"
+    },
+    {
+      "fixtureId": "908077",
+      "inningsNumber": 2,
+      "overs": "33.0"
+    },
+    {
+      "fixtureId": "921441",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "908058",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "896951",
+      "inningsNumber": 1,
+      "overs": "38.0"
+    },
+    {
+      "fixtureId": "921301",
+      "inningsNumber": 2,
+      "overs": "27.3"
+    },
+    {
+      "fixtureId": "933036",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933090",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "931658",
+      "inningsNumber": 2,
+      "overs": "28.3"
+    },
+    {
+      "fixtureId": "938437",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925515",
+      "inningsNumber": 1,
+      "overs": "32.5"
+    },
+    {
+      "fixtureId": "933037",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933055",
+      "inningsNumber": 2,
+      "overs": "35.1"
+    },
+    {
+      "fixtureId": "925516",
+      "inningsNumber": 2,
+      "overs": "45.3"
+    },
+    {
+      "fixtureId": "933038",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933074",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "940254",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "938472",
+      "inningsNumber": 1,
+      "overs": "21.0"
+    },
+    {
+      "fixtureId": "925517",
+      "inningsNumber": 2,
+      "overs": "49.1"
+    },
+    {
+      "fixtureId": "933057",
+      "inningsNumber": 1,
+      "overs": "26.0"
+    },
+    {
+      "fixtureId": "933039",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "940257",
+      "inningsNumber": 2,
+      "overs": "15.3"
+    },
+    {
+      "fixtureId": "925518",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "933040",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933094",
+      "inningsNumber": 2,
+      "overs": "31.5"
+    },
+    {
+      "fixtureId": "933058",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "943528",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925519",
+      "inningsNumber": 2,
+      "overs": "0.0"
+    },
+    {
+      "fixtureId": "933041",
+      "inningsNumber": 1,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "933077",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "941769",
+      "inningsNumber": 1,
+      "overs": "19.3"
+    },
+    {
+      "fixtureId": "944944",
+      "inningsNumber": 2,
+      "overs": "19.0"
+    },
+    {
+      "fixtureId": "925520",
+      "inningsNumber": 2,
+      "overs": "36.4"
+    },
+    {
+      "fixtureId": "933042",
+      "inningsNumber": 2,
+      "overs": "38.3"
+    },
+    {
+      "fixtureId": "933078",
+      "inningsNumber": 1,
+      "overs": "34.5"
+    },
+    {
+      "fixtureId": "933060",
+      "inningsNumber": 2,
+      "overs": "32.1"
+    },
+    {
+      "fixtureId": "933096",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "940266",
+      "inningsNumber": 2,
+      "overs": "0.0"
+    },
+    {
+      "fixtureId": "941770",
+      "inningsNumber": 2,
+      "overs": "0.0"
+    },
+    {
+      "fixtureId": "945110",
+      "inningsNumber": 2,
+      "overs": "8.2"
+    },
+    {
+      "fixtureId": "925521",
+      "inningsNumber": 2,
+      "overs": "49.0"
+    },
+    {
+      "fixtureId": "933043",
+      "inningsNumber": 2,
+      "overs": "26.2"
+    },
+    {
+      "fixtureId": "933061",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933079",
+      "inningsNumber": 1,
+      "overs": "36.2"
+    },
+    {
+      "fixtureId": "941771",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925522",
+      "inningsNumber": 1,
+      "overs": "41.2"
+    },
+    {
+      "fixtureId": "933044",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933062",
+      "inningsNumber": 2,
+      "overs": "26.4"
+    },
+    {
+      "fixtureId": "933080",
+      "inningsNumber": 1,
+      "overs": "30.0"
+    },
+    {
+      "fixtureId": "945582",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "941772",
+      "inningsNumber": 2,
+      "overs": "16.2"
+    },
+    {
+      "fixtureId": "925523",
+      "inningsNumber": 1,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "933045",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933063",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "941773",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "945523",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925524",
+      "inningsNumber": 2,
+      "overs": "50.0"
+    },
+    {
+      "fixtureId": "933046",
+      "inningsNumber": 2,
+      "overs": "18.3"
+    },
+    {
+      "fixtureId": "933064",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "945542",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "945922",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925525",
+      "inningsNumber": 2,
+      "overs": "25.3"
+    },
+    {
+      "fixtureId": "933047",
+      "inningsNumber": 1,
+      "overs": "38.4"
+    },
+    {
+      "fixtureId": "933083",
+      "inningsNumber": 2,
+      "overs": "29.5"
+    },
+    {
+      "fixtureId": "945959",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "941775",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "946055",
+      "inningsNumber": 2,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925526",
+      "inningsNumber": 2,
+      "overs": "42.1"
+    },
+    {
+      "fixtureId": "933048",
+      "inningsNumber": 1,
+      "overs": "33.4"
+    },
+    {
+      "fixtureId": "933066",
+      "inningsNumber": 2,
+      "overs": "24.1"
+    },
+    {
+      "fixtureId": "933084",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933102",
+      "inningsNumber": 1,
+      "overs": "37.0"
+    },
+    {
+      "fixtureId": "946018",
+      "inningsNumber": 1,
+      "overs": "20.0"
+    },
+    {
+      "fixtureId": "925531",
+      "inningsNumber": 2,
+      "overs": "48.3"
+    },
+    {
+      "fixtureId": "933085",
+      "inningsNumber": 1,
+      "overs": "37.5"
+    },
+    {
+      "fixtureId": "933067",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "945978",
+      "inningsNumber": 2,
+      "overs": "0.0"
+    }
+  ],
   "collapsedDuplicateDnbRows": [
     {
       "fixtureId": "30763",
@@ -206,6 +3203,7 @@
     "appearanceCount": 15998,
     "battingInningsCount": 12941,
     "bowlingSpellCount": 9266,
+    "calculatedInningsOversCount": 599,
     "collapsedDuplicateDnbRows": 16,
     "dnbOnlyAppearanceCount": 3025,
     "fixtureCount": 1474,

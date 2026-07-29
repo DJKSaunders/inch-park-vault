@@ -24,5 +24,8 @@
     "multipleInnings": "Multiple genuine batting rows in a fixture are retained as separate innings but share one appearance.",
     "placeholders": "Placeholder rows receive fixture-local identities and are excluded from career player indexes."
   },
+  "normalizationRules": {
+    "inningsOvers": "When the innings total omits overs and every bowling row has a ball count, overs are calculated from the summed balls using six-ball overs."
+  },
   "schemaVersion": "1.0.0"
 }
