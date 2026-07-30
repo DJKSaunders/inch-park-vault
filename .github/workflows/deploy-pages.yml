@@ -33,20 +33,14 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Restore archive assets
+      - name: Restore published archive data
+        run: node scripts/download-published-data.mjs
+
+      - name: Restore image assets
         run: |
-          mkdir -p public/data
-          curl --fail --location --output public/data/records.json \
-            https://edinburgh-south-club-records.djksaunders.chatgpt.site/data/records.json
-          if [ ! -f public/escc-logo.png ]; then
-            base64 --decode .github/pages-assets/escc-logo.png.b64 > public/escc-logo.png
-          fi
-          if [ ! -f public/og-vault.png ]; then
-            curl --fail --location --output public/og-vault.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og-vault.png
-          fi
-          if [ ! -f public/og.png ]; then
-            curl --fail --location --output public/og.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og.png
-          fi
+          curl --fail --location --output public/escc-logo.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/escc-logo.png
+          curl --fail --location --output public/og-vault.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og-vault.png
+          curl --fail --location --output public/og.png https://edinburgh-south-club-records.djksaunders.chatgpt.site/og.png
           touch public/.nojekyll
 
       - name: Build static site
