@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { SiteHeader } from "./site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -48,6 +49,55 @@ type RecordsData = {
   batting: BattingRow[];
   bowling: BowlingRow[];
   boundaries: [string, number, number][];
+};
+
+type PlayerIdentityLink = {
+  playerId: string;
+  scorecardName: string;
+  path: string;
+  appearanceCount: number;
+  battingInningsCount: number;
+  bowlingSpellCount: number;
+  matchMethod: "normalized-exact";
+};
+
+type RecordsPlayerMap = {
+  players: Record<string, PlayerIdentityLink | null>;
+};
+
+type ScorecardAppearance = {
+  fixtureId: string;
+  date: string;
+  season: number;
+  team: string | null;
+  opposition: string | null;
+  competition: string | null;
+  outcome: string;
+  didNotBat: boolean;
+};
+
+type ScorecardBattingInnings = {
+  fixtureId: string;
+  season: number;
+  runs: number | null;
+  notOut: boolean;
+  fours: number | null;
+  sixes: number | null;
+};
+
+type ScorecardBowlingSpell = {
+  fixtureId: string;
+  overs: string | null;
+  runs: number | null;
+  wickets: number | null;
+};
+
+type ScorecardPlayerHistory = {
+  playerId: string;
+  name: string;
+  appearances: ScorecardAppearance[];
+  battingInnings: ScorecardBattingInnings[];
+  bowlingSpells: ScorecardBowlingSpell[];
 };
 
 function formatArchiveDate(value: string) {
@@ -626,6 +676,13 @@ function defaultDirection(metric: MetricKey): "asc" | "desc" {
 
 export function RecordsExplorer() {
   const [data, setData] = useState<RecordsData | null>(null);
+  const [identityMap, setIdentityMap] = useState<RecordsPlayerMap | null>(null);
+  const [scorecardHistory, setScorecardHistory] =
+    useState<ScorecardPlayerHistory | null>(null);
+  const [historyErrorPlayerId, setHistoryErrorPlayerId] = useState<
+    string | null
+  >(null);
+  const [historyLimit, setHistoryLimit] = useState(12);
   const [loadError, setLoadError] = useState(false);
   const [filters, setFilters] = useState<PerformanceFilters>({
     startYear: 2004,
@@ -660,6 +717,37 @@ export function RecordsExplorer() {
     document.body.classList.toggle("iframe-mode", iframeMode);
     return () => document.body.classList.remove("iframe-mode");
   }, []);
+
+  useEffect(() => {
+    fetch(`${publicBasePath}/data/scorecards/records-player-map.json`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Player links could not be loaded");
+        return response.json() as Promise<RecordsPlayerMap>;
+      })
+      .then(setIdentityMap)
+      .catch(() => setIdentityMap(null));
+  }, []);
+
+  useEffect(() => {
+    if (!openPlayer || !identityMap) return;
+    const identity = identityMap.players[openPlayer];
+    if (!identity || scorecardHistory?.playerId === identity.playerId) return;
+    let active = true;
+    fetch(`${publicBasePath}/data/scorecards/${identity.path}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Player history could not be loaded");
+        return response.json() as Promise<ScorecardPlayerHistory>;
+      })
+      .then((history) => {
+        if (active) setScorecardHistory(history);
+      })
+      .catch(() => {
+        if (active) setHistoryErrorPlayerId(identity.playerId);
+      });
+    return () => {
+      active = false;
+    };
+  }, [identityMap, openPlayer, scorecardHistory]);
 
   useEffect(() => {
     let active = true;
@@ -918,14 +1006,63 @@ export function RecordsExplorer() {
     ? boundaryByPlayer.get(playerKey(openPlayer)) ?? { fours: 0, sixes: 0 }
     : { fours: 0, sixes: 0 };
 
+  const selectedIdentity =
+    openPlayer && identityMap ? identityMap.players[openPlayer] : null;
+  const activeScorecardHistory =
+    selectedIdentity &&
+    scorecardHistory?.playerId === selectedIdentity.playerId
+      ? scorecardHistory
+      : null;
+
   const seasonTrend = useMemo(() => {
     if (!openPlayer) return [];
     const points: { season: number; value: number; display: string }[] = [];
+    const boundaryMetric =
+      profileMetric === "fours" || profileMetric === "sixes"
+        ? profileMetric
+        : null;
+    const eligibleFixtures = new Set(
+      (activeScorecardHistory?.appearances ?? [])
+        .filter(
+          (appearance) =>
+            appearance.season >= recordFilters.startYear &&
+            appearance.season <= recordFilters.endYear &&
+            (recordFilters.team === "All teams" ||
+              appearance.team === recordFilters.team) &&
+            (recordFilters.matchType === "All match types" ||
+              appearance.competition === recordFilters.matchType) &&
+            (!recordFilters.opposition ||
+              canonicalOpponent(appearance.opposition ?? "")
+                .toLocaleLowerCase()
+                .includes(recordFilters.opposition.toLocaleLowerCase())),
+        )
+        .map((appearance) => appearance.fixtureId),
+    );
     for (
       let season = recordFilters.startYear;
       season <= recordFilters.endYear;
       season += 1
     ) {
+      if (boundaryMetric) {
+        const available = (activeScorecardHistory?.battingInnings ?? []).filter(
+          (innings) =>
+            innings.season === season &&
+            eligibleFixtures.has(innings.fixtureId) &&
+            innings[boundaryMetric] !== null,
+        );
+        if (available.length > 0) {
+          const value = available.reduce(
+            (total, innings) => total + (innings[boundaryMetric] ?? 0),
+            0,
+          );
+          points.push({
+            season,
+            value,
+            display: integer.format(value),
+          });
+        }
+        continue;
+      }
       const seasonStats = newStats(openPlayer);
       for (const row of selectedRows.batting) {
         if (row[1] === season) addBatting(seasonStats, row);
@@ -951,7 +1088,112 @@ export function RecordsExplorer() {
       }
     }
     return points;
-  }, [openPlayer, profileMetric, recordFilters, selectedRows]);
+  }, [
+    activeScorecardHistory,
+    openPlayer,
+    profileMetric,
+    recordFilters,
+    selectedRows,
+  ]);
+
+  const scorecardHistoryRows = useMemo(() => {
+    if (!activeScorecardHistory) return [];
+    return activeScorecardHistory.appearances
+      .filter(
+        (appearance) =>
+          appearance.season >= recordFilters.startYear &&
+          appearance.season <= recordFilters.endYear &&
+          (recordFilters.team === "All teams" ||
+            appearance.team === recordFilters.team) &&
+          (recordFilters.matchType === "All match types" ||
+            appearance.competition === recordFilters.matchType) &&
+          (!recordFilters.opposition ||
+            canonicalOpponent(appearance.opposition ?? "")
+              .toLocaleLowerCase()
+              .includes(recordFilters.opposition.toLocaleLowerCase())),
+      )
+      .map((appearance) => ({
+        ...appearance,
+        batting: activeScorecardHistory.battingInnings.filter(
+          (innings) => innings.fixtureId === appearance.fixtureId,
+        ),
+        bowling: activeScorecardHistory.bowlingSpells.filter(
+          (spell) => spell.fixtureId === appearance.fixtureId,
+        ),
+      }))
+      .sort(
+        (left, right) =>
+          right.date.localeCompare(left.date) ||
+          right.fixtureId.localeCompare(left.fixtureId),
+      );
+  }, [activeScorecardHistory, recordFilters]);
+
+  const scorecardHistorySummary = useMemo(
+    () => ({
+      appearances: scorecardHistoryRows.length,
+      runs: scorecardHistoryRows.reduce(
+        (total, row) =>
+          total +
+          row.batting.reduce(
+            (inningsTotal, innings) => inningsTotal + (innings.runs ?? 0),
+            0,
+          ),
+        0,
+      ),
+      wickets: scorecardHistoryRows.reduce(
+        (total, row) =>
+          total +
+          row.bowling.reduce(
+            (spellTotal, spell) => spellTotal + (spell.wickets ?? 0),
+            0,
+          ),
+        0,
+      ),
+    }),
+    [scorecardHistoryRows],
+  );
+
+  const scorecardSeasonSummaries = useMemo(() => {
+    const seasons = new Map<
+      number,
+      { season: number; appearances: number; runs: number; wickets: number }
+    >();
+    for (const row of scorecardHistoryRows) {
+      const summary = seasons.get(row.season) ?? {
+        season: row.season,
+        appearances: 0,
+        runs: 0,
+        wickets: 0,
+      };
+      summary.appearances += 1;
+      summary.runs += row.batting.reduce(
+        (total, innings) => total + (innings.runs ?? 0),
+        0,
+      );
+      summary.wickets += row.bowling.reduce(
+        (total, spell) => total + (spell.wickets ?? 0),
+        0,
+      );
+      seasons.set(row.season, summary);
+    }
+    return [...seasons.values()].sort(
+      (left, right) => right.season - left.season,
+    );
+  }, [scorecardHistoryRows]);
+
+  const scorecardSeasonMaxima = useMemo(
+    () => ({
+      runs: Math.max(
+        ...scorecardSeasonSummaries.map((summary) => summary.runs),
+        1,
+      ),
+      wickets: Math.max(
+        ...scorecardSeasonSummaries.map((summary) => summary.wickets),
+        1,
+      ),
+    }),
+    [scorecardSeasonSummaries],
+  );
 
   const chart = useMemo(() => {
     const width = 860;
@@ -1014,11 +1256,9 @@ export function RecordsExplorer() {
 
   function openPlayerRecord(name: string, preferredMetric = metric) {
     setRecordFilters(filters);
-    setProfileMetric(
-      preferredMetric === "fours" || preferredMetric === "sixes"
-        ? "runs"
-        : preferredMetric,
-    );
+    setHistoryLimit(12);
+    setHistoryErrorPlayerId(null);
+    setProfileMetric(preferredMetric);
     setOpenPlayer(name);
   }
 
@@ -1292,28 +1532,7 @@ export function RecordsExplorer() {
 
   return (
     <main className="vault-app">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="The Inch Park Vault">
-          <img src={`${publicBasePath}/escc-logo.png`} alt="" />
-          <span>
-            <strong>The Inch Park Vault</strong>
-            <small>
-              Edinburgh South Cricket Club Performance Archive –{" "}
-              {yearLabel(records.meta.seasonStart, records.meta.seasonEnd)}
-            </small>
-          </span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#rankings">Rankings</a>
-          <a
-            href="https://www.edinburghsouthcc.org"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Club website <span aria-hidden="true">↗</span>
-          </a>
-        </nav>
-      </header>
+      <SiteHeader active="records" />
 
       <section className="ranking-hero" id="top">
         <div className="ranking-intro">
@@ -1877,7 +2096,7 @@ export function RecordsExplorer() {
           <img src={`${publicBasePath}/escc-logo.png`} alt="" />
           <p>The Inch Park Vault</p>
         </div>
-        <p>Edinburgh South Cricket Club Performance Archive – 2004–2025</p>
+        <p>Edinburgh South Cricket Club Performance Archive – 2004–2026</p>
       </footer>
 
       {openPlayer && selectedStats && (
@@ -2040,14 +2259,16 @@ export function RecordsExplorer() {
                     "Hundreds",
                     integer.format(selectedStats.hundreds),
                   )}
-                  <div className="static-stat">
-                    <span>Fours</span>
-                    <strong>{integer.format(selectedBoundaries.fours)}</strong>
-                  </div>
-                  <div className="static-stat">
-                    <span>Sixes</span>
-                    <strong>{integer.format(selectedBoundaries.sixes)}</strong>
-                  </div>
+                  {profileStatCard(
+                    "fours",
+                    "Fours",
+                    integer.format(selectedBoundaries.fours),
+                  )}
+                  {profileStatCard(
+                    "sixes",
+                    "Sixes",
+                    integer.format(selectedBoundaries.sixes),
+                  )}
                 </div>
               </section>
 
@@ -2127,6 +2348,9 @@ export function RecordsExplorer() {
                   <strong>
                     {profileMetric === "bestBowling"
                       ? `${integer.format(selectedStats.bestWickets)} wickets`
+                      : profileMetric === "fours" ||
+                          profileMetric === "sixes"
+                        ? integer.format(selectedBoundaries[profileMetric])
                       : metrics[profileMetric].display(selectedStats)}
                   </strong>
                 </div>
@@ -2176,7 +2400,238 @@ export function RecordsExplorer() {
               ) : (
                 <p className="empty-state">No data for this selection.</p>
               )}
+              {(profileMetric === "fours" || profileMetric === "sixes") && (
+                <p className="chart-coverage-note">
+                  Season chart uses scorecards that provide boundary detail.
+                  The career total above remains the authoritative archive
+                  figure.
+                </p>
+              )}
             </div>
+
+            <section className="scorecard-history">
+              <div className="scorecard-history-heading">
+                <div>
+                  <p className="eyebrow">Scorecard archive</p>
+                  <h3>Match-by-match history</h3>
+                </div>
+                {selectedIdentity && (
+                  <div className="history-heading-actions">
+                    <span>
+                      {integer.format(selectedIdentity.appearanceCount)} linked
+                      appearances
+                    </span>
+                    <a
+                      href={`${publicBasePath}/players/${selectedIdentity.playerId}/`}
+                    >
+                      Full profile →
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {!selectedIdentity ? (
+                <p className="history-state">
+                  No scorecard identity has been linked to this player yet.
+                  Their authoritative Vault totals remain available above.
+                </p>
+              ) : !activeScorecardHistory &&
+                historyErrorPlayerId !== selectedIdentity.playerId ? (
+                <p className="history-state" aria-live="polite">
+                  Loading match history…
+                </p>
+              ) : historyErrorPlayerId === selectedIdentity.playerId ? (
+                <p className="history-state">
+                  The linked scorecard history could not be loaded.
+                </p>
+              ) : (
+                <>
+                  <div className="history-summary">
+                    <div>
+                      <span>Appearances shown</span>
+                      <strong>
+                        {integer.format(scorecardHistorySummary.appearances)}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>Recorded runs</span>
+                      <strong>
+                        {integer.format(scorecardHistorySummary.runs)}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>Recorded wickets</span>
+                      <strong>
+                        {integer.format(scorecardHistorySummary.wickets)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  {scorecardHistoryRows.length > 0 && (
+                    <div className="scorecard-form">
+                      <div className="recent-form">
+                        <h4>Recent scorecard form</h4>
+                        <div>
+                          {scorecardHistoryRows.slice(0, 5).map((appearance) => {
+                            const batting = appearance.batting
+                              .map((innings) =>
+                                innings.runs === null
+                                  ? "—"
+                                  : `${innings.runs}${innings.notOut ? "*" : ""}`,
+                              )
+                              .join(", ");
+                            const bowling = appearance.bowling
+                              .map(
+                                (spell) =>
+                                  `${spell.wickets ?? 0}/${spell.runs ?? "—"}`,
+                              )
+                              .join(", ");
+                            return (
+                              <a
+                                key={appearance.fixtureId}
+                                href={`${publicBasePath}/matches/${appearance.fixtureId}`}
+                                aria-label={`Open scorecard against ${appearance.opposition ?? "opposition"} on ${formatArchiveDate(appearance.date)}`}
+                              >
+                                <span>
+                                  {formatArchiveDate(appearance.date)}
+                                </span>
+                                <strong>
+                                  {appearance.opposition ?? "Opposition"}
+                                </strong>
+                                <small>
+                                  Bat {batting || (appearance.didNotBat ? "DNB" : "—")}
+                                  {" · "}Bowl {bowling || "—"}
+                                </small>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="scorecard-season-view">
+                        <h4>Recorded performance by season</h4>
+                        <div>
+                          {scorecardSeasonSummaries.map((summary) => (
+                            <div
+                              className="scorecard-season-row"
+                              key={summary.season}
+                            >
+                              <strong>{summary.season}</strong>
+                              <span>
+                                <i
+                                  className="runs-bar"
+                                  aria-hidden="true"
+                                  style={{
+                                    width: `${(summary.runs / scorecardSeasonMaxima.runs) * 100}%`,
+                                  }}
+                                ></i>
+                                {integer.format(summary.runs)} runs
+                              </span>
+                              <span>
+                                <i
+                                  className="wickets-bar"
+                                  aria-hidden="true"
+                                  style={{
+                                    width: `${(summary.wickets / scorecardSeasonMaxima.wickets) * 100}%`,
+                                  }}
+                                ></i>
+                                {integer.format(summary.wickets)} wickets
+                              </span>
+                              <small>
+                                {integer.format(summary.appearances)} apps
+                              </small>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {scorecardHistoryRows.length > 0 ? (
+                    <>
+                      <div className="history-table-scroll">
+                        <table className="history-table">
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Opposition</th>
+                              <th>Team</th>
+                              <th>Batting</th>
+                              <th>Bowling</th>
+                              <th aria-label="Open scorecard"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {scorecardHistoryRows
+                              .slice(0, historyLimit)
+                              .map((appearance) => (
+                                <tr key={appearance.fixtureId}>
+                                  <td>{formatArchiveDate(appearance.date)}</td>
+                                  <th scope="row">
+                                    {appearance.opposition ?? "Opposition"}
+                                  </th>
+                                  <td>{appearance.team ?? "—"}</td>
+                                  <td>
+                                    {appearance.batting.length
+                                      ? appearance.batting
+                                          .map((innings) =>
+                                            innings.runs === null
+                                              ? "—"
+                                              : `${innings.runs}${innings.notOut ? "*" : ""}`,
+                                          )
+                                          .join(", ")
+                                      : appearance.didNotBat
+                                        ? "DNB"
+                                        : "—"}
+                                  </td>
+                                  <td>
+                                    {appearance.bowling.length
+                                      ? appearance.bowling
+                                          .map(
+                                            (spell) =>
+                                              `${spell.wickets ?? 0}/${spell.runs ?? "—"}${spell.overs ? ` (${spell.overs})` : ""}`,
+                                          )
+                                          .join(", ")
+                                      : "—"}
+                                  </td>
+                                  <td>
+                                    <a
+                                      href={`${publicBasePath}/matches/${appearance.fixtureId}`}
+                                    >
+                                      Scorecard
+                                    </a>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {historyLimit < scorecardHistoryRows.length && (
+                        <button
+                          className="history-more"
+                          type="button"
+                          onClick={() =>
+                            setHistoryLimit((current) => current + 12)
+                          }
+                        >
+                          Show 12 more matches
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <p className="history-state">
+                      No linked scorecards match the current profile filters.
+                    </p>
+                  )}
+
+                  <p className="history-note">
+                    Career totals above remain authoritative. Match history is
+                    drawn from the supplementary scorecard archive and may be
+                    incomplete for older seasons.
+                  </p>
+                </>
+              )}
+            </section>
           </section>
         </div>
       )}

@@ -4,8 +4,10 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 from datetime import date, datetime
+from pathlib import Path
 
 from openpyxl import load_workbook
+from records_quality import apply_administrative_no_play_rule
 
 
 if len(sys.argv) not in (3, 6):
@@ -276,6 +278,10 @@ payload = {
     "boundaries": boundaries,
 }
 
+root = Path(__file__).resolve().parents[1]
+scorecard_root = root / "public" / "data" / "scorecards"
+quality = apply_administrative_no_play_rule(payload, scorecard_root)
+
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 with open(output_path, "w", encoding="utf-8") as handle:
     json.dump(payload, handle, ensure_ascii=False, separators=(",", ":"))
@@ -285,8 +291,9 @@ print(
         {
             "outputPath": output_path,
             "bytes": os.path.getsize(output_path),
-            "battingRows": len(batting),
-            "bowlingRows": len(bowling),
+            "battingRows": len(payload["batting"]),
+            "bowlingRows": len(payload["bowling"]),
+            "suppressedAdministrativeRows": quality["removedRowCount"],
         }
     )
 )
