@@ -33,11 +33,8 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Restore archive assets
+      - name: Restore image assets
         run: |
-          mkdir -p public/data
-          curl --fail --location --output public/data/records.json \
-            https://edinburgh-south-club-records.djksaunders.chatgpt.site/data/records.json
           if [ ! -f public/escc-logo.png ]; then
             base64 --decode .github/pages-assets/escc-logo.png.b64 > public/escc-logo.png
           fi
