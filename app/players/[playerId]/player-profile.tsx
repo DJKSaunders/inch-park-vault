@@ -275,6 +275,19 @@ export function PlayerProfile({
   const recordedNotOuts = (history?.battingInnings ?? []).filter(
     (innings) => innings.notOut,
   ).length;
+  const battingStrikeRateCoverage = player.scorecardMetrics
+    ? {
+        known: player.scorecardMetrics.battingInningsWithBalls,
+        total: stats.innings,
+        percentage:
+          stats.innings > 0
+            ? Math.round(
+                (player.scorecardMetrics.battingInningsWithBalls / stats.innings) *
+                  100,
+              )
+            : 0,
+      }
+    : null;
 
   function appearanceSummary(
     appearance: NonNullable<typeof history>["appearances"][number],
@@ -285,10 +298,9 @@ export function PlayerProfile({
     const bowling = (history?.bowlingSpells ?? []).filter(
       (spell) => spell.fixtureId === appearance.fixtureId,
     );
-    const parts: string[] = [];
+    let battingSummary = "—";
     if (batting.length > 0) {
-      parts.push(
-        `Bat ${batting
+      battingSummary = batting
           .map((innings) => {
             const score =
               innings.runs === null
@@ -298,14 +310,13 @@ export function PlayerProfile({
               ? `${score} (${innings.balls}b${innings.strikeRate !== null ? `, SR ${decimal.format(innings.strikeRate)}` : ""})`
               : score;
           })
-          .join(", ")}`,
-      );
+          .join(", ");
     } else if (appearance.didNotBat) {
-      parts.push("Bat DNB");
+      battingSummary = "DNB";
     }
+    let bowlingSummary = "—";
     if (bowling.length > 0) {
-      parts.push(
-        `Bowl ${bowling
+      bowlingSummary = bowling
           .map(
             (spell) => {
               const details = [
@@ -320,8 +331,7 @@ export function PlayerProfile({
               return `${spell.wickets ?? 0}/${spell.runs ?? "—"}${details.length ? ` (${details.join(", ")})` : ""}`;
             },
           )
-          .join(", ")}`,
-      );
+          .join(", ");
     }
     const fielding = [
       appearance.catches
@@ -334,8 +344,11 @@ export function PlayerProfile({
         ? `${appearance.runOuts} run out${appearance.runOuts === 1 ? "" : "s"}`
         : "",
     ].filter(Boolean);
-    if (fielding.length > 0) parts.push(fielding.join(", "));
-    return parts.join(" · ") || "No individual performance recorded";
+    return {
+      batting: battingSummary,
+      bowling: bowlingSummary,
+      fielding: fielding.join(", ") || "—",
+    };
   }
 
   return (
@@ -380,6 +393,11 @@ export function PlayerProfile({
                   const value =
                     key === "fours" || key === "sixes"
                       ? integer.format(careerBoundaries[key])
+                      : key === "battingStrikeRate"
+                        ? player.scorecardMetrics?.battingStrikeRate !== null &&
+                          player.scorecardMetrics?.battingStrikeRate !== undefined
+                          ? decimal.format(player.scorecardMetrics.battingStrikeRate)
+                          : "—"
                       : metricDisplay(key, stats);
                   return (
                     <button
@@ -415,8 +433,8 @@ export function PlayerProfile({
                   ? `Boundary data available for ${integer.format(boundaryCoverage.known)} of ${integer.format(boundaryCoverage.innings)} innings.`
                   : "No season-by-season boundary data is available."
                 : metric === "battingStrikeRate"
-                  ? player.scorecardMetrics
-                    ? `Based on ${integer.format(player.scorecardMetrics.battingInningsWithBalls)} innings and ${integer.format(player.scorecardMetrics.battingBalls)} balls.`
+                  ? battingStrikeRateCoverage
+                    ? `Balls faced recorded for ${integer.format(battingStrikeRateCoverage.known)} of ${integer.format(battingStrikeRateCoverage.total)} innings (${integer.format(battingStrikeRateCoverage.percentage)}%). Strike rate is calculated from those ${integer.format(player.scorecardMetrics?.battingBalls ?? 0)} recorded balls only.`
                     : "No balls-faced data is available for this player."
                 : undefined
             }
@@ -450,23 +468,36 @@ export function PlayerProfile({
             </span>
           </header>
           {latestAppearances.length > 0 ? (
-            <div>
-              {latestAppearances.map((appearance) => (
-                <a
-                  href={`${publicBasePath}/matches/${appearance.fixtureId}/`}
-                  key={appearance.fixtureId}
-                >
-                  <time dateTime={appearance.date}>
-                    {shortDate.format(new Date(`${appearance.date}T12:00:00`))}
-                  </time>
-                  <strong>
-                    {appearance.team ?? "ESCC"} v{" "}
-                    {appearance.opposition ?? "Opposition"}
-                  </strong>
-                  <span>{appearanceSummary(appearance)}</span>
-                  <small>{appearance.outcome}</small>
-                </a>
-              ))}
+            <div className="profile-appearance-table">
+              <div className="profile-appearance-head" aria-hidden="true">
+                <span>Match</span>
+                <span>Batting</span>
+                <span>Bowling</span>
+                <span>Fielding</span>
+              </div>
+              {latestAppearances.map((appearance) => {
+                const performance = appearanceSummary(appearance);
+                return (
+                  <a
+                    href={`${publicBasePath}/matches/${appearance.fixtureId}/`}
+                    key={appearance.fixtureId}
+                  >
+                    <div className="profile-appearance-match">
+                      <time dateTime={appearance.date}>
+                        {shortDate.format(new Date(`${appearance.date}T12:00:00`))}
+                      </time>
+                      <strong>
+                        {appearance.team ?? "ESCC"} v{" "}
+                        {appearance.opposition ?? "Opposition"}
+                      </strong>
+                      <small>{appearance.outcome}</small>
+                    </div>
+                    <span data-label="Batting">{performance.batting}</span>
+                    <span data-label="Bowling">{performance.bowling}</span>
+                    <span data-label="Fielding">{performance.fielding}</span>
+                  </a>
+                );
+              })}
             </div>
           ) : (
             <p className="profile-empty">

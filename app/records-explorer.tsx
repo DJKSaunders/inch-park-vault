@@ -81,9 +81,14 @@ type ScorecardAppearance = {
 };
 
 type ScorecardBattingInnings = {
+  playerId: string;
   fixtureId: string;
   season: number;
+  team: string | null;
+  opposition: string | null;
+  competition: string | null;
   runs: number | null;
+  balls: number | null;
   notOut: boolean;
   fours: number | null;
   sixes: number | null;
@@ -143,6 +148,9 @@ type PlayerStats = {
   stumpings: number;
   runOuts: number;
   balls: number;
+  battingBalls: number;
+  battingRunsWithBalls: number;
+  battingInningsWithBalls: number;
   maidens: number;
   bowlingRuns: number;
   wickets: number;
@@ -157,6 +165,7 @@ type MetricKey =
   | "innings"
   | "runs"
   | "battingAverage"
+  | "battingStrikeRate"
   | "highScore"
   | "notOuts"
   | "fifties"
@@ -169,6 +178,7 @@ type MetricKey =
   | "fiveWicketHauls"
   | "bowlingAverage"
   | "economy"
+  | "bowlingStrikeRate"
   | "bestBowling"
   | "catches"
   | "stumpings"
@@ -217,6 +227,16 @@ function economyValue(stats: PlayerStats) {
   return stats.balls > 0 ? stats.bowlingRuns / (stats.balls / 6) : null;
 }
 
+function battingStrikeRateValue(stats: PlayerStats) {
+  return stats.battingBalls > 0
+    ? (stats.battingRunsWithBalls * 100) / stats.battingBalls
+    : null;
+}
+
+function bowlingStrikeRateValue(stats: PlayerStats) {
+  return stats.wickets > 0 ? stats.balls / stats.wickets : null;
+}
+
 function overs(balls: number) {
   return `${Math.floor(balls / 6)}.${balls % 6}`;
 }
@@ -256,6 +276,16 @@ const metrics: Record<MetricKey, MetricDefinition> = {
     value: battingAverageValue,
     display: (stats) => {
       const value = battingAverageValue(stats);
+      return value === null ? "—" : decimal.format(value);
+    },
+  },
+  battingStrikeRate: {
+    label: "Batting strike rate",
+    shortLabel: "Bat SR",
+    category: "batting",
+    value: battingStrikeRateValue,
+    display: (stats) => {
+      const value = battingStrikeRateValue(stats);
       return value === null ? "—" : decimal.format(value);
     },
   },
@@ -352,6 +382,17 @@ const metrics: Record<MetricKey, MetricDefinition> = {
       return value === null ? "—" : decimal.format(value);
     },
   },
+  bowlingStrikeRate: {
+    label: "Bowling strike rate",
+    shortLabel: "Bowl SR",
+    category: "bowling",
+    ascending: true,
+    value: bowlingStrikeRateValue,
+    display: (stats) => {
+      const value = bowlingStrikeRateValue(stats);
+      return value === null ? "—" : decimal.format(value);
+    },
+  },
   bestBowling: {
     label: "Best bowling",
     shortLabel: "BB",
@@ -388,6 +429,7 @@ const battingMetricKeys: MetricKey[] = [
   "innings",
   "runs",
   "battingAverage",
+  "battingStrikeRate",
   "highScore",
   "notOuts",
   "fifties",
@@ -404,6 +446,7 @@ const bowlingMetricKeys: MetricKey[] = [
   "fiveWicketHauls",
   "bowlingAverage",
   "economy",
+  "bowlingStrikeRate",
   "bestBowling",
   "catches",
   "stumpings",
@@ -426,6 +469,9 @@ function newStats(name: string): PlayerStats {
     stumpings: 0,
     runOuts: 0,
     balls: 0,
+    battingBalls: 0,
+    battingRunsWithBalls: 0,
+    battingInningsWithBalls: 0,
     maidens: 0,
     bowlingRuns: 0,
     wickets: 0,
@@ -665,6 +711,23 @@ function rowPassesFilters(
   );
 }
 
+function scorecardInningsPassesFilters(
+  innings: ScorecardBattingInnings,
+  filters: PerformanceFilters,
+) {
+  return (
+    innings.season >= filters.startYear &&
+    innings.season <= filters.endYear &&
+    (filters.team === "All teams" || innings.team === filters.team) &&
+    (filters.matchType === "All match types" ||
+      innings.competition === filters.matchType) &&
+    (!filters.opposition.trim() ||
+      canonicalOpponent(innings.opposition ?? "")
+        .toLowerCase()
+        .includes(filters.opposition.trim().toLowerCase()))
+  );
+}
+
 function yearLabel(startYear: number, endYear: number) {
   return startYear === endYear ? String(startYear) : `${startYear}–${endYear}`;
 }
@@ -681,6 +744,9 @@ function defaultDirection(metric: MetricKey): "asc" | "desc" {
 export function RecordsExplorer() {
   const [data, setData] = useState<RecordsData | null>(null);
   const [identityMap, setIdentityMap] = useState<RecordsPlayerMap | null>(null);
+  const [scorecardBatting, setScorecardBatting] = useState<
+    ScorecardBattingInnings[]
+  >([]);
   const [scorecardHistory, setScorecardHistory] =
     useState<ScorecardPlayerHistory | null>(null);
   const [historyErrorPlayerId, setHistoryErrorPlayerId] = useState<
@@ -730,6 +796,14 @@ export function RecordsExplorer() {
       })
       .then(setIdentityMap)
       .catch(() => setIdentityMap(null));
+
+    fetch(`${publicBasePath}/data/scorecards/batting-innings.json`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Scorecard batting could not be loaded");
+        return response.json() as Promise<ScorecardBattingInnings[]>;
+      })
+      .then(setScorecardBatting)
+      .catch(() => setScorecardBatting([]));
   }, []);
 
   useEffect(() => {
@@ -843,6 +917,16 @@ export function RecordsExplorer() {
     );
   }, [data]);
 
+  const recordNameByPlayerId = useMemo(
+    () =>
+      new Map(
+        Object.entries(identityMap?.players ?? {}).flatMap(([name, identity]) =>
+          identity ? [[identity.playerId, name] as const] : [],
+        ),
+      ),
+    [identityMap],
+  );
+
   const statsByPlayer = useMemo(() => {
     const stats = aggregateRows(filtered.batting, filtered.bowling);
     for (const playerStats of stats.values()) {
@@ -850,8 +934,25 @@ export function RecordsExplorer() {
       playerStats.fours = boundaries?.fours ?? 0;
       playerStats.sixes = boundaries?.sixes ?? 0;
     }
+    for (const innings of scorecardBatting) {
+      if (
+        innings.balls === null ||
+        innings.balls <= 0 ||
+        innings.runs === null ||
+        !scorecardInningsPassesFilters(innings, filters)
+      ) {
+        continue;
+      }
+      const recordName = recordNameByPlayerId.get(innings.playerId);
+      if (!recordName) continue;
+      const playerStats = stats.get(recordName);
+      if (!playerStats) continue;
+      playerStats.battingBalls += innings.balls;
+      playerStats.battingRunsWithBalls += innings.runs;
+      playerStats.battingInningsWithBalls += 1;
+    }
     return stats;
-  }, [boundaryByPlayer, filtered]);
+  }, [boundaryByPlayer, filtered, filters, recordNameByPlayerId, scorecardBatting]);
 
   const leaderboard = useMemo(() => {
     const definition = metrics[metric];
@@ -1897,6 +1998,7 @@ export function RecordsExplorer() {
                     {sortableHeader("innings", "Inn")}
                     {sortableHeader("runs", "Runs")}
                     {sortableHeader("battingAverage", "Bat avg")}
+                    {sortableHeader("battingStrikeRate", "Bat SR")}
                     {sortableHeader("highScore", "HS")}
                     {sortableHeader("notOuts", "NO")}
                     {sortableHeader("fifties", "50s")}
@@ -1913,6 +2015,7 @@ export function RecordsExplorer() {
                     {sortableHeader("fiveWicketHauls", "5WI")}
                     {sortableHeader("bowlingAverage", "Bowl avg")}
                     {sortableHeader("economy", "Econ")}
+                    {sortableHeader("bowlingStrikeRate", "Bowl SR")}
                     {sortableHeader("bestBowling", "BB")}
                     {sortableHeader("catches", "Ct")}
                     {sortableHeader("stumpings", "St")}
@@ -1951,6 +2054,18 @@ export function RecordsExplorer() {
                         }
                       >
                         {metrics.battingAverage.display(stats)}
+                      </td>
+                      <td
+                        className={
+                          metric === "battingStrikeRate" ? "active-sort" : ""
+                        }
+                        title={
+                          stats.battingInningsWithBalls > 0
+                            ? `Balls faced recorded for ${stats.battingInningsWithBalls} of ${stats.innings} innings`
+                            : "No balls-faced data available"
+                        }
+                      >
+                        {metrics.battingStrikeRate.display(stats)}
                       </td>
                       <td
                         className={
@@ -2019,6 +2134,13 @@ export function RecordsExplorer() {
                         className={metric === "economy" ? "active-sort" : ""}
                       >
                         {metrics.economy.display(stats)}
+                      </td>
+                      <td
+                        className={
+                          metric === "bowlingStrikeRate" ? "active-sort" : ""
+                        }
+                      >
+                        {metrics.bowlingStrikeRate.display(stats)}
                       </td>
                       <td
                         className={

@@ -660,8 +660,12 @@ export function InsightsExplorer() {
           format: (value: number | null) =>
             value === null ? "—" : decimal.format(value),
           coverage: selectedPlayers.map(
-            (player, index) =>
-              `${comparisonStrikeRates?.[index].innings ?? 0}/${player.stats.innings} innings`,
+            (player, index) => {
+              const known = comparisonStrikeRates?.[index].innings ?? 0;
+              const total = player.stats.innings;
+              const percentage = total > 0 ? Math.round((known / total) * 100) : 0;
+              return `${known}/${total} innings (${percentage}%)`;
+            },
           ),
         },
         {
