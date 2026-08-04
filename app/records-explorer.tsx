@@ -63,6 +63,10 @@ type PlayerIdentityLink = {
 
 type RecordsPlayerMap = {
   players: Record<string, PlayerIdentityLink | null>;
+  directory: {
+    playerId: string;
+    aliases: string[];
+  }[];
 };
 
 type ScorecardAppearance = {
@@ -1008,6 +1012,15 @@ export function RecordsExplorer() {
 
   const selectedIdentity =
     openPlayer && identityMap ? identityMap.players[openPlayer] : null;
+  const profileIdByName = useMemo(
+    () =>
+      new Map(
+        (identityMap?.directory ?? []).flatMap((player) =>
+          player.aliases.map((alias) => [playerKey(alias), player.playerId]),
+        ),
+      ),
+    [identityMap],
+  );
   const activeScorecardHistory =
     selectedIdentity &&
     scorecardHistory?.playerId === selectedIdentity.playerId
@@ -1317,6 +1330,34 @@ export function RecordsExplorer() {
   );
   const activeMetricKeys =
     activeSection === "batting" ? battingMetricKeys : bowlingMetricKeys;
+
+  function renderPlayerReference(
+    name: string,
+    preferredMetric: MetricKey = metric,
+  ) {
+    const profileId = profileIdByName.get(playerKey(name));
+    return (
+      <span className="player-reference-actions">
+        {profileId ? (
+          <a href={`${publicBasePath}/players/${profileId}/`}>
+            <span>{name}</span>
+            <span className="player-link-icon" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        ) : (
+          <span>{name}</span>
+        )}
+        <button
+          type="button"
+          onClick={() => openPlayerRecord(name, preferredMetric)}
+          aria-label={`Quick view ${name} record`}
+        >
+          Quick view
+        </button>
+      </span>
+    );
+  }
 
   function renderCriteriaMenu() {
     return (
@@ -1795,19 +1836,7 @@ export function RecordsExplorer() {
                           {String(index + 1).padStart(2, "0")}
                         </td>
                         <th scope="row" className="player-col">
-                          <button
-                            type="button"
-                            onClick={() => openPlayerRecord(row[0], "runs")}
-                            aria-label={`Open ${row[0]} player record`}
-                          >
-                            <span>{row[0]}</span>
-                            <span
-                              className="player-link-icon"
-                              aria-hidden="true"
-                            >
-                              ↗
-                            </span>
-                          </button>
+                          {renderPlayerReference(row[0], "runs")}
                         </th>
                         <td className="performance-score">
                           {integer.format(row[6] as number)}
@@ -1830,21 +1859,7 @@ export function RecordsExplorer() {
                           {String(index + 1).padStart(2, "0")}
                         </td>
                         <th scope="row" className="player-col">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              openPlayerRecord(row[0], "bestBowling")
-                            }
-                            aria-label={`Open ${row[0]} player record`}
-                          >
-                            <span>{row[0]}</span>
-                            <span
-                              className="player-link-icon"
-                              aria-hidden="true"
-                            >
-                              ↗
-                            </span>
-                          </button>
+                          {renderPlayerReference(row[0], "bestBowling")}
                         </th>
                         <td className="performance-score">
                           {row[9]}/{row[8]}
@@ -1913,16 +1928,7 @@ export function RecordsExplorer() {
                     {String(index + 1).padStart(2, "0")}
                   </td>
                   <th scope="row" className="player-col">
-                    <button
-                      type="button"
-                      onClick={() => openPlayerRecord(stats.name)}
-                      aria-label={`Open ${stats.name} player record`}
-                    >
-                      <span>{stats.name}</span>
-                      <span className="player-link-icon" aria-hidden="true">
-                        ↗
-                      </span>
-                    </button>
+                    {renderPlayerReference(stats.name)}
                   </th>
                   {activeSection === "batting" ? (
                     <>
@@ -2402,9 +2408,7 @@ export function RecordsExplorer() {
               )}
               {(profileMetric === "fours" || profileMetric === "sixes") && (
                 <p className="chart-coverage-note">
-                  Season chart uses scorecards that provide boundary detail.
-                  The career total above remains the authoritative archive
-                  figure.
+                  Season chart includes innings with boundary data.
                 </p>
               )}
             </div>
@@ -2432,8 +2436,7 @@ export function RecordsExplorer() {
 
               {!selectedIdentity ? (
                 <p className="history-state">
-                  No scorecard identity has been linked to this player yet.
-                  Their authoritative Vault totals remain available above.
+                  No match history is available for this player yet.
                 </p>
               ) : !activeScorecardHistory &&
                 historyErrorPlayerId !== selectedIdentity.playerId ? (
@@ -2625,9 +2628,7 @@ export function RecordsExplorer() {
                   )}
 
                   <p className="history-note">
-                    Career totals above remain authoritative. Match history is
-                    drawn from the supplementary scorecard archive and may be
-                    incomplete for older seasons.
+                    Older match histories may have gaps.
                   </p>
                 </>
               )}

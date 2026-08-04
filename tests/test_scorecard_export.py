@@ -288,6 +288,147 @@ class ScorecardExportTests(unittest.TestCase):
             directory["Test Player"]["scorecardPlayerId"], "p-test-player"
         )
 
+    def test_dismissal_categories_ignore_names_and_not_outs(self):
+        cases = (
+            ("c Smith b Jones", False, "caught"),
+            ("ct & bowled", False, "caught"),
+            ("b Jones", False, "bowled"),
+            ("lbw b Jones", False, "lbw"),
+            ("run out (Smith)", False, "run-out"),
+            ("st Smith b Jones", False, "stumped"),
+            ("Hit Wicket", False, "hit-wicket"),
+            ("Retired Out", False, "retired-out"),
+            ("Not Out", True, None),
+        )
+        for dismissal, not_out, expected in cases:
+            with self.subTest(dismissal=dismissal):
+                self.assertEqual(
+                    MODULE.dismissal_category(dismissal, not_out), expected
+                )
+
+    def test_player_metrics_and_fielding_are_precomputed(self):
+        quality = self.quality()
+        first = batter("Test Player", 40)
+        first.update(
+            {
+                "dismissal": "Caught",
+                "notOut": False,
+                "balls": 20,
+                "strikeRate": 200.0,
+                "catches": 2,
+            }
+        )
+        batting = MODULE.normalize_batting_rows(
+            [first], "300", 1, quality
+        )
+        batting[0]["playerInningsNumberInMatch"] = 1
+        bowling = MODULE.normalize_bowling_rows(
+            [
+                {
+                    **bowler("Test Player", 30),
+                    "runs": 15,
+                    "wickets": 3,
+                }
+            ],
+            "300",
+            1,
+        )
+        match = {
+            "fixtureId": "300",
+            "date": "2026-07-03",
+            "season": 2026,
+            "esccTeam": "1st XI",
+            "opposition": "Visitors",
+            "competition": "League",
+            "result": {"outcome": "win"},
+            "innings": [
+                {
+                    "id": "300-1",
+                    "battingTeamRole": "escc",
+                    "bowlingTeamRole": "opponent",
+                    "batting": batting,
+                    "bowling": [],
+                },
+                {
+                    "id": "300-2",
+                    "battingTeamRole": "opponent",
+                    "bowlingTeamRole": "escc",
+                    "batting": [],
+                    "bowling": bowling,
+                },
+            ],
+        }
+        player_index, _, appearances, _, _ = MODULE.build_player_data([match])
+        metrics = player_index[0]["scorecardMetrics"]
+        self.assertEqual(metrics["battingStrikeRate"], 200.0)
+        self.assertEqual(metrics["bowlingStrikeRate"], 10.0)
+        self.assertEqual(metrics["dismissals"]["caught"], 1)
+        self.assertEqual(appearances[0]["catches"], 2)
+
+    def test_club_insights_contains_only_batting_dismissal_mix(self):
+        match = {
+            "fixtureId": "400",
+            "season": 2026,
+            "esccTeam": "1st XI",
+            "competition": "League",
+            "result": {"outcome": "win"},
+            "innings": [
+                {
+                    "number": 1,
+                    "battingTeamRole": "escc",
+                    "total": {"runs": 120, "wickets": 2, "overs": "20.0"},
+                    "batting": [
+                        {
+                            "entryType": "innings",
+                            "isPlaceholder": False,
+                            "notOut": False,
+                                "dismissal": "Bowled",
+                        }
+                    ],
+                }
+            ],
+        }
+        insights = MODULE.build_club_insights([match])
+        self.assertEqual(insights["matches"][0]["firstBattingRole"], "escc")
+        self.assertEqual(insights["innings"][0]["runs"], 120)
+        self.assertEqual(insights["dismissals"][0]["type"], "bowled")
+        self.assertNotIn("bowlerDismissals", insights)
+
+    def test_player_link_report_does_not_guess_unmatched_people(self):
+        match = {
+            "fixtureId": "500",
+            "innings": [
+                {
+                    "id": "500-1",
+                    "battingTeamRole": "escc",
+                    "bowlingTeamRole": "opponent",
+                    "batting": [
+                        {
+                            "playerId": "p-unmatched",
+                            "player": "Unmatched Player",
+                            "isPlaceholder": False,
+                        }
+                    ],
+                    "bowling": [],
+                }
+            ],
+        }
+        report = MODULE.build_player_link_report(
+            [match],
+            {
+                "directory": [
+                    {
+                        "scorecardPlayerId": "p-linked",
+                    }
+                ]
+            },
+        )
+        self.assertEqual(report["summary"]["linkedReferenceCount"], 0)
+        self.assertEqual(report["summary"]["unresolvedReferenceCount"], 1)
+        self.assertEqual(
+            report["unresolved"][0]["player"], "Unmatched Player"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

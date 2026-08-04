@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "summary": {
+    "linkedReferenceCount": 24724,
+    "unresolvedPlayerCount": 1,
+    "unresolvedReferenceCount": 1
+  },
+  "unresolved": [
+    {
+      "discipline": "batting",
+      "fixtureId": "30801",
+      "inningsId": "30801-1",
+      "player": "G Ditchfield",
+      "scorecardPlayerId": "p-g-ditchfield-b2f20b26"
+    }
+  ]
+}

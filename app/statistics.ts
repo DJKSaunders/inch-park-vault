@@ -50,6 +50,16 @@ export type PlayerDirectoryEntry = {
   aliases: string[];
   scorecardPlayerId: string | null;
   scorecardPath: string | null;
+  scorecardMetrics: {
+    battingRunsWithBalls: number;
+    battingBalls: number;
+    battingInningsWithBalls: number;
+    battingStrikeRate: number | null;
+    bowlingBalls: number;
+    bowlingWickets: number;
+    bowlingStrikeRate: number | null;
+    dismissals: Record<DismissalType, number>;
+  } | null;
 };
 
 export type PlayerDirectory = {
@@ -85,6 +95,7 @@ export type ProfileMetric =
   | "innings"
   | "runs"
   | "battingAverage"
+  | "battingStrikeRate"
   | "highScore"
   | "notOuts"
   | "fifties"
@@ -97,6 +108,7 @@ export type ProfileMetric =
   | "fiveWicketHauls"
   | "bowlingAverage"
   | "economy"
+  | "bowlingStrikeRate"
   | "bestBowling"
   | "catches"
   | "stumpings"
@@ -114,23 +126,44 @@ export type ScorecardPlayerHistory = {
     competition: string | null;
     outcome: string;
     didNotBat: boolean;
+    catches: number;
+    stumpings: number;
+    runOuts: number;
   }[];
   battingInnings: {
     fixtureId: string;
     season: number;
+    dismissal: string | null;
+    dismissalType: DismissalType | null;
     runs: number | null;
     notOut: boolean;
+    balls: number | null;
     fours: number | null;
     sixes: number | null;
+    strikeRate: number | null;
   }[];
   bowlingSpells: {
     fixtureId: string;
     season: number;
     overs: string | null;
+    balls: number | null;
+    maidens: number | null;
     runs: number | null;
     wickets: number | null;
+    average: number | null;
+    economy: number | null;
   }[];
 };
+
+export type DismissalType =
+  | "caught"
+  | "bowled"
+  | "lbw"
+  | "run-out"
+  | "stumped"
+  | "hit-wicket"
+  | "retired-out"
+  | "other";
 
 const integer = new Intl.NumberFormat("en-GB");
 const decimal = new Intl.NumberFormat("en-GB", {
@@ -259,11 +292,16 @@ export function economy(stats: PlayerStats) {
   return stats.balls > 0 ? stats.bowlingRuns / (stats.balls / 6) : null;
 }
 
+export function bowlingStrikeRate(stats: PlayerStats) {
+  return stats.wickets > 0 ? stats.balls / stats.wickets : null;
+}
+
 export const profileMetricLabels: Record<ProfileMetric, string> = {
   matches: "Appearances",
   innings: "Batting innings",
   runs: "Runs",
   battingAverage: "Batting average",
+  battingStrikeRate: "Batting strike rate",
   highScore: "Highest score",
   notOuts: "Not outs",
   fifties: "Fifties",
@@ -276,6 +314,7 @@ export const profileMetricLabels: Record<ProfileMetric, string> = {
   fiveWicketHauls: "Five-wicket hauls",
   bowlingAverage: "Bowling average",
   economy: "Economy rate",
+  bowlingStrikeRate: "Bowling strike rate",
   bestBowling: "Best-bowling wickets",
   catches: "Catches",
   stumpings: "Stumpings",
@@ -292,6 +331,8 @@ export function metricValue(metric: ProfileMetric, stats: PlayerStats) {
       return stats.runs;
     case "battingAverage":
       return battingAverage(stats);
+    case "battingStrikeRate":
+      return null;
     case "highScore":
       return stats.highScore;
     case "notOuts":
@@ -312,6 +353,8 @@ export function metricValue(metric: ProfileMetric, stats: PlayerStats) {
       return bowlingAverage(stats);
     case "economy":
       return economy(stats);
+    case "bowlingStrikeRate":
+      return bowlingStrikeRate(stats);
     case "bestBowling":
       return stats.bestWickets > 0 ? stats.bestWickets : null;
     case "catches":
@@ -332,7 +375,9 @@ export function metricDisplay(metric: ProfileMetric, stats: PlayerStats) {
   if (
     metric === "battingAverage" ||
     metric === "bowlingAverage" ||
-    metric === "economy"
+    metric === "economy" ||
+    metric === "bowlingStrikeRate" ||
+    metric === "battingStrikeRate"
   ) {
     return decimal.format(value);
   }

@@ -44,6 +44,24 @@ python scripts/export_site_data.py \
 The archive's “Stats as of” date is set automatically from the newest match in
 the uploaded records. The season averages workbook supplies fours and sixes.
 
+When the website already contains the previous snapshot for the current season,
+replace that season from a new cumulative XML export rather than appending it:
+
+```bash
+python3 scripts/refresh_records_snapshot.py \
+  public/data/records.json \
+  /path/to/latest_batting.xml \
+  /path/to/latest_bowling.xml \
+  /path/to/all_time_averages.xlsx \
+  --season 2026
+```
+
+This command is safe to rerun with the same inputs. It replaces the selected
+season, replaces cumulative all-time boundary totals, suppresses DNB rows when
+the same player has a recorded innings, collapses duplicate DNB rows, and
+applies the scorecard-backed no-play rules. It writes its reconciliation details
+to `public/data/records-quality.json`.
+
 ## Scorecard enrichment pilot
 
 Public scorecards can be cached and parsed into a separate, non-authoritative

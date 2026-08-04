@@ -38,6 +38,16 @@ ADMINISTRATIVE_NO_PLAY_RESULT = re.compile(
     r"\b(?:conced(?:e|ed|es|ing)?|concession|forfeit(?:ed)?|walk[\s-]?over)\b",
     flags=re.IGNORECASE,
 )
+DISMISSAL_CATEGORIES = (
+    "caught",
+    "bowled",
+    "lbw",
+    "run-out",
+    "stumped",
+    "hit-wicket",
+    "retired-out",
+    "other",
+)
 
 
 def load_scraper_module():
@@ -68,6 +78,29 @@ def display_name(value: str) -> str:
 
 def is_placeholder(value: str) -> bool:
     return normalized_name(value) in PLACEHOLDER_NAMES
+
+
+def dismissal_category(dismissal: str | None, not_out: bool) -> str | None:
+    """Return a stable batting-dismissal category without parsing participants."""
+
+    if not_out or not dismissal:
+        return None
+    value = re.sub(r"\s+", " ", dismissal).strip().casefold()
+    if re.match(r"^(?:c(?:t|aught)?\b|caught\b)", value):
+        return "caught"
+    if re.match(r"^(?:b\b|bowled\b)", value):
+        return "bowled"
+    if re.match(r"^lbw\b", value):
+        return "lbw"
+    if re.match(r"^run[\s-]?out\b", value):
+        return "run-out"
+    if re.match(r"^(?:st\b|stumped\b)", value):
+        return "stumped"
+    if re.match(r"^(?:hit wicket|hit wkt|hw)\b", value):
+        return "hit-wicket"
+    if re.match(r"^retired(?:\s+out)?\b", value):
+        return "retired-out"
+    return "other"
 
 
 def slug(value: str) -> str:
@@ -570,9 +603,19 @@ def build_player_data(
                     "battingInningsCount": 0,
                     "bowlingSpellCount": 0,
                     "didNotBat": False,
+                    "catches": 0,
+                    "stumpings": 0,
+                    "runOuts": 0,
                 },
             )
             if discipline == "batting":
+                # Fielding figures are match-level enrichments and can appear
+                # on more than one retained batting row. Retain the largest
+                # supplied value rather than double-counting duplicate rows.
+                for field in ("catches", "stumpings", "runOuts"):
+                    appearance[field] = max(
+                        appearance[field], row.get(field) or 0
+                    )
                 if row["entryType"] == "innings":
                     item = {
                         "playerId": row["playerId"],
@@ -585,6 +628,9 @@ def build_player_data(
                         "opposition": match["opposition"],
                         "competition": match["competition"],
                         "inningsNumberInMatch": row["playerInningsNumberInMatch"],
+                        "dismissalType": dismissal_category(
+                            row["dismissal"], row["notOut"]
+                        ),
                         **{
                             field: row[field]
                             for field in (
@@ -648,6 +694,26 @@ def build_player_data(
         players.items(), key=lambda item: item[1]["name"].casefold()
     ):
         dates = [row["date"] for row in player["appearances"]]
+        batting_with_balls = [
+            row
+            for row in player["battingInnings"]
+            if row["balls"] is not None and row["balls"] > 0
+        ]
+        batting_runs_with_balls = sum(
+            row["runs"] or 0 for row in batting_with_balls
+        )
+        batting_balls = sum(row["balls"] or 0 for row in batting_with_balls)
+        bowling_balls = sum(
+            row["balls"] or 0 for row in player["bowlingSpells"]
+        )
+        bowling_wickets = sum(
+            row["wickets"] or 0 for row in player["bowlingSpells"]
+        )
+        dismissal_counts = Counter(
+            row["dismissalType"]
+            for row in player["battingInnings"]
+            if row["dismissalType"]
+        )
         player["memberIds"] = sorted(player["memberIds"])
         player["appearances"].sort(
             key=lambda row: (row["date"], row["fixtureId"])
@@ -673,6 +739,27 @@ def build_player_data(
                 "firstAppearance": min(dates),
                 "lastAppearance": max(dates),
                 "path": f"players/{player_id}.json",
+                "scorecardMetrics": {
+                    "battingRunsWithBalls": batting_runs_with_balls,
+                    "battingBalls": batting_balls,
+                    "battingInningsWithBalls": len(batting_with_balls),
+                    "battingStrikeRate": (
+                        batting_runs_with_balls * 100 / batting_balls
+                        if batting_balls
+                        else None
+                    ),
+                    "bowlingBalls": bowling_balls,
+                    "bowlingWickets": bowling_wickets,
+                    "bowlingStrikeRate": (
+                        bowling_balls / bowling_wickets
+                        if bowling_wickets
+                        else None
+                    ),
+                    "dismissals": {
+                        category: dismissal_counts.get(category, 0)
+                        for category in DISMISSAL_CATEGORIES
+                    },
+                },
             }
         )
 
@@ -740,12 +827,16 @@ def build_records_player_map(
                 "aliases": [],
                 "scorecardPlayerId": None,
                 "scorecardPath": None,
+                "scorecardMetrics": None,
             },
         )
         directory_entry["aliases"].append(record_name)
         if scorecard_player:
             directory_entry["scorecardPlayerId"] = scorecard_player["playerId"]
             directory_entry["scorecardPath"] = scorecard_player["path"]
+            directory_entry["scorecardMetrics"] = scorecard_player.get(
+                "scorecardMetrics"
+            )
 
     directory = sorted(
         (
@@ -792,6 +883,151 @@ def build_records_player_map(
             name for name, mapping in mappings.items() if mapping is None
         ],
         "unmatchedScorecardPlayers": unmatched_scorecard_players,
+    }
+
+
+def build_club_insights(matches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Prepare compact match/innings aggregates for the Insights dashboard."""
+
+    match_rows = []
+    innings_rows = []
+    dismissal_counts: Counter[tuple[int, str | None, str | None, str]] = (
+        Counter()
+    )
+    for match in matches:
+        first_role = (
+            match["innings"][0]["battingTeamRole"]
+            if match["innings"]
+            else None
+        )
+        match_rows.append(
+            {
+                "fixtureId": match["fixtureId"],
+                "season": match["season"],
+                "team": match["esccTeam"],
+                "competition": match["competition"],
+                "outcome": match["result"]["outcome"],
+                "firstBattingRole": first_role,
+            }
+        )
+        for innings in match["innings"]:
+            total = innings.get("total") or {}
+            runs = total.get("runs")
+            wickets = total.get("wickets")
+            role = innings["battingTeamRole"]
+            innings_rows.append(
+                {
+                    "fixtureId": match["fixtureId"],
+                    "season": match["season"],
+                    "team": match["esccTeam"],
+                    "competition": match["competition"],
+                    "outcome": match["result"]["outcome"],
+                    "inningsNumber": innings["number"],
+                    "battingRole": role,
+                    "runs": runs,
+                    "wickets": wickets,
+                    "overs": total.get("overs"),
+                }
+            )
+            if role != "escc":
+                continue
+            for row in innings["batting"]:
+                if (
+                    row["entryType"] != "innings"
+                    or row["isPlaceholder"]
+                    or row["notOut"]
+                ):
+                    continue
+                category = (
+                    dismissal_category(row.get("dismissal"), row["notOut"])
+                    or "other"
+                )
+                dismissal_counts[
+                    (
+                        match["season"],
+                        match["esccTeam"],
+                        match["competition"],
+                        category,
+                    )
+                ] += 1
+    dismissals = [
+        {
+            "season": season,
+            "team": team,
+            "competition": competition,
+            "type": category,
+            "count": count,
+        }
+        for (season, team, competition, category), count in sorted(
+            dismissal_counts.items(),
+            key=lambda item: (
+                item[0][0],
+                item[0][1] or "",
+                item[0][2] or "",
+                item[0][3],
+            ),
+        )
+    ]
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "dismissalCategories": list(DISMISSAL_CATEGORIES),
+        "matches": match_rows,
+        "innings": innings_rows,
+        "dismissals": dismissals,
+    }
+
+
+def build_player_link_report(
+    matches: list[dict[str, Any]], player_map: dict[str, Any]
+) -> dict[str, Any]:
+    linked_ids = {
+        entry["scorecardPlayerId"]
+        for entry in player_map["directory"]
+        if entry["scorecardPlayerId"]
+    }
+    linked_references = 0
+    unresolved = []
+    for match in matches:
+        for innings in match["innings"]:
+            for discipline, rows, is_escc in (
+                (
+                    "batting",
+                    innings["batting"],
+                    innings["battingTeamRole"] == "escc",
+                ),
+                (
+                    "bowling",
+                    innings["bowling"],
+                    innings["bowlingTeamRole"] == "escc",
+                ),
+            ):
+                if not is_escc:
+                    continue
+                for row in rows:
+                    if row["isPlaceholder"]:
+                        continue
+                    if row["playerId"] in linked_ids:
+                        linked_references += 1
+                    else:
+                        unresolved.append(
+                            {
+                                "fixtureId": match["fixtureId"],
+                                "inningsId": innings["id"],
+                                "discipline": discipline,
+                                "player": row["player"],
+                                "scorecardPlayerId": row["playerId"],
+                            }
+                        )
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "summary": {
+            "linkedReferenceCount": linked_references,
+            "unresolvedReferenceCount": len(unresolved),
+            "unresolvedPlayerCount": len(
+                {row["scorecardPlayerId"] for row in unresolved}
+            ),
+        },
+        "unresolved": unresolved,
     }
 
 
@@ -854,6 +1090,12 @@ def schema_document() -> dict[str, Any]:
             "appearances.json": "One row per ESCC player appearance per fixture.",
             "batting-innings.json": "Every retained ESCC batting innings.",
             "bowling-spells.json": "Every retained ESCC bowling spell.",
+            "club-insights.json": (
+                "Compact match, innings and ESCC batting-dismissal aggregates."
+            ),
+            "player-link-quality.json": (
+                "Scorecard player references that cannot be linked safely."
+            ),
             "coverage.json": "Field availability by season.",
             "data-quality.json": "Suppression and normalization decisions.",
             "provenance.json": "Source identity, hashes and authority boundary.",
@@ -1024,6 +1266,8 @@ def export(
         bowling_spells,
     ) = build_player_data(matches)
     player_map = build_records_player_map(records, player_index)
+    club_insights = build_club_insights(matches)
+    player_link_report = build_player_link_report(matches, player_map)
     validation = validate_export(
         matches, player_index, appearances, batting_innings, quality
     )
@@ -1134,6 +1378,10 @@ def export(
         compact_json(temp_path / "appearances.json", appearances)
         compact_json(temp_path / "batting-innings.json", batting_innings)
         compact_json(temp_path / "bowling-spells.json", bowling_spells)
+        compact_json(temp_path / "club-insights.json", club_insights)
+        readable_json(
+            temp_path / "player-link-quality.json", player_link_report
+        )
         readable_json(temp_path / "coverage.json", coverage_report(matches))
         readable_json(temp_path / "data-quality.json", quality)
         readable_json(temp_path / "schema.json", schema_document())

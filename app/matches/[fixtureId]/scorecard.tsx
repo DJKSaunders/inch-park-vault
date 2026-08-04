@@ -7,6 +7,7 @@ const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 type BattingRow = {
   rowNumber: number;
+  playerId: string;
   player: string;
   dismissal: string | null;
   entryType: "innings" | "did-not-bat";
@@ -23,6 +24,7 @@ type BattingRow = {
 
 type BowlingRow = {
   rowNumber: number;
+  playerId: string;
   player: string;
   overs: string | null;
   maidens: number | null;
@@ -35,7 +37,9 @@ type Innings = {
   id: string;
   number: number;
   battingTeam: string | null;
+  battingTeamRole: "escc" | "opponent";
   bowlingTeam: string | null;
+  bowlingTeamRole: "escc" | "opponent";
   total: {
     runs: number | null;
     wickets: number | null;
@@ -44,6 +48,13 @@ type Innings = {
   } | null;
   batting: BattingRow[];
   bowling: BowlingRow[];
+};
+
+type PlayerDirectory = {
+  players: {
+    playerId: string;
+    scorecardPlayerId: string | null;
+  }[];
 };
 
 type Match = {
@@ -99,17 +110,60 @@ function extrasLabel(extras: Record<string, number>) {
 
 export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
   const [match, setMatch] = useState<Match | null>(null);
+  const [profileByScorecardId, setProfileByScorecardId] = useState<
+    Map<string, string>
+  >(new Map());
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`${publicBasePath}/data/scorecards/matches/${fixtureId}.json`)
-      .then((response) => {
-        if (!response.ok) throw new Error("Unable to load scorecard");
-        return response.json() as Promise<Match>;
+    Promise.all([
+      fetch(`${publicBasePath}/data/scorecards/matches/${fixtureId}.json`).then(
+        (response) => {
+          if (!response.ok) throw new Error("Unable to load scorecard");
+          return response.json() as Promise<Match>;
+        },
+      ),
+      fetch(`${publicBasePath}/data/scorecards/player-directory.json`).then(
+        (response) => {
+          if (!response.ok) throw new Error("Unable to load player links");
+          return response.json() as Promise<PlayerDirectory>;
+        },
+      ),
+    ])
+      .then(([nextMatch, directory]) => {
+        setMatch(nextMatch);
+        setProfileByScorecardId(
+          new Map(
+            directory.players.flatMap((player) =>
+              player.scorecardPlayerId
+                ? [[player.scorecardPlayerId, player.playerId] as const]
+                : [],
+            ),
+          ),
+        );
       })
-      .then(setMatch)
       .catch(() => setError(true));
   }, [fixtureId]);
+
+  function playerName(
+    player: string,
+    scorecardPlayerId: string,
+    isEscc: boolean,
+  ) {
+    const profileId = isEscc
+      ? profileByScorecardId.get(scorecardPlayerId)
+      : null;
+    return profileId ? (
+      <a
+        className="scorecard-player-link"
+        href={`${publicBasePath}/players/${profileId}/`}
+      >
+        {player}
+      </a>
+    ) : (
+      player
+    );
+  }
 
   if (error) {
     return (
@@ -229,7 +283,13 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                     <tbody>
                       {batters.map((row) => (
                         <tr key={`${innings.id}-bat-${row.rowNumber}`}>
-                          <th scope="row">{row.player}</th>
+                          <th scope="row">
+                            {playerName(
+                              row.player,
+                              row.playerId,
+                              innings.battingTeamRole === "escc",
+                            )}
+                          </th>
                           <td>{row.dismissal ?? (row.notOut ? "Not out" : "—")}</td>
                           <td className="scorecard-primary">
                             {value(row.runs)}
@@ -260,7 +320,16 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                 {didNotBat.length > 0 && (
                   <p className="did-not-bat">
                     <strong>Did not bat:</strong>{" "}
-                    {didNotBat.map((row) => row.player).join(", ")}
+                    {didNotBat.map((row, index) => (
+                      <span key={`${innings.id}-dnb-${row.rowNumber}`}>
+                        {index > 0 ? ", " : ""}
+                        {playerName(
+                          row.player,
+                          row.playerId,
+                          innings.battingTeamRole === "escc",
+                        )}
+                      </span>
+                    ))}
                   </p>
                 )}
               </section>
@@ -287,7 +356,13 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                     <tbody>
                       {innings.bowling.map((row) => (
                         <tr key={`${innings.id}-bowl-${row.rowNumber}`}>
-                          <th scope="row">{row.player}</th>
+                          <th scope="row">
+                            {playerName(
+                              row.player,
+                              row.playerId,
+                              innings.bowlingTeamRole === "escc",
+                            )}
+                          </th>
                           <td>{value(row.overs)}</td>
                           <td>{value(row.maidens)}</td>
                           <td>{value(row.runs)}</td>
@@ -306,14 +381,6 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
         })}
 
         <aside className="scorecard-source">
-          <div>
-            <strong>Archive note</strong>
-            <p>
-              This scorecard is a non-authoritative enrichment of the Vault’s
-              workbook-derived career records. Older cards may not include
-              balls, boundaries or complete fielding details.
-            </p>
-          </div>
           <a href={match.provenance.sourceUrl} target="_blank" rel="noreferrer">
             View original scorecard <span aria-hidden="true">↗</span>
           </a>

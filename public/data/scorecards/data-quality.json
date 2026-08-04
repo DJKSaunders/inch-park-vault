@@ -121,13 +121,13 @@
       "overs": "21.0"
     },
     {
-      "fixtureId": "265869",
-      "inningsNumber": 1,
+      "fixtureId": "239014",
+      "inningsNumber": 2,
       "overs": "40.0"
     },
     {
-      "fixtureId": "239014",
-      "inningsNumber": 2,
+      "fixtureId": "265869",
+      "inningsNumber": 1,
       "overs": "40.0"
     },
     {
@@ -371,6 +371,11 @@
       "overs": "25.5"
     },
     {
+      "fixtureId": "384889",
+      "inningsNumber": 2,
+      "overs": "35.0"
+    },
+    {
       "fixtureId": "384910",
       "inningsNumber": 2,
       "overs": "32.0"
@@ -379,11 +384,6 @@
       "fixtureId": "385293",
       "inningsNumber": 1,
       "overs": "34.0"
-    },
-    {
-      "fixtureId": "384889",
-      "inningsNumber": 2,
-      "overs": "35.0"
     },
     {
       "fixtureId": "384911",
@@ -836,14 +836,14 @@
       "overs": "40.0"
     },
     {
-      "fixtureId": "750490",
-      "inningsNumber": 1,
-      "overs": "20.0"
-    },
-    {
       "fixtureId": "750485",
       "inningsNumber": 2,
       "overs": "30.0"
+    },
+    {
+      "fixtureId": "750490",
+      "inningsNumber": 1,
+      "overs": "20.0"
     },
     {
       "fixtureId": "753754",
@@ -896,24 +896,24 @@
       "overs": "24.5"
     },
     {
-      "fixtureId": "780964",
-      "inningsNumber": 2,
-      "overs": "30.4"
-    },
-    {
       "fixtureId": "780961",
       "inningsNumber": 1,
       "overs": "25.3"
     },
     {
-      "fixtureId": "780966",
+      "fixtureId": "780964",
       "inningsNumber": 2,
-      "overs": "32.5"
+      "overs": "30.4"
     },
     {
       "fixtureId": "780962",
       "inningsNumber": 2,
       "overs": "40.0"
+    },
+    {
+      "fixtureId": "780966",
+      "inningsNumber": 2,
+      "overs": "32.5"
     },
     {
       "fixtureId": "786514",
@@ -2201,14 +2201,14 @@
       "overs": "35.1"
     },
     {
-      "fixtureId": "909379",
-      "inningsNumber": 2,
-      "overs": "30.0"
-    },
-    {
       "fixtureId": "909341",
       "inningsNumber": 2,
       "overs": "30.2"
+    },
+    {
+      "fixtureId": "909379",
+      "inningsNumber": 2,
+      "overs": "30.0"
     },
     {
       "fixtureId": "901072",
@@ -2691,14 +2691,14 @@
       "overs": "40.0"
     },
     {
-      "fixtureId": "940254",
-      "inningsNumber": 1,
-      "overs": "20.0"
-    },
-    {
       "fixtureId": "938472",
       "inningsNumber": 1,
       "overs": "21.0"
+    },
+    {
+      "fixtureId": "940254",
+      "inningsNumber": 1,
+      "overs": "20.0"
     },
     {
       "fixtureId": "925517",
@@ -2974,6 +2974,31 @@
       "fixtureId": "933067",
       "inningsNumber": 1,
       "overs": "40.0"
+    },
+    {
+      "fixtureId": "925534",
+      "inningsNumber": 2,
+      "overs": "28.0"
+    },
+    {
+      "fixtureId": "933050",
+      "inningsNumber": 2,
+      "overs": "37.5"
+    },
+    {
+      "fixtureId": "933068",
+      "inningsNumber": 2,
+      "overs": "25.1"
+    },
+    {
+      "fixtureId": "933086",
+      "inningsNumber": 1,
+      "overs": "39.0"
+    },
+    {
+      "fixtureId": "933104",
+      "inningsNumber": 2,
+      "overs": "40.0"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3065,7 +3090,7 @@
   "competitionClassification": {
     "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1458,
+    "exact": 1464,
     "missing": 1
   },
   "multipleBattingInnings": [
@@ -3169,13 +3194,13 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15536,
-    "battingInningsCount": 12941,
-    "bowlingSpellCount": 9266,
-    "calculatedInningsOversCount": 595,
+    "appearanceCount": 15601,
+    "battingInningsCount": 12997,
+    "bowlingSpellCount": 9305,
+    "calculatedInningsOversCount": 600,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2415,
-    "fixtureCount": 1474,
+    "dnbOnlyAppearanceCount": 2423,
+    "fixtureCount": 1480,
     "matchedRecordPlayerCount": 648,
     "matchedScorecardPlayerCount": 645,
     "multipleBattingInningsAppearanceCount": 16,
@@ -3184,10 +3209,10 @@
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedAdministrativeFixtureCount": 15,
-    "suppressedDnbRows": 10,
+    "suppressedDnbRows": 12,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15536,
-    "uniqueFixtureIds": 1474,
+    "uniqueAppearanceKeys": 15601,
+    "uniqueFixtureIds": 1480,
     "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
@@ -3398,6 +3423,20 @@
       "player": "Butt",
       "reason": "genuine-innings-present",
       "rowNumber": 9
+    },
+    {
+      "fixtureId": "933104",
+      "inningsNumber": 2,
+      "player": "Abdul Sabir",
+      "reason": "genuine-innings-present",
+      "rowNumber": 11
+    },
+    {
+      "fixtureId": "933104",
+      "inningsNumber": 2,
+      "player": "Shafay Ehsan",
+      "reason": "genuine-innings-present",
+      "rowNumber": 10
     }
   ],
   "suppressedUnplayedInnings": [

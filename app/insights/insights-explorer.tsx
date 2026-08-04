@@ -1,17 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { DismissalStackedBars } from "../components/dismissal-stacked-bars";
+import {
+  ComparisonSelect,
+  ComparisonTeamSelect,
+} from "../components/comparison-select";
 import { SeasonChart } from "../components/season-chart";
 import { SiteHeader } from "../site-header";
 import {
   aggregatePlayer,
   battingAverage,
   bowlingAverage,
+  bowlingStrikeRate,
   economy,
   rowsForAliases,
   type PlayerDirectory,
   type PlayerDirectoryEntry,
   type RecordsData,
+  type DismissalType,
 } from "../statistics";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -42,6 +49,94 @@ type MatchIndex = {
 };
 
 type TrendMetric = "runs" | "wickets" | "fixtures";
+type ClubTrendMetric =
+  | "firstInningsScore"
+  | "oppositionFirstInningsScore"
+  | "winBattingFirst"
+  | "winChasing"
+  | "chaseScore"
+  | "successfulChase"
+  | "wicketsLost"
+  | "wicketsTaken"
+  | "battingRunsPerWicket"
+  | "bowlingRunsPerWicket";
+
+type ClubInsights = {
+  matches: {
+    fixtureId: string;
+    season: number;
+    team: string | null;
+    competition: string | null;
+    outcome: string;
+    firstBattingRole: "escc" | "opponent" | null;
+  }[];
+  innings: {
+    fixtureId: string;
+    season: number;
+    team: string | null;
+    competition: string | null;
+    outcome: string;
+    inningsNumber: number;
+    battingRole: "escc" | "opponent";
+    runs: number | null;
+    wickets: number | null;
+    overs: string | null;
+  }[];
+  dismissals: {
+    season: number;
+    team: string | null;
+    competition: string | null;
+    type: DismissalType;
+    count: number;
+  }[];
+};
+
+type ComparisonMetric = {
+  label: string;
+  values: (number | null)[];
+  format: (value: number | null) => string;
+  lowerIsBetter?: boolean;
+  coverage?: string[];
+};
+
+type ScorecardBattingInnings = {
+  playerId: string;
+  season: number;
+  team: string | null;
+  competition: string | null;
+  opposition: string | null;
+  runs: number | null;
+  balls: number | null;
+};
+
+const clubTrendLabels: Record<ClubTrendMetric, string> = {
+  firstInningsScore: "Average score batting first",
+  oppositionFirstInningsScore: "Average opposition first-innings score",
+  winBattingFirst: "Win rate batting first",
+  winChasing: "Win rate chasing",
+  chaseScore: "Average chase score",
+  successfulChase: "Successful chase rate",
+  wicketsLost: "Average wickets lost",
+  wicketsTaken: "Average wickets taken",
+  battingRunsPerWicket: "Batting runs per wicket",
+  bowlingRunsPerWicket: "Runs conceded per wicket",
+};
+
+const clubTrendDirection: Record<
+  ClubTrendMetric,
+  "higher" | "lower" | "neutral"
+> = {
+  firstInningsScore: "higher",
+  oppositionFirstInningsScore: "lower",
+  winBattingFirst: "higher",
+  winChasing: "higher",
+  chaseScore: "higher",
+  successfulChase: "higher",
+  wicketsLost: "lower",
+  wicketsTaken: "higher",
+  battingRunsPerWicket: "higher",
+  bowlingRunsPerWicket: "lower",
+};
 
 function compactOpponent(value: string | null) {
   return (value ?? "Unknown opposition")
@@ -63,11 +158,23 @@ export function InsightsExplorer() {
   const [records, setRecords] = useState<RecordsData | null>(null);
   const [directory, setDirectory] = useState<PlayerDirectory | null>(null);
   const [matches, setMatches] = useState<MatchIndex | null>(null);
+  const [clubInsights, setClubInsights] = useState<ClubInsights | null>(null);
   const [team, setTeam] = useState("All teams");
   const [competition, setCompetition] = useState("All competitions");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("runs");
+  const [clubTrendMetric, setClubTrendMetric] =
+    useState<ClubTrendMetric>("firstInningsScore");
   const [leftPlayer, setLeftPlayer] = useState("");
   const [rightPlayer, setRightPlayer] = useState("");
+  const [thirdPlayer, setThirdPlayer] = useState("");
+  const [comparisonStartYear, setComparisonStartYear] = useState(2004);
+  const [comparisonEndYear, setComparisonEndYear] = useState(2026);
+  const [comparisonTeams, setComparisonTeams] = useState<string[]>([]);
+  const [comparisonMatchType, setComparisonMatchType] = useState("");
+  const [comparisonOpponent, setComparisonOpponent] = useState("");
+  const [scorecardBatting, setScorecardBatting] = useState<
+    ScorecardBattingInnings[] | null
+  >(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -86,11 +193,34 @@ export function InsightsExplorer() {
         if (!response.ok) throw new Error("Matches unavailable");
         return response.json() as Promise<MatchIndex>;
       }),
+      fetch(`${publicBasePath}/data/scorecards/club-insights.json`).then(
+        (response) => {
+          if (!response.ok) throw new Error("Club insights unavailable");
+          return response.json() as Promise<ClubInsights>;
+        },
+      ),
+      fetch(`${publicBasePath}/data/scorecards/batting-innings.json`).then(
+        (response) => {
+          if (!response.ok) throw new Error("Batting innings unavailable");
+          return response.json() as Promise<ScorecardBattingInnings[]>;
+        },
+      ),
     ])
-      .then(([nextRecords, nextDirectory, nextMatches]) => {
+      .then(
+        ([
+          nextRecords,
+          nextDirectory,
+          nextMatches,
+          nextClubInsights,
+          nextScorecardBatting,
+        ]) => {
         setRecords(nextRecords);
         setDirectory(nextDirectory);
         setMatches(nextMatches);
+        setClubInsights(nextClubInsights);
+        setScorecardBatting(nextScorecardBatting);
+        setComparisonStartYear(nextRecords.meta.seasonStart);
+        setComparisonEndYear(nextRecords.meta.seasonEnd);
         const requested = new URLSearchParams(window.location.search).get("player");
         const initialLeft =
           nextDirectory.players.find((player) => player.playerId === requested) ??
@@ -103,7 +233,8 @@ export function InsightsExplorer() {
           );
         setLeftPlayer(initialLeft?.playerId ?? "");
         setRightPlayer(initialRight?.playerId ?? "");
-      })
+        },
+      )
       .catch(() => setFailed(true));
   }, []);
 
@@ -120,16 +251,22 @@ export function InsightsExplorer() {
 
   const seasonPoints = useMemo(() => {
     if (!matches) return [];
-    const seasons = new Map<number, number>();
+    const seasons = new Map<number, { value: number; samples: number }>();
+    const add = (season: number, value: number) => {
+      const current = seasons.get(season) ?? { value: 0, samples: 0 };
+      current.value += value;
+      current.samples += 1;
+      seasons.set(season, current);
+    };
     if (trendMetric === "runs") {
       for (const row of filteredRows.batting) {
         if (!row[8] && typeof row[6] === "number") {
-          seasons.set(row[1], (seasons.get(row[1]) ?? 0) + row[6]);
+          add(row[1], row[6]);
         }
       }
     } else if (trendMetric === "wickets") {
       for (const row of filteredRows.bowling) {
-        seasons.set(row[1], (seasons.get(row[1]) ?? 0) + row[9]);
+        add(row[1], row[9]);
       }
     } else {
       for (const match of matches.matches) {
@@ -138,15 +275,19 @@ export function InsightsExplorer() {
           (competition === "All competitions" ||
             match.competition === competition)
         ) {
-          seasons.set(match.season, (seasons.get(match.season) ?? 0) + 1);
+          add(match.season, 1);
         }
       }
     }
     return [...seasons]
-      .map(([season, value]) => ({
+      .map(([season, summary]) => ({
         season,
-        value,
-        display: integer.format(value),
+        value: summary.value,
+        display: integer.format(summary.value),
+        valueLabel: integer.format(summary.value),
+        details: [
+          `${integer.format(summary.samples)} ${trendMetric === "runs" ? "recorded innings" : trendMetric === "wickets" ? "bowling spells" : "fixture records"}`,
+        ],
       }))
       .sort((left, right) => left.season - right.season);
   }, [competition, filteredRows, matches, team, trendMetric]);
@@ -210,18 +351,231 @@ export function InsightsExplorer() {
       .slice(0, 12);
   }, [competition, matches, team]);
 
+  const filteredClubMatches = useMemo(
+    () =>
+      (clubInsights?.matches ?? []).filter(
+        (match) =>
+          (team === "All teams" || match.team === team) &&
+          (competition === "All competitions" ||
+            match.competition === competition),
+      ),
+    [clubInsights, competition, team],
+  );
+
+  const filteredClubInnings = useMemo(
+    () =>
+      (clubInsights?.innings ?? []).filter(
+        (innings) =>
+          (team === "All teams" || innings.team === team) &&
+          (competition === "All competitions" ||
+            innings.competition === competition),
+      ),
+    [clubInsights, competition, team],
+  );
+
+  const clubTrendPoints = useMemo(() => {
+    const validOutcomes = new Set(["win", "loss", "tie", "draw"]);
+    const values = new Map<
+      number,
+      { numerator: number; denominator: number; samples: number }
+    >();
+    const add = (
+      season: number,
+      numerator: number,
+      denominator = 1,
+      samples = 1,
+    ) => {
+      const current = values.get(season) ?? {
+        numerator: 0,
+        denominator: 0,
+        samples: 0,
+      };
+      current.numerator += numerator;
+      current.denominator += denominator;
+      current.samples += samples;
+      values.set(season, current);
+    };
+
+    if (
+      clubTrendMetric === "winBattingFirst" ||
+      clubTrendMetric === "winChasing"
+    ) {
+      const expectedRole =
+        clubTrendMetric === "winBattingFirst" ? "escc" : "opponent";
+      for (const match of filteredClubMatches) {
+        if (
+          match.firstBattingRole !== expectedRole ||
+          !validOutcomes.has(match.outcome)
+        ) {
+          continue;
+        }
+        add(match.season, match.outcome === "win" ? 100 : 0);
+      }
+    } else if (clubTrendMetric === "successfulChase") {
+      const chaseFixtures = new Set(
+        filteredClubInnings
+          .filter(
+            (innings) =>
+              innings.inningsNumber === 2 &&
+              innings.battingRole === "escc" &&
+              validOutcomes.has(innings.outcome),
+          )
+          .map((innings) => innings.fixtureId),
+      );
+      for (const match of filteredClubMatches) {
+        if (!chaseFixtures.has(match.fixtureId)) continue;
+        add(match.season, match.outcome === "win" ? 100 : 0);
+      }
+    } else {
+      for (const innings of filteredClubInnings) {
+        if (
+          !validOutcomes.has(innings.outcome) ||
+          innings.runs === null ||
+          innings.wickets === null
+        ) {
+          continue;
+        }
+        if (
+          clubTrendMetric === "firstInningsScore" &&
+          innings.inningsNumber === 1 &&
+          innings.battingRole === "escc"
+        ) {
+          add(innings.season, innings.runs);
+        } else if (
+          clubTrendMetric === "oppositionFirstInningsScore" &&
+          innings.inningsNumber === 1 &&
+          innings.battingRole === "opponent"
+        ) {
+          add(innings.season, innings.runs);
+        } else if (
+          clubTrendMetric === "chaseScore" &&
+          innings.inningsNumber === 2 &&
+          innings.battingRole === "escc"
+        ) {
+          add(innings.season, innings.runs);
+        } else if (
+          clubTrendMetric === "wicketsLost" &&
+          innings.battingRole === "escc"
+        ) {
+          add(innings.season, innings.wickets);
+        } else if (
+          clubTrendMetric === "wicketsTaken" &&
+          innings.battingRole === "opponent"
+        ) {
+          add(innings.season, innings.wickets);
+        } else if (
+          clubTrendMetric === "battingRunsPerWicket" &&
+          innings.battingRole === "escc" &&
+          innings.wickets > 0
+        ) {
+          add(innings.season, innings.runs, innings.wickets);
+        } else if (
+          clubTrendMetric === "bowlingRunsPerWicket" &&
+          innings.battingRole === "opponent" &&
+          innings.wickets > 0
+        ) {
+          add(innings.season, innings.runs, innings.wickets);
+        }
+      }
+    }
+    return [...values]
+      .filter(([, summary]) => summary.denominator > 0)
+      .map(([season, summary]) => {
+        const value = summary.numerator / summary.denominator;
+        const percentage =
+          clubTrendMetric === "winBattingFirst" ||
+          clubTrendMetric === "winChasing" ||
+          clubTrendMetric === "successfulChase";
+        return {
+          season,
+          value,
+          display: `${decimal.format(value)}${percentage ? "%" : ""} · ${integer.format(summary.samples)} ${summary.samples === 1 ? "sample" : "samples"}`,
+          valueLabel: `${value.toFixed(1)}${percentage ? "%" : ""}`,
+          details:
+            clubTrendMetric === "winBattingFirst" ||
+            clubTrendMetric === "winChasing" ||
+            clubTrendMetric === "successfulChase"
+              ? [
+                  `${integer.format(summary.numerator / 100)} successful · ${integer.format(summary.samples)} qualifying matches`,
+                ]
+              : clubTrendMetric === "battingRunsPerWicket" ||
+                  clubTrendMetric === "bowlingRunsPerWicket"
+                ? [
+                    `${integer.format(summary.numerator)} runs · ${integer.format(summary.denominator)} wickets`,
+                    `${integer.format(summary.samples)} qualifying innings`,
+                  ]
+                : [
+                    `${integer.format(summary.numerator)} total · ${integer.format(summary.samples)} qualifying innings`,
+                  ],
+        };
+      })
+      .sort((left, right) => left.season - right.season);
+  }, [
+    clubTrendMetric,
+    filteredClubInnings,
+    filteredClubMatches,
+  ]);
+
+  const dismissalSeasons = useMemo(() => {
+    const seasons = new Map<
+      number,
+      Partial<Record<DismissalType, number>>
+    >();
+    for (const row of clubInsights?.dismissals ?? []) {
+      if (
+        (team !== "All teams" && row.team !== team) ||
+        (competition !== "All competitions" &&
+          row.competition !== competition)
+      ) {
+        continue;
+      }
+      const counts = seasons.get(row.season) ?? {};
+      counts[row.type] = (counts[row.type] ?? 0) + row.count;
+      seasons.set(row.season, counts);
+    }
+    return [...seasons]
+      .map(([season, counts]) => ({ season, counts }))
+      .sort((left, right) => left.season - right.season);
+  }, [clubInsights, competition, team]);
+
   const selectedPlayers = useMemo(() => {
     if (!directory || !records) return null;
-    const left = directory.players.find((player) => player.playerId === leftPlayer);
-    const right = directory.players.find(
-      (player) => player.playerId === rightPlayer,
-    );
-    if (!left || !right) return null;
-    return {
-      left: { entry: left, stats: comparisonValue(left, records) },
-      right: { entry: right, stats: comparisonValue(right, records) },
+    const playerIds = [leftPlayer, rightPlayer, thirdPlayer].filter(Boolean);
+    const players = playerIds
+      .map((playerId) =>
+        directory.players.find((player) => player.playerId === playerId),
+      )
+      .filter((player): player is PlayerDirectoryEntry => Boolean(player));
+    if (players.length < 2) return null;
+    const passes = (
+      row: RecordsData["batting"][number] | RecordsData["bowling"][number],
+    ) =>
+      row[1] >= comparisonStartYear &&
+      row[1] <= comparisonEndYear &&
+      (!comparisonTeams.length || comparisonTeams.includes(row[2])) &&
+      (!comparisonMatchType || row[3] === comparisonMatchType) &&
+      (!comparisonOpponent || row[4] === comparisonOpponent);
+    const filteredRecords: RecordsData = {
+      ...records,
+      batting: records.batting.filter(passes),
+      bowling: records.bowling.filter(passes),
     };
-  }, [directory, leftPlayer, records, rightPlayer]);
+    return players.map((entry) => ({
+      entry,
+      stats: comparisonValue(entry, filteredRecords),
+    }));
+  }, [
+    comparisonEndYear,
+    comparisonMatchType,
+    comparisonOpponent,
+    comparisonStartYear,
+    comparisonTeams,
+    directory,
+    leftPlayer,
+    records,
+    rightPlayer,
+    thirdPlayer,
+  ]);
 
   if (failed) {
     return (
@@ -234,7 +588,7 @@ export function InsightsExplorer() {
     );
   }
 
-  if (!records || !directory || !matches) {
+  if (!records || !directory || !matches || !clubInsights || !scorecardBatting) {
     return (
       <>
         <SiteHeader active="insights" />
@@ -246,58 +600,150 @@ export function InsightsExplorer() {
     );
   }
 
-  const comparisonMetrics = selectedPlayers
+  const comparisonSeasons = Array.from(
+    { length: records.meta.seasonEnd - records.meta.seasonStart + 1 },
+    (_, index) => records.meta.seasonStart + index,
+  );
+  const playerOptions = directory.players.map((player) => ({
+    id: player.playerId,
+    label: player.name,
+  }));
+  const battingStrikeRateFor = (entry: PlayerDirectoryEntry) => {
+    const innings = scorecardBatting.filter(
+      (row) =>
+        row.playerId === entry.playerId &&
+        row.season >= comparisonStartYear &&
+        row.season <= comparisonEndYear &&
+        (!comparisonTeams.length ||
+          (row.team !== null && comparisonTeams.includes(row.team))) &&
+        (!comparisonMatchType || row.competition === comparisonMatchType) &&
+        (!comparisonOpponent || row.opposition === comparisonOpponent) &&
+        row.balls !== null &&
+        row.balls > 0,
+    );
+    const balls = innings.reduce((sum, row) => sum + (row.balls ?? 0), 0);
+    const runs = innings.reduce((sum, row) => sum + (row.runs ?? 0), 0);
+    return {
+      value: balls > 0 ? (runs / balls) * 100 : null,
+      innings: innings.length,
+    };
+  };
+  const comparisonStrikeRates = selectedPlayers?.map((player) =>
+    battingStrikeRateFor(player.entry),
+  );
+
+  const comparisonMetrics: ComparisonMetric[] = selectedPlayers
     ? [
         {
           label: "Appearances",
-          left: selectedPlayers.left.stats.matches.size,
-          right: selectedPlayers.right.stats.matches.size,
-          format: (value: number) => integer.format(value),
+          values: selectedPlayers.map((player) => player.stats.matches.size),
+          format: (value: number | null) =>
+            value === null ? "—" : integer.format(value),
         },
         {
           label: "Runs",
-          left: selectedPlayers.left.stats.runs,
-          right: selectedPlayers.right.stats.runs,
-          format: (value: number) => integer.format(value),
+          values: selectedPlayers.map((player) =>
+            player.stats.matches.size ? player.stats.runs : null,
+          ),
+          format: (value: number | null) =>
+            value === null ? "—" : integer.format(value),
         },
         {
           label: "Batting average",
-          left: battingAverage(selectedPlayers.left.stats) ?? 0,
-          right: battingAverage(selectedPlayers.right.stats) ?? 0,
-          format: (value: number) => decimal.format(value),
+          values: selectedPlayers.map((player) => battingAverage(player.stats)),
+          format: (value: number | null) =>
+            value === null ? "—" : decimal.format(value),
+        },
+        {
+          label: "Batting strike rate",
+          values: comparisonStrikeRates?.map((summary) => summary.value) ?? [],
+          format: (value: number | null) =>
+            value === null ? "—" : decimal.format(value),
+          coverage: selectedPlayers.map(
+            (player, index) =>
+              `${comparisonStrikeRates?.[index].innings ?? 0}/${player.stats.innings} innings`,
+          ),
         },
         {
           label: "Highest score",
-          left: selectedPlayers.left.stats.highScore,
-          right: selectedPlayers.right.stats.highScore,
-          format: (value: number) => integer.format(value),
+          values: selectedPlayers.map((player) =>
+            player.stats.innings > 0 ? player.stats.highScore : null,
+          ),
+          format: (value: number | null) =>
+            value === null ? "—" : integer.format(value),
         },
         {
           label: "Wickets",
-          left: selectedPlayers.left.stats.wickets,
-          right: selectedPlayers.right.stats.wickets,
-          format: (value: number) => integer.format(value),
+          values: selectedPlayers.map((player) =>
+            player.stats.matches.size ? player.stats.wickets : null,
+          ),
+          format: (value: number | null) =>
+            value === null ? "—" : integer.format(value),
         },
         {
           label: "Bowling average",
-          left: bowlingAverage(selectedPlayers.left.stats) ?? 0,
-          right: bowlingAverage(selectedPlayers.right.stats) ?? 0,
-          format: (value: number) => (value > 0 ? decimal.format(value) : "—"),
+          values: selectedPlayers.map((player) => bowlingAverage(player.stats)),
+          format: (value: number | null) =>
+            value === null ? "—" : decimal.format(value),
+          lowerIsBetter: true,
         },
         {
           label: "Economy",
-          left: economy(selectedPlayers.left.stats) ?? 0,
-          right: economy(selectedPlayers.right.stats) ?? 0,
-          format: (value: number) => (value > 0 ? decimal.format(value) : "—"),
+          values: selectedPlayers.map((player) => economy(player.stats)),
+          format: (value: number | null) =>
+            value === null ? "—" : decimal.format(value),
+          lowerIsBetter: true,
+        },
+        {
+          label: "Bowling strike rate",
+          values: selectedPlayers.map((player) =>
+            bowlingStrikeRate(player.stats),
+          ),
+          format: (value: number | null) =>
+            value === null ? "—" : decimal.format(value),
+          lowerIsBetter: true,
         },
         {
           label: "Catches",
-          left: selectedPlayers.left.stats.catches,
-          right: selectedPlayers.right.stats.catches,
-          format: (value: number) => integer.format(value),
+          values: selectedPlayers.map((player) =>
+            player.stats.matches.size ? player.stats.catches : null,
+          ),
+          format: (value: number | null) =>
+            value === null ? "—" : integer.format(value),
         },
       ]
     : [];
+
+  function comparisonOutcomes(item: ComparisonMetric) {
+    const valid = item.values
+      .map((value, index) => ({ value, index }))
+      .filter((entry): entry is { value: number; index: number } =>
+        entry.value !== null,
+      );
+    const outcomes = item.values.map(() => "none" as const) as (
+      | "better"
+      | "weaker"
+      | "middle"
+      | "level"
+      | "none"
+    )[];
+    if (valid.length < 2) return outcomes;
+    const values = valid.map((entry) => entry.value);
+    const best = item.lowerIsBetter ? Math.min(...values) : Math.max(...values);
+    const weakest = item.lowerIsBetter ? Math.max(...values) : Math.min(...values);
+    if (best === weakest) {
+      valid.forEach(({ index }) => (outcomes[index] = "level"));
+      return outcomes;
+    }
+    valid.forEach(({ value, index }) => {
+      if (value === best) outcomes[index] = "better";
+      else if (value === weakest) outcomes[index] = "weaker";
+      else outcomes[index] = "middle";
+    });
+    return outcomes;
+  }
+
+  const filterContext = `${team} · ${competition}`;
 
   return (
     <>
@@ -308,11 +754,18 @@ export function InsightsExplorer() {
           <h1>Insights</h1>
           <p>
             Follow the archive through time, inspect team outcomes and compare
-            two careers on the same scale.
+            careers on the same scale.
           </p>
         </header>
 
-        <section className="insight-filter-bar">
+        <nav className="insights-subnav" aria-label="Insights sections">
+          <a href="#overview">Overview</a>
+          <a href="#club-trends">Club trends</a>
+          <a href="#dismissals">Dismissals</a>
+          <a href="#compare">Player comparison</a>
+        </nav>
+
+        <section className="insight-filter-bar" id="overview">
           <label>
             <span>Team</span>
             <select value={team} onChange={(event) => setTeam(event.target.value)}>
@@ -358,12 +811,63 @@ export function InsightsExplorer() {
           <SeasonChart
             label={trendMetric}
             points={seasonPoints}
+            context={filterContext}
             note={
               trendMetric === "fixtures"
-                ? "Counts are source fixture records; mirrored intra-club scorecards remain separate fixture records."
-                : "Performance totals use the authoritative Vault records."
+                ? "Intra-club games are counted separately."
+                : undefined
             }
           />
+        </section>
+
+        <section className="insight-panel club-trend-panel" id="club-trends">
+          <header>
+            <div>
+              <p className="eyebrow">Club comparisons</p>
+              <h2>{clubTrendLabels[clubTrendMetric]}</h2>
+            </div>
+            <label>
+              <span>Trend</span>
+              <select
+                value={clubTrendMetric}
+                onChange={(event) =>
+                  setClubTrendMetric(event.target.value as ClubTrendMetric)
+                }
+              >
+                {(Object.keys(clubTrendLabels) as ClubTrendMetric[]).map(
+                  (key) => (
+                    <option value={key} key={key}>
+                      {clubTrendLabels[key]}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+          </header>
+          <SeasonChart
+            label={clubTrendLabels[clubTrendMetric]}
+            points={clubTrendPoints}
+            context={filterContext}
+            direction={clubTrendDirection[clubTrendMetric]}
+            note="Excludes concessions, abandoned matches and innings that were not played."
+          />
+        </section>
+
+        <section className="insight-panel dismissal-trend-panel" id="dismissals">
+          <header>
+            <div>
+              <p className="eyebrow">Batting dismissals</p>
+              <h2>How South wickets fell by season</h2>
+            </div>
+            <span>Each season totals 100%</span>
+          </header>
+          <DismissalStackedBars
+            seasons={dismissalSeasons}
+            context={filterContext}
+          />
+          <p className="chart-note">
+            Not-outs and did-not-bat entries are excluded.
+          </p>
         </section>
 
         <div className="insight-two-column">
@@ -415,75 +919,229 @@ export function InsightsExplorer() {
           </section>
         </div>
 
-        <section className="insight-panel comparison-panel">
+        <section className="insight-panel comparison-panel" id="compare">
           <header>
             <div>
               <p className="eyebrow">Career comparison</p>
               <h2>Player v player</h2>
             </div>
           </header>
+          <div className="comparison-filter-box">
+            <div className="comparison-filter-title">
+              <strong>Filter these careers</strong>
+              <button
+                type="button"
+                onClick={() => {
+                  setComparisonStartYear(records.meta.seasonStart);
+                  setComparisonEndYear(records.meta.seasonEnd);
+                  setComparisonTeams([]);
+                  setComparisonMatchType("");
+                  setComparisonOpponent("");
+                }}
+              >
+                Reset filters
+              </button>
+            </div>
+            <div className="comparison-filter-grid">
+              <ComparisonSelect
+                label="From season"
+                value={String(comparisonStartYear)}
+                onChange={(value) => {
+                  const next = Number(value ?? records.meta.seasonStart);
+                  setComparisonStartYear(next);
+                  if (next > comparisonEndYear) setComparisonEndYear(next);
+                }}
+                options={comparisonSeasons.map((season) => ({
+                  id: String(season),
+                  label: String(season),
+                }))}
+                placeholder={String(records.meta.seasonStart)}
+              />
+              <ComparisonSelect
+                label="To season"
+                value={String(comparisonEndYear)}
+                onChange={(value) => {
+                  const next = Number(value ?? records.meta.seasonEnd);
+                  setComparisonEndYear(next);
+                  if (next < comparisonStartYear) setComparisonStartYear(next);
+                }}
+                options={[...comparisonSeasons].reverse().map((season) => ({
+                  id: String(season),
+                  label: String(season),
+                }))}
+                placeholder={String(records.meta.seasonEnd)}
+              />
+              <ComparisonTeamSelect
+                value={comparisonTeams}
+                onChange={setComparisonTeams}
+                options={records.meta.teams}
+              />
+              <ComparisonSelect
+                label="Match type"
+                value={comparisonMatchType || null}
+                onChange={(value) => setComparisonMatchType(value ?? "")}
+                options={records.meta.matchTypes.map((value) => ({
+                  id: value,
+                  label: value,
+                }))}
+                placeholder="All match types"
+              />
+              <ComparisonSelect
+                label="Opponent"
+                value={comparisonOpponent || null}
+                onChange={(value) => setComparisonOpponent(value ?? "")}
+                options={records.meta.oppositions.map((value) => ({
+                  id: value,
+                  label: value,
+                }))}
+                placeholder="All opponents"
+              />
+            </div>
+            <div className="comparison-filter-chips" aria-label="Active filters">
+              {comparisonStartYear !== records.meta.seasonStart && (
+                <button
+                  type="button"
+                  onClick={() => setComparisonStartYear(records.meta.seasonStart)}
+                >
+                  From: {comparisonStartYear}<b aria-hidden="true">×</b>
+                </button>
+              )}
+              {comparisonEndYear !== records.meta.seasonEnd && (
+                <button
+                  type="button"
+                  onClick={() => setComparisonEndYear(records.meta.seasonEnd)}
+                >
+                  To: {comparisonEndYear}<b aria-hidden="true">×</b>
+                </button>
+              )}
+              {comparisonTeams.map((value) => (
+                <button
+                  type="button"
+                  key={value}
+                  onClick={() =>
+                    setComparisonTeams((current) =>
+                      current.filter((teamValue) => teamValue !== value),
+                    )
+                  }
+                >
+                  Team: {value}<b aria-hidden="true">×</b>
+                </button>
+              ))}
+              {comparisonMatchType && (
+                <button type="button" onClick={() => setComparisonMatchType("")}>
+                  Match type: {comparisonMatchType}<b aria-hidden="true">×</b>
+                </button>
+              )}
+              {comparisonOpponent && (
+                <button type="button" onClick={() => setComparisonOpponent("")}>
+                  Opponent: {comparisonOpponent}<b aria-hidden="true">×</b>
+                </button>
+              )}
+              {comparisonStartYear === records.meta.seasonStart &&
+                comparisonEndYear === records.meta.seasonEnd &&
+                !comparisonTeams.length &&
+                !comparisonMatchType &&
+                !comparisonOpponent && <span>Showing all recorded matches</span>}
+            </div>
+          </div>
           <div className="comparison-selectors">
-            <label>
-              <span>Player one</span>
-              <select
-                value={leftPlayer}
-                onChange={(event) => setLeftPlayer(event.target.value)}
-              >
-                {directory.players.map((player) => (
-                  <option value={player.playerId} key={player.playerId}>
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <span aria-hidden="true">versus</span>
-            <label>
-              <span>Player two</span>
-              <select
-                value={rightPlayer}
-                onChange={(event) => setRightPlayer(event.target.value)}
-              >
-                {directory.players.map((player) => (
-                  <option value={player.playerId} key={player.playerId}>
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ComparisonSelect
+              label="Player one"
+              value={leftPlayer}
+              onChange={(value) => setLeftPlayer(value ?? "")}
+              options={playerOptions}
+              placeholder="Select player"
+              disabledKeys={[rightPlayer, thirdPlayer].filter(Boolean)}
+            />
+            <ComparisonSelect
+              label="Player two"
+              value={rightPlayer}
+              onChange={(value) => setRightPlayer(value ?? "")}
+              options={playerOptions}
+              placeholder="Select player"
+              disabledKeys={[leftPlayer, thirdPlayer].filter(Boolean)}
+            />
+            <ComparisonSelect
+              label="Player three · optional"
+              value={thirdPlayer || null}
+              onChange={(value) => setThirdPlayer(value ?? "")}
+              options={playerOptions}
+              placeholder="Add a third player"
+              disabledKeys={[leftPlayer, rightPlayer].filter(Boolean)}
+            />
           </div>
           {selectedPlayers && (
-            <>
-              <div className="comparison-names">
-                <a
-                  href={`${publicBasePath}/players/${selectedPlayers.left.entry.playerId}/`}
-                >
-                  {selectedPlayers.left.entry.name} →
-                </a>
-                <a
-                  href={`${publicBasePath}/players/${selectedPlayers.right.entry.playerId}/`}
-                >
-                  {selectedPlayers.right.entry.name} →
-                </a>
+            <div
+              className={`comparison-table players-${selectedPlayers.length}`}
+              role="table"
+              aria-label="Player career comparison"
+            >
+              <div className="comparison-heading" role="row">
+                <span role="columnheader">Statistic</span>
+                {selectedPlayers.map((player) => (
+                  <a
+                    role="columnheader"
+                    href={`${publicBasePath}/players/${player.entry.playerId}/`}
+                    key={player.entry.playerId}
+                  >
+                    <span>{player.entry.name} →</span>
+                    <small>
+                      {player.stats.matches.size
+                        ? `${integer.format(player.stats.matches.size)} filtered appearances`
+                        : "No matching appearances"}
+                    </small>
+                  </a>
+                ))}
               </div>
               <div className="comparison-metrics">
                 {comparisonMetrics.map((item) => {
-                  const maximum = Math.max(item.left, item.right, 1);
+                  const outcomes = comparisonOutcomes(item);
                   return (
-                    <div key={item.label}>
-                      <strong>{item.format(item.left)}</strong>
-                      <div className="comparison-track left">
-                        <i style={{ width: `${(item.left / maximum) * 100}%` }} />
-                      </div>
-                      <span>{item.label}</span>
-                      <div className="comparison-track right">
-                        <i style={{ width: `${(item.right / maximum) * 100}%` }} />
-                      </div>
-                      <strong>{item.format(item.right)}</strong>
+                    <div role="row" key={item.label}>
+                      <span className="comparison-metric-label" role="rowheader">
+                        {item.label}
+                      </span>
+                      {item.values.map((value, index) => {
+                        const outcome = outcomes[index];
+                        const icon =
+                          outcome === "better"
+                            ? "▲"
+                            : outcome === "weaker"
+                              ? "▼"
+                              : outcome === "middle"
+                                ? "—"
+                              : outcome === "level"
+                                ? "="
+                                : null;
+                        return (
+                          <strong
+                            className="comparison-value"
+                            role="cell"
+                            key={selectedPlayers[index].entry.playerId}
+                          >
+                            <small className="comparison-mobile-name">
+                              {selectedPlayers[index].entry.name}
+                            </small>
+                            <span>
+                              {item.format(value)}
+                              {icon && (
+                                <em className={outcome}>
+                                  <span aria-hidden="true">{icon}</span>
+                                  <span className="sr-only">{outcome}</span>
+                                </em>
+                              )}
+                            </span>
+                            {item.coverage?.[index] && (
+                              <small>{item.coverage[index]}</small>
+                            )}
+                          </strong>
+                        );
+                      })}
                     </div>
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
         </section>
       </main>

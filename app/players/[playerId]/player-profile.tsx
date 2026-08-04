@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { DismissalBreakdown } from "../../components/dismissal-pie";
 import { SeasonChart } from "../../components/season-chart";
 import { SiteHeader } from "../../site-header";
 import {
@@ -20,6 +21,10 @@ import {
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const integer = new Intl.NumberFormat("en-GB");
+const decimal = new Intl.NumberFormat("en-GB", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 2,
+});
 const shortDate = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
@@ -37,6 +42,7 @@ const statGroups: {
       "innings",
       "runs",
       "battingAverage",
+      "battingStrikeRate",
       "highScore",
       "notOuts",
       "fifties",
@@ -54,6 +60,7 @@ const statGroups: {
       "fiveWicketHauls",
       "bowlingAverage",
       "economy",
+      "bowlingStrikeRate",
       "bestBowling",
     ],
   },
@@ -133,6 +140,22 @@ export function PlayerProfile({
   );
 
   const chartPoints = useMemo(() => {
+    if (metric === "battingStrikeRate") {
+      const summaries = new Map<number, { runs: number; balls: number }>();
+      for (const innings of history?.battingInnings ?? []) {
+        if (!innings.balls || innings.runs === null) continue;
+        const summary = summaries.get(innings.season) ?? { runs: 0, balls: 0 };
+        summary.runs += innings.runs;
+        summary.balls += innings.balls;
+        summaries.set(innings.season, summary);
+      }
+      return [...summaries]
+        .map(([season, summary]) => {
+          const value = (summary.runs * 100) / summary.balls;
+          return { season, value, display: decimal.format(value) };
+        })
+        .sort((left, right) => left.season - right.season);
+    }
     if (metric === "fours" || metric === "sixes") {
       const knownKey = metric === "fours" ? "foursKnown" : "sixesKnown";
       return [...seasonBoundaries]
@@ -154,6 +177,7 @@ export function PlayerProfile({
           metric === "fiveWicketHauls" ||
           metric === "bowlingAverage" ||
           metric === "economy" ||
+          metric === "bowlingStrikeRate" ||
           metric === "bestBowling"
         ) {
           return bowlingSeasons.has(season);
@@ -177,7 +201,14 @@ export function PlayerProfile({
           point !== null && Number.isFinite(point.value),
       )
       .sort((left, right) => left.season - right.season);
-  }, [battingSeasons, bowlingSeasons, metric, seasonBoundaries, seasons]);
+  }, [
+    battingSeasons,
+    bowlingSeasons,
+    history,
+    metric,
+    seasonBoundaries,
+    seasons,
+  ]);
 
   const boundaryCoverage = useMemo(() => {
     const key = metric === "fours" ? "foursKnown" : "sixesKnown";
@@ -229,10 +260,83 @@ export function PlayerProfile({
   const careerValue =
     metric === "fours" || metric === "sixes"
       ? integer.format(careerBoundaries[metric])
+      : metric === "battingStrikeRate"
+        ? player.scorecardMetrics?.battingStrikeRate !== null &&
+          player.scorecardMetrics?.battingStrikeRate !== undefined
+          ? decimal.format(player.scorecardMetrics.battingStrikeRate)
+          : "—"
       : metricDisplay(metric, stats);
   const latestAppearances = [...(history?.appearances ?? [])]
     .sort((left, right) => right.date.localeCompare(left.date))
     .slice(0, 8);
+  const dismissalCounts =
+    player.scorecardMetrics?.dismissals ??
+    ({} as NonNullable<typeof player.scorecardMetrics>["dismissals"]);
+  const recordedNotOuts = (history?.battingInnings ?? []).filter(
+    (innings) => innings.notOut,
+  ).length;
+
+  function appearanceSummary(
+    appearance: NonNullable<typeof history>["appearances"][number],
+  ) {
+    const batting = (history?.battingInnings ?? []).filter(
+      (innings) => innings.fixtureId === appearance.fixtureId,
+    );
+    const bowling = (history?.bowlingSpells ?? []).filter(
+      (spell) => spell.fixtureId === appearance.fixtureId,
+    );
+    const parts: string[] = [];
+    if (batting.length > 0) {
+      parts.push(
+        `Bat ${batting
+          .map((innings) => {
+            const score =
+              innings.runs === null
+                ? "—"
+                : `${innings.runs}${innings.notOut ? "*" : ""}`;
+            return innings.balls
+              ? `${score} (${innings.balls}b${innings.strikeRate !== null ? `, SR ${decimal.format(innings.strikeRate)}` : ""})`
+              : score;
+          })
+          .join(", ")}`,
+      );
+    } else if (appearance.didNotBat) {
+      parts.push("Bat DNB");
+    }
+    if (bowling.length > 0) {
+      parts.push(
+        `Bowl ${bowling
+          .map(
+            (spell) => {
+              const details = [
+                spell.overs ? `${spell.overs} ov` : "",
+                spell.economy !== null
+                  ? `Econ ${decimal.format(spell.economy)}`
+                  : "",
+                spell.balls && spell.wickets
+                  ? `SR ${decimal.format(spell.balls / spell.wickets)}`
+                  : "",
+              ].filter(Boolean);
+              return `${spell.wickets ?? 0}/${spell.runs ?? "—"}${details.length ? ` (${details.join(", ")})` : ""}`;
+            },
+          )
+          .join(", ")}`,
+      );
+    }
+    const fielding = [
+      appearance.catches
+        ? `${appearance.catches} catch${appearance.catches === 1 ? "" : "es"}`
+        : "",
+      appearance.stumpings
+        ? `${appearance.stumpings} stumping${appearance.stumpings === 1 ? "" : "s"}`
+        : "",
+      appearance.runOuts
+        ? `${appearance.runOuts} run out${appearance.runOuts === 1 ? "" : "s"}`
+        : "",
+    ].filter(Boolean);
+    if (fielding.length > 0) parts.push(fielding.join(", "));
+    return parts.join(" · ") || "No individual performance recorded";
+  }
 
   return (
     <>
@@ -308,10 +412,28 @@ export function PlayerProfile({
             note={
               metric === "fours" || metric === "sixes"
                 ? boundaryCoverage.innings > 0
-                  ? `Season chart uses scorecards with boundary detail: ${integer.format(boundaryCoverage.known)} of ${integer.format(boundaryCoverage.innings)} recorded batting innings supply this field. The career total above remains the authoritative archive figure.`
-                  : "The career total is retained, but no scorecard-level boundary breakdown is available for a season chart."
+                  ? `Boundary data available for ${integer.format(boundaryCoverage.known)} of ${integer.format(boundaryCoverage.innings)} innings.`
+                  : "No season-by-season boundary data is available."
+                : metric === "battingStrikeRate"
+                  ? player.scorecardMetrics
+                    ? `Based on ${integer.format(player.scorecardMetrics.battingInningsWithBalls)} innings and ${integer.format(player.scorecardMetrics.battingBalls)} balls.`
+                    : "No balls-faced data is available for this player."
                 : undefined
             }
+          />
+        </section>
+
+        <section className="profile-history-panel dismissal-profile-panel">
+          <header>
+            <div>
+              <p className="eyebrow">Batting dismissals</p>
+              <h2>How the wickets fell</h2>
+            </div>
+            <span>Recorded scorecard innings only</span>
+          </header>
+          <DismissalBreakdown
+            counts={dismissalCounts}
+            notOuts={recordedNotOuts}
           />
         </section>
 
@@ -341,7 +463,8 @@ export function PlayerProfile({
                     {appearance.team ?? "ESCC"} v{" "}
                     {appearance.opposition ?? "Opposition"}
                   </strong>
-                  <span>{appearance.outcome}</span>
+                  <span>{appearanceSummary(appearance)}</span>
+                  <small>{appearance.outcome}</small>
                 </a>
               ))}
             </div>
