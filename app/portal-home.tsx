@@ -36,6 +36,13 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
       stat: `${summary.performances.toLocaleString("en-GB")} performances`,
     },
     {
+      eyebrow: "Advanced reporting",
+      title: "VaultGuru",
+      copy: "Build custom statistical reports by player, season, team, opponent or match type.",
+      href: `${publicBasePath}/vaultguru/`,
+      stat: "Search · group · rank",
+    },
+    {
       eyebrow: "Fixture archive",
       title: "Matches",
       copy: "Search every available result and open its complete scorecard.",
@@ -84,7 +91,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
         <section className="portal-section-grid" aria-label="Explore the Vault">
           {sections.map((section, index) => (
             <a href={section.href} className="portal-section-card" key={section.title}>
-              <span className="card-number">0{index + 1}</span>
+              <span className="card-number">{String(index + 1).padStart(2, "0")}</span>
               <p>{section.eyebrow}</p>
               <h2>{section.title}</h2>
               <strong>{section.stat}</strong>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { canonicalOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -91,6 +92,7 @@ function matchSearchText(match: MatchIndexRow) {
   return [
     match.esccTeam,
     match.opposition,
+    canonicalOpponent(match.opposition),
     match.competition,
     match.result,
     ...match.teams,
@@ -301,7 +303,7 @@ export function MatchesExplorer() {
                   <span>{match.esccTeam ?? "ESCC"}</span>
                   <span>{match.competition ?? "Match"}</span>
                 </div>
-                <h3>v {match.opposition ?? "Opposition unavailable"}</h3>
+                <h3>v {canonicalOpponent(match.opposition)}</h3>
                 <p>{match.result}</p>
               </div>
               <div className="match-card-scores" aria-label="Innings scores">

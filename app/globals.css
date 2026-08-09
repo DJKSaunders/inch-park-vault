@@ -92,8 +92,283 @@
 
 .portal-section-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   border-bottom: 1px solid var(--line);
+}
+
+/* VaultGuru advanced report builder */
+.vaultguru-app {
+  padding-bottom: 100px;
+}
+
+.vaultguru-hero,
+.vaultguru-builder,
+.vaultguru-results {
+  width: min(1600px, calc(100% - 64px));
+  margin: 0 auto;
+}
+
+.vaultguru-hero {
+  padding: 82px 0 58px;
+  border-bottom: 1px solid var(--line);
+}
+
+.vaultguru-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(70px, 10vw, 138px);
+  letter-spacing: -0.055em;
+  line-height: 0.82;
+  text-transform: uppercase;
+}
+
+.vaultguru-hero h1 em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.vaultguru-hero > p:last-child {
+  max-width: 720px;
+  margin: 30px 0 0;
+  color: var(--cream-2);
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+.vaultguru-builder,
+.vaultguru-results {
+  margin-top: 42px;
+  border: 1px solid var(--line);
+  background: var(--navy-900);
+}
+
+.vaultguru-builder > header,
+.vaultguru-results > header {
+  min-height: 108px;
+  padding: 26px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.vaultguru-builder header span,
+.vaultguru-results header span {
+  color: var(--orange-bright);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.vaultguru-builder h2,
+.vaultguru-results h2 {
+  margin: 3px 0 0;
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.vaultguru-builder header button,
+.vaultguru-results header button,
+.vaultguru-sort {
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--navy-950);
+  border: 0;
+  background: var(--gold);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.vaultguru-results header button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.vaultguru-steps fieldset {
+  margin: 0;
+  padding: 28px 30px 34px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.vaultguru-steps fieldset:last-child {
+  border-bottom: 0;
+}
+
+.vaultguru-steps legend {
+  width: 100%;
+  margin-bottom: 20px;
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.vaultguru-steps legend b {
+  margin-right: 10px;
+  color: var(--orange-bright);
+}
+
+.vaultguru-steps legend span {
+  float: right;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.vaultguru-segmented {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line);
+}
+
+.vaultguru-segmented button {
+  min-height: 50px;
+  color: var(--cream-2);
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.vaultguru-segmented button:last-child { border-right: 0; }
+.vaultguru-segmented button.active { color: var(--navy-950); background: var(--gold); }
+
+.vaultguru-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.vaultguru-filter-grid > label,
+.vaultguru-multi summary {
+  display: grid;
+  gap: 8px;
+}
+
+.vaultguru-filter-grid label > span,
+.vaultguru-multi summary > span {
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.vaultguru-filter-grid > label > select,
+.vaultguru-filter-grid > label > input,
+.vaultguru-multi summary {
+  width: 100%;
+  height: 48px;
+  padding: 0 13px;
+  color: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--navy-850);
+  font: inherit;
+}
+
+.vaultguru-multi { position: relative; }
+.vaultguru-multi summary { display: flex; flex-direction: column; justify-content: center; cursor: pointer; list-style: none; }
+.vaultguru-multi summary::-webkit-details-marker { display: none; }
+.vaultguru-multi summary strong { font-size: 13px; font-weight: 500; }
+.vaultguru-multi > div {
+  position: absolute;
+  z-index: 5;
+  width: max(100%, 260px);
+  max-height: 290px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: var(--navy-800);
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+}
+.vaultguru-multi > div label {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--cream);
+  font-size: 12px;
+  cursor: pointer;
+}
+.vaultguru-multi > div input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  margin: 0;
+  accent-color: var(--gold);
+}
+
+.vaultguru-chips { min-height: 28px; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.vaultguru-chips button { padding: 7px 10px; color: var(--cream); border: 1px solid var(--line); background: var(--navy-800); font: inherit; font-size: 10px; cursor: pointer; }
+.vaultguru-shape-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) auto; }
+.vaultguru-sort { height: 48px; }
+
+.vaultguru-results header p { margin: 7px 0 0; color: var(--muted); font-size: 11px; }
+.vaultguru-results .stats-table-wrap {
+  margin: 0;
+  color: var(--navy-950);
+}
+.vaultguru-table { min-width: 1250px; }
+.vaultguru-table th:nth-child(2) {
+  min-width: 220px;
+  text-align: left;
+}
+.vaultguru-table tbody th:nth-child(2) {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  color: var(--navy-950);
+  background: white;
+  box-shadow: 8px 0 13px rgba(6, 16, 28, 0.06);
+}
+.vaultguru-table thead th:nth-child(2) {
+  left: 0;
+  z-index: 4;
+}
+.vaultguru-table tbody td {
+  color: var(--navy-950);
+}
+.vaultguru-table tbody th a {
+  color: var(--navy-950);
+  text-decoration-color: var(--orange-bright);
+  text-underline-offset: 3px;
+}
+.vaultguru-table tbody tr:hover th:nth-child(2) {
+  background: #fffaf0;
+}
+
+@media (max-width: 1100px) {
+  .portal-section-grid { grid-template-columns: repeat(2, 1fr); }
+  .vaultguru-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vaultguru-shape-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .vaultguru-hero,
+  .vaultguru-builder,
+  .vaultguru-results { width: calc(100% - 28px); }
+  .vaultguru-hero { padding: 54px 0 44px; }
+  .vaultguru-builder > header,
+  .vaultguru-results > header { align-items: flex-start; padding: 22px 18px; }
+  .vaultguru-steps fieldset { padding: 24px 18px 28px; }
+  .vaultguru-segmented { grid-template-columns: repeat(2, 1fr); }
+  .vaultguru-segmented button:nth-child(2) { border-right: 0; }
+  .vaultguru-segmented button:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .vaultguru-filter-grid,
+  .vaultguru-shape-grid { grid-template-columns: 1fr; }
 }
 
 .portal-section-card {
