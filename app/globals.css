@@ -2006,18 +2006,67 @@
     display: block;
   }
 
-  .mobile-navigation summary {
-    padding: 10px 12px;
+  .mobile-navigation-toggle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: grid;
+    place-items: center;
     color: var(--cream);
     border: 1px solid var(--line);
+    background: transparent;
     cursor: pointer;
-    font-size: 11px;
-    font-weight: 800;
-    list-style: none;
-    text-transform: uppercase;
   }
 
-  .mobile-navigation nav {
+  .mobile-navigation-toggle:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .burger-icon {
+    width: 20px;
+    height: 16px;
+    position: relative;
+    display: block;
+  }
+
+  .burger-icon i {
+    position: absolute;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    display: block;
+    background: currentColor;
+    transition: transform 160ms ease, opacity 160ms ease, top 160ms ease;
+  }
+
+  .burger-icon i:nth-child(1) {
+    top: 0;
+  }
+
+  .burger-icon i:nth-child(2) {
+    top: 7px;
+  }
+
+  .burger-icon i:nth-child(3) {
+    top: 14px;
+  }
+
+  .mobile-navigation-toggle[aria-expanded="true"] .burger-icon i:nth-child(1) {
+    top: 7px;
+    transform: rotate(45deg);
+  }
+
+  .mobile-navigation-toggle[aria-expanded="true"] .burger-icon i:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-navigation-toggle[aria-expanded="true"] .burger-icon i:nth-child(3) {
+    top: 7px;
+    transform: rotate(-45deg);
+  }
+
+  .site-header .mobile-navigation nav {
     position: absolute;
     z-index: 30;
     top: calc(100% + 8px);
@@ -2031,11 +2080,44 @@
     box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
+  .site-header .mobile-navigation nav[data-open="false"] {
+    display: none;
+  }
+
+  .site-header .mobile-navigation nav[data-open="true"] {
+    display: grid;
+  }
+
   .site-header .mobile-navigation nav a,
   .site-header .mobile-navigation nav a:first-child {
     padding: 12px;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     border-bottom: 1px solid var(--line);
+  }
+
+  .site-header .mobile-navigation nav a > img {
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
+    object-fit: contain;
+    filter: invert(84%) sepia(47%) saturate(496%) hue-rotate(352deg)
+      brightness(101%) contrast(91%);
+  }
+
+  .site-header .mobile-navigation nav a > img.mobile-home-icon {
+    filter: none;
+  }
+
+  .mobile-club-icon {
+    width: 21px;
+    height: 21px;
+    display: grid;
+    flex: 0 0 21px;
+    place-items: center;
+    color: var(--gold);
+    font-size: 18px;
   }
 
   .portal-home,
