@@ -16,6 +16,7 @@ type ScoreSummary = {
 
 type MatchIndexRow = {
   fixtureId: string;
+  matchNumber: number;
   date: string;
   season: number;
   esccTeam: string | null;
@@ -302,6 +303,7 @@ export function MatchesExplorer() {
                 <div className="match-card-labels">
                   <span>{match.esccTeam ?? "ESCC"}</span>
                   <span>{match.competition ?? "Match"}</span>
+                  <span>Match #{match.matchNumber}</span>
                 </div>
                 <h3>v {canonicalOpponent(match.opposition)}</h3>
                 <p>{match.result}</p>

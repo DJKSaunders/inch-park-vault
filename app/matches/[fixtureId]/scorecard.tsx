@@ -59,6 +59,7 @@ type PlayerDirectory = {
 
 type Match = {
   fixtureId: string;
+  matchNumber: number;
   date: string;
   season: number;
   title: string;
@@ -170,7 +171,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
       <main className="vault-app scorecard-app">
         <SiteHeader active="matches" />
         <section className="archive-state">
-          <p className="eyebrow">Fixture {fixtureId}</p>
+          <p className="eyebrow">Scorecard unavailable</p>
           <h1>This scorecard could not be loaded.</h1>
           <a href={`${publicBasePath}/matches/`}>Return to the match archive</a>
         </section>
@@ -201,7 +202,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
         <div className="scorecard-meta">
           <span>{match.competition ?? "Match"}</span>
           <span>{match.esccTeam ?? "ESCC"}</span>
-          <span>Fixture {match.fixtureId}</span>
+          <span>Match #{match.matchNumber}</span>
         </div>
         <h1>
           {match.esccTeam ?? "Edinburgh South"} <em>v</em>{" "}

@@ -1,7 +1,7 @@
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 type SiteHeaderProps = {
-  active?: "home" | "records" | "vaultguru" | "matches" | "players" | "insights";
+  active?: "home" | "records" | "vaultguru" | "matches" | "players" | "milestones" | "insights";
 };
 
 export function SiteHeader({ active }: SiteHeaderProps) {
@@ -11,6 +11,7 @@ export function SiteHeader({ active }: SiteHeaderProps) {
     { href: `${publicBasePath}/vaultguru/`, label: "VaultGuru", key: "vaultguru" },
     { href: `${publicBasePath}/matches/`, label: "Matches", key: "matches" },
     { href: `${publicBasePath}/players/`, label: "Players", key: "players" },
+    { href: `${publicBasePath}/milestones/`, label: "Milestones", key: "milestones" },
     { href: `${publicBasePath}/insights/`, label: "Insights", key: "insights" },
   ] as const;
 

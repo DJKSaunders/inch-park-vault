@@ -50,6 +50,12 @@ export type PlayerDirectoryEntry = {
   aliases: string[];
   scorecardPlayerId: string | null;
   scorecardPath: string | null;
+  profilePath: string;
+  career: {
+    appearances: number;
+    runs: number;
+    wickets: number;
+  };
   scorecardMetrics: {
     battingRunsWithBalls: number;
     battingBalls: number;
@@ -61,6 +67,30 @@ export type PlayerDirectoryEntry = {
     dismissals: Record<DismissalType, number>;
   } | null;
 };
+
+export type SerializedPlayerStats = Omit<PlayerStats, "matches"> & {
+  matches: number;
+};
+
+export type PlayerProfileSummary = {
+  schemaVersion: string;
+  playerId: string;
+  name: string;
+  career: SerializedPlayerStats;
+  seasons: { season: number; stats: SerializedPlayerStats }[];
+  battingSeasons: number[];
+  bowlingSeasons: number[];
+  boundaries: { fours: number; sixes: number };
+};
+
+export function inflatePlayerStats(stats: SerializedPlayerStats): PlayerStats {
+  return {
+    ...stats,
+    matches: new Set(
+      Array.from({ length: stats.matches }, (_, index) => String(index)),
+    ),
+  };
+}
 
 export type PlayerDirectory = {
   schemaVersion: string;

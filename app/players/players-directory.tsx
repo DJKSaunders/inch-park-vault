@@ -2,13 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { SiteHeader } from "../site-header";
-import {
-  aggregatePlayer,
-  type PlayerDirectory,
-  type PlayerDirectoryEntry,
-  type RecordsData,
-  rowsForAliases,
-} from "../statistics";
+import { type PlayerDirectory, type PlayerDirectoryEntry } from "../statistics";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const integer = new Intl.NumberFormat("en-GB");
@@ -21,7 +15,6 @@ type DirectoryPlayer = PlayerDirectoryEntry & {
 
 export function PlayersDirectory() {
   const [directory, setDirectory] = useState<PlayerDirectory | null>(null);
-  const [records, setRecords] = useState<RecordsData | null>(null);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"name" | "appearances" | "runs" | "wickets">(
     "appearances",
@@ -30,38 +23,24 @@ export function PlayersDirectory() {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${publicBasePath}/data/scorecards/player-directory.json`).then(
-        (response) => {
-          if (!response.ok) throw new Error("Player directory unavailable");
-          return response.json() as Promise<PlayerDirectory>;
-        },
-      ),
-      fetch(`${publicBasePath}/data/records.json`).then((response) => {
-        if (!response.ok) throw new Error("Records unavailable");
-        return response.json() as Promise<RecordsData>;
-      }),
-    ])
-      .then(([nextDirectory, nextRecords]) => {
-        setDirectory(nextDirectory);
-        setRecords(nextRecords);
+    fetch(`${publicBasePath}/data/scorecards/player-directory.json`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Player directory unavailable");
+        return response.json() as Promise<PlayerDirectory>;
       })
+      .then(setDirectory)
       .catch(() => setFailed(true));
   }, []);
 
   const players = useMemo<DirectoryPlayer[]>(() => {
-    if (!directory || !records) return [];
-    return directory.players.map((player) => {
-      const rows = rowsForAliases(records, player.aliases);
-      const stats = aggregatePlayer(player.name, rows.batting, rows.bowling);
-      return {
-        ...player,
-        appearances: stats.matches.size,
-        runs: stats.runs,
-        wickets: stats.wickets,
-      };
-    });
-  }, [directory, records]);
+    if (!directory) return [];
+    return directory.players.map((player) => ({
+      ...player,
+      appearances: player.career.appearances,
+      runs: player.career.runs,
+      wickets: player.career.wickets,
+    }));
+  }, [directory]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase();
@@ -92,7 +71,7 @@ export function PlayersDirectory() {
     );
   }
 
-  if (!directory || !records) {
+  if (!directory) {
     return (
       <>
         <SiteHeader active="players" />

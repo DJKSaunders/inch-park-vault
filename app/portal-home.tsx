@@ -33,6 +33,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
       title: "Records",
       copy: "Rank players across batting, bowling and fielding with precise filters.",
       href: `${publicBasePath}/records/`,
+      icon: `${publicBasePath}/icons/medal.svg`,
       stat: `${summary.performances.toLocaleString("en-GB")} performances`,
     },
     {
@@ -40,6 +41,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
       title: "VaultGuru",
       copy: "Build custom statistical reports by player, season, team, opponent or match type.",
       href: `${publicBasePath}/vaultguru/`,
+      icon: `${publicBasePath}/icons/lightbulb.svg`,
       stat: "Search · group · rank",
     },
     {
@@ -47,6 +49,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
       title: "Matches",
       copy: "Search every available result and open its complete scorecard.",
       href: `${publicBasePath}/matches/`,
+      icon: `${publicBasePath}/icons/calendar-days.svg`,
       stat: `${summary.matches.toLocaleString("en-GB")} fixtures`,
     },
     {
@@ -54,13 +57,23 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
       title: "Players",
       copy: "Find a player, explore every statistic and follow their career by season.",
       href: `${publicBasePath}/players/`,
+      icon: `${publicBasePath}/icons/users.svg`,
       stat: `${summary.players.toLocaleString("en-GB")} players`,
+    },
+    {
+      eyebrow: "Club landmarks",
+      title: "Milestones",
+      copy: "See the latest landmarks reached and who is closing in on the next one.",
+      href: `${publicBasePath}/milestones/`,
+      icon: `${publicBasePath}/icons/flag.svg`,
+      stat: "Recent · upcoming",
     },
     {
       eyebrow: "Visual analysis",
       title: "Insights",
       copy: "Compare players and explore how teams, seasons and opponents changed.",
       href: `${publicBasePath}/insights/`,
+      icon: `${publicBasePath}/icons/chart-no-axes-combined.svg`,
       stat: `${summary.seasons} seasons`,
     },
   ];
@@ -92,6 +105,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
           {sections.map((section, index) => (
             <a href={section.href} className="portal-section-card" key={section.title}>
               <span className="card-number">{String(index + 1).padStart(2, "0")}</span>
+              <img className="portal-section-icon" src={section.icon} alt="" />
               <p>{section.eyebrow}</p>
               <h2>{section.title}</h2>
               <strong>{section.stat}</strong>

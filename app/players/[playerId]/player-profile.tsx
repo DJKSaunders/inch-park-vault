@@ -5,17 +5,14 @@ import { DismissalBreakdown } from "../../components/dismissal-pie";
 import { SeasonChart } from "../../components/season-chart";
 import { SiteHeader } from "../../site-header";
 import {
-  aggregatePlayer,
-  aggregatePlayerBySeason,
-  boundaryCareerTotals,
   boundarySeasons,
+  inflatePlayerStats,
   metricDisplay,
   metricValue,
   profileMetricLabels,
-  rowsForAliases,
   type PlayerDirectoryEntry,
+  type PlayerProfileSummary,
   type ProfileMetric,
-  type RecordsData,
   type ScorecardPlayerHistory,
 } from "../../statistics";
 
@@ -75,19 +72,21 @@ export function PlayerProfile({
 }: {
   player: PlayerDirectoryEntry | null;
 }) {
-  const [records, setRecords] = useState<RecordsData | null>(null);
+  const [profile, setProfile] = useState<PlayerProfileSummary | null>(null);
   const [history, setHistory] = useState<ScorecardPlayerHistory | null>(null);
   const [metric, setMetric] = useState<ProfileMetric>("runs");
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyPageSize, setHistoryPageSize] = useState(8);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!player) return;
-    fetch(`${publicBasePath}/data/records.json`)
+    fetch(`${publicBasePath}/data/scorecards/${player.profilePath}`)
       .then((response) => {
-        if (!response.ok) throw new Error("Records unavailable");
-        return response.json() as Promise<RecordsData>;
+        if (!response.ok) throw new Error("Player summary unavailable");
+        return response.json() as Promise<PlayerProfileSummary>;
       })
-      .then(setRecords)
+      .then(setProfile)
       .catch(() => setFailed(true));
 
     if (player.scorecardPath) {
@@ -101,42 +100,29 @@ export function PlayerProfile({
     }
   }, [player]);
 
-  const rows = useMemo(
-    () =>
-      records && player
-        ? rowsForAliases(records, player.aliases)
-        : { batting: [], bowling: [] },
-    [player, records],
-  );
   const stats = useMemo(
-    () =>
-      player
-        ? aggregatePlayer(player.name, rows.batting, rows.bowling)
-        : null,
-    [player, rows],
+    () => (profile ? inflatePlayerStats(profile.career) : null),
+    [profile],
   );
   const seasons = useMemo(
     () =>
-      player
-        ? aggregatePlayerBySeason(player.name, rows.batting, rows.bowling)
-        : new Map(),
-    [player, rows],
+      new Map(
+        (profile?.seasons ?? []).map(({ season, stats: seasonStats }) => [
+          season,
+          inflatePlayerStats(seasonStats),
+        ]),
+      ),
+    [profile],
   );
-  const careerBoundaries = useMemo(
-    () =>
-      records && player
-        ? boundaryCareerTotals(records, player.aliases)
-        : { fours: 0, sixes: 0 },
-    [player, records],
-  );
+  const careerBoundaries = profile?.boundaries ?? { fours: 0, sixes: 0 };
   const seasonBoundaries = useMemo(() => boundarySeasons(history), [history]);
   const battingSeasons = useMemo(
-    () => new Set(rows.batting.map((row) => row[1])),
-    [rows.batting],
+    () => new Set(profile?.battingSeasons ?? []),
+    [profile],
   );
   const bowlingSeasons = useMemo(
-    () => new Set(rows.bowling.map((row) => row[1])),
-    [rows.bowling],
+    () => new Set(profile?.bowlingSeasons ?? []),
+    [profile],
   );
 
   const chartPoints = useMemo(() => {
@@ -245,7 +231,7 @@ export function PlayerProfile({
     );
   }
 
-  if (!records || !stats) {
+  if (!profile || !stats) {
     return (
       <>
         <SiteHeader active="players" />
@@ -266,9 +252,19 @@ export function PlayerProfile({
           ? decimal.format(player.scorecardMetrics.battingStrikeRate)
           : "—"
       : metricDisplay(metric, stats);
-  const latestAppearances = [...(history?.appearances ?? [])]
-    .sort((left, right) => right.date.localeCompare(left.date))
-    .slice(0, 8);
+  const sortedAppearances = [...(history?.appearances ?? [])].sort(
+    (left, right) =>
+      right.date.localeCompare(left.date) ||
+      right.fixtureId.localeCompare(left.fixtureId),
+  );
+  const historyPageCount = Math.max(
+    1,
+    Math.ceil(sortedAppearances.length / historyPageSize),
+  );
+  const latestAppearances = sortedAppearances.slice(
+    (historyPage - 1) * historyPageSize,
+    historyPage * historyPageSize,
+  );
   const dismissalCounts =
     player.scorecardMetrics?.dismissals ??
     ({} as NonNullable<typeof player.scorecardMetrics>["dismissals"]);
@@ -306,9 +302,7 @@ export function PlayerProfile({
               innings.runs === null
                 ? "—"
                 : `${innings.runs}${innings.notOut ? "*" : ""}`;
-            return innings.balls
-              ? `${score} (${innings.balls}b${innings.strikeRate !== null ? `, SR ${decimal.format(innings.strikeRate)}` : ""})`
-              : score;
+            return score;
           })
           .join(", ");
     } else if (appearance.didNotBat) {
@@ -317,20 +311,7 @@ export function PlayerProfile({
     let bowlingSummary = "—";
     if (bowling.length > 0) {
       bowlingSummary = bowling
-          .map(
-            (spell) => {
-              const details = [
-                spell.overs ? `${spell.overs} ov` : "",
-                spell.economy !== null
-                  ? `Econ ${decimal.format(spell.economy)}`
-                  : "",
-                spell.balls && spell.wickets
-                  ? `SR ${decimal.format(spell.balls / spell.wickets)}`
-                  : "",
-              ].filter(Boolean);
-              return `${spell.wickets ?? 0}/${spell.runs ?? "—"}${details.length ? ` (${details.join(", ")})` : ""}`;
-            },
-          )
+          .map((spell) => `${spell.wickets ?? 0}/${spell.runs ?? "—"}`)
           .join(", ");
     }
     const fielding = [
@@ -490,10 +471,16 @@ export function PlayerProfile({
                         {appearance.team ?? "ESCC"} v{" "}
                         {appearance.opposition ?? "Opposition"}
                       </strong>
-                      <small>{appearance.outcome}</small>
+                      <small className={`profile-result-chip outcome-${appearance.outcome}`}>
+                        {appearance.outcome}
+                      </small>
                     </div>
-                    <span data-label="Batting">{performance.batting}</span>
-                    <span data-label="Bowling">{performance.bowling}</span>
+                    <span className="profile-performance-figure" data-label="Batting">
+                      {performance.batting}
+                    </span>
+                    <span className="profile-performance-figure" data-label="Bowling">
+                      {performance.bowling}
+                    </span>
                     <span data-label="Fielding">{performance.fielding}</span>
                   </a>
                 );
@@ -504,6 +491,47 @@ export function PlayerProfile({
               Career totals are available, but this player has no linked
               scorecard appearances.
             </p>
+          )}
+          {sortedAppearances.length > 8 && (
+            <div className="profile-history-pagination">
+              <label>
+                <span>Appearances per page</span>
+                <select
+                  value={historyPageSize}
+                  onChange={(event) => {
+                    setHistoryPageSize(Number(event.target.value));
+                    setHistoryPage(1);
+                  }}
+                >
+                  {[8, 16, 25, 50, 100].map((size) => (
+                    <option value={size} key={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {historyPageCount > 1 && (
+                <nav aria-label="Appearance pages">
+                  <button
+                    type="button"
+                    disabled={historyPage === 1}
+                    onClick={() => setHistoryPage((page) => page - 1)}
+                  >
+                    Previous
+                  </button>
+                  <span>
+                    Page {historyPage} of {historyPageCount}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={historyPage === historyPageCount}
+                    onClick={() => setHistoryPage((page) => page + 1)}
+                  >
+                    Next
+                  </button>
+                </nav>
+              )}
+            </div>
           )}
         </section>
       </main>

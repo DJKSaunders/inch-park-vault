@@ -429,6 +429,47 @@ class ScorecardExportTests(unittest.TestCase):
             report["unresolved"][0]["player"], "Unmatched Player"
         )
 
+    def test_record_profiles_precompute_directory_and_season_totals(self):
+        directory = [
+            {
+                "playerId": "p-test",
+                "name": "Test Player",
+                "aliases": ["Test Player"],
+            }
+        ]
+        records = {
+            "batting": [
+                ["Test Player", 2025, "1st XI", "League", "Visitors", "2025-06-01", 40, False, False, 1, 0, 0],
+                ["Test Player", 2026, "1st XI", "League", "Visitors", "2026-06-01", 60, True, False, 0, 0, 0],
+            ],
+            "bowling": [
+                ["Test Player", 2026, "1st XI", "League", "Visitors", "2026-06-01", 24, 1, 18, 3]
+            ],
+            "boundaries": [["Test Player", 12, 2]],
+        }
+        profiles = MODULE.build_record_profiles(records, directory)
+        profile = profiles["p-test"]
+        self.assertEqual(
+            directory[0]["career"],
+            {"appearances": 2, "runs": 100, "wickets": 3},
+        )
+        self.assertEqual(profile["career"]["matches"], 2)
+        self.assertEqual(profile["career"]["outs"], 1)
+        self.assertEqual(profile["career"]["bestWickets"], 3)
+        self.assertEqual(profile["career"]["bestRuns"], 18)
+        self.assertEqual(profile["boundaries"], {"fours": 12, "sixes": 2})
+        self.assertEqual(
+            [row["season"] for row in profile["seasons"]], [2025, 2026]
+        )
+
+    def test_next_milestone_uses_the_configured_interval(self):
+        runs = MODULE.MILESTONE_RULES["runs"]
+        wickets = MODULE.MILESTONE_RULES["wickets"]
+        self.assertEqual(MODULE.next_milestone(981, runs), 1000)
+        self.assertEqual(MODULE.next_milestone(1000, runs), 1500)
+        self.assertEqual(MODULE.next_milestone(149, wickets), 150)
+        self.assertEqual(MODULE.next_milestone(150, wickets), 200)
+
 
 if __name__ == "__main__":
     unittest.main()

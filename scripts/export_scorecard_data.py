@@ -9,6 +9,7 @@ loading by fixture and player.
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import importlib.util
 import json
@@ -17,6 +18,7 @@ import shutil
 import sys
 import tempfile
 from collections import Counter, defaultdict
+from datetime import date as calendar_date
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -535,6 +537,7 @@ def match_index_row(match: dict[str, Any]) -> dict[str, Any]:
     )
     return {
         "fixtureId": match["fixtureId"],
+        "matchNumber": match["matchNumber"],
         "date": match["date"],
         "season": match["season"],
         "esccTeam": match["esccTeam"],
@@ -883,6 +886,338 @@ def build_records_player_map(
             name for name, mapping in mappings.items() if mapping is None
         ],
         "unmatchedScorecardPlayers": unmatched_scorecard_players,
+    }
+
+
+def empty_record_stats(name: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "matches": set(),
+        "innings": 0,
+        "runs": 0,
+        "outs": 0,
+        "highScore": 0,
+        "highScoreNotOut": False,
+        "fifties": 0,
+        "hundreds": 0,
+        "catches": 0,
+        "stumpings": 0,
+        "runOuts": 0,
+        "balls": 0,
+        "maidens": 0,
+        "bowlingRuns": 0,
+        "wickets": 0,
+        "bestWickets": 0,
+        "bestRuns": 0,
+        "fiveWicketHauls": 0,
+    }
+
+
+def record_match_key(row: list[Any]) -> str:
+    return f"{row[5]}|{row[2]}|{row[4]}"
+
+
+def add_record_batting(stats: dict[str, Any], row: list[Any]) -> None:
+    runs = row[6] if isinstance(row[6], int) else 0
+    if not row[8]:
+        stats["innings"] += 1
+        stats["runs"] += runs
+        if runs > stats["highScore"] or (
+            runs == stats["highScore"]
+            and row[7]
+            and not stats["highScoreNotOut"]
+        ):
+            stats["highScore"] = runs
+            stats["highScoreNotOut"] = row[7]
+        if not row[7]:
+            stats["outs"] += 1
+        if runs >= 100:
+            stats["hundreds"] += 1
+        elif runs >= 50:
+            stats["fifties"] += 1
+    stats["catches"] += row[9]
+    stats["stumpings"] += row[10]
+    stats["runOuts"] += row[11]
+    stats["matches"].add(record_match_key(row))
+
+
+def add_record_bowling(stats: dict[str, Any], row: list[Any]) -> None:
+    stats["balls"] += row[6]
+    stats["maidens"] += row[7]
+    stats["bowlingRuns"] += row[8]
+    stats["wickets"] += row[9]
+    if row[9] >= 5:
+        stats["fiveWicketHauls"] += 1
+    if row[9] > stats["bestWickets"] or (
+        row[9] == stats["bestWickets"]
+        and (stats["bestRuns"] == 0 or row[8] < stats["bestRuns"])
+    ):
+        stats["bestWickets"] = row[9]
+        stats["bestRuns"] = row[8]
+    stats["matches"].add(record_match_key(row))
+
+
+def serialized_record_stats(stats: dict[str, Any]) -> dict[str, Any]:
+    return {**stats, "matches": len(stats["matches"])}
+
+
+def build_record_profiles(
+    records: dict[str, Any], directory: list[dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    entry_by_alias = {
+        normalized_name(alias): entry
+        for entry in directory
+        for alias in entry["aliases"]
+    }
+    career = {
+        entry["playerId"]: empty_record_stats(entry["name"])
+        for entry in directory
+    }
+    seasons: dict[str, dict[int, dict[str, Any]]] = defaultdict(dict)
+    batting_seasons: dict[str, set[int]] = defaultdict(set)
+    bowling_seasons: dict[str, set[int]] = defaultdict(set)
+
+    def season_stats(entry: dict[str, Any], season: int) -> dict[str, Any]:
+        player_seasons = seasons[entry["playerId"]]
+        return player_seasons.setdefault(
+            season, empty_record_stats(entry["name"])
+        )
+
+    for row in records["batting"]:
+        entry = entry_by_alias.get(normalized_name(row[0]))
+        if not entry:
+            continue
+        add_record_batting(career[entry["playerId"]], row)
+        add_record_batting(season_stats(entry, row[1]), row)
+        batting_seasons[entry["playerId"]].add(row[1])
+    for row in records["bowling"]:
+        entry = entry_by_alias.get(normalized_name(row[0]))
+        if not entry:
+            continue
+        add_record_bowling(career[entry["playerId"]], row)
+        add_record_bowling(season_stats(entry, row[1]), row)
+        bowling_seasons[entry["playerId"]].add(row[1])
+
+    boundaries = defaultdict(lambda: {"fours": 0, "sixes": 0})
+    for name, fours, sixes in records.get("boundaries", []):
+        entry = entry_by_alias.get(normalized_name(name))
+        if entry:
+            boundaries[entry["playerId"]]["fours"] += fours
+            boundaries[entry["playerId"]]["sixes"] += sixes
+
+    profiles = {}
+    for entry in directory:
+        player_id = entry["playerId"]
+        career_stats = serialized_record_stats(career[player_id])
+        entry["profilePath"] = f"profiles/{player_id}.json"
+        entry["career"] = {
+            "appearances": career_stats["matches"],
+            "runs": career_stats["runs"],
+            "wickets": career_stats["wickets"],
+        }
+        profiles[player_id] = {
+            "schemaVersion": SCHEMA_VERSION,
+            "playerId": player_id,
+            "name": entry["name"],
+            "career": career_stats,
+            "seasons": [
+                {
+                    "season": season,
+                    "stats": serialized_record_stats(stats),
+                }
+                for season, stats in sorted(seasons[player_id].items())
+            ],
+            "battingSeasons": sorted(batting_seasons[player_id]),
+            "bowlingSeasons": sorted(bowling_seasons[player_id]),
+            "boundaries": boundaries[player_id],
+        }
+    return profiles
+
+
+MILESTONE_RULES = {
+    "runs": {"start": 1000, "step": 500, "label": "runs"},
+    "wickets": {"start": 100, "step": 50, "label": "wickets"},
+    "appearances": {"start": 100, "step": 50, "label": "appearances"},
+    "catches": {"start": 50, "step": 50, "label": "catches"},
+    "stumpings": {"start": 25, "step": 25, "label": "stumpings"},
+    "runOuts": {"start": 25, "step": 25, "label": "run outs"},
+}
+
+
+def next_milestone(current: int, rule: dict[str, Any]) -> int:
+    if current < rule["start"]:
+        return rule["start"]
+    return rule["start"] + (
+        ((current - rule["start"]) // rule["step"] + 1) * rule["step"]
+    )
+
+
+def build_milestones(
+    records: dict[str, Any],
+    directory: list[dict[str, Any]],
+    matches: list[dict[str, Any]],
+) -> dict[str, Any]:
+    entry_by_alias = {
+        normalized_name(alias): entry
+        for entry in directory
+        for alias in entry["aliases"]
+    }
+    match_by_exact = {
+        (
+            match["date"],
+            match.get("esccTeam"),
+            normalized_name(match.get("opposition") or ""),
+        ): match
+        for match in matches
+    }
+    matches_by_date_team: dict[tuple[str, str | None], list[dict[str, Any]]] = (
+        defaultdict(list)
+    )
+    for match in matches:
+        matches_by_date_team[(match["date"], match.get("esccTeam"))].append(
+            match
+        )
+
+    events: dict[
+        str, dict[str, dict[tuple[str, str, str], int]]
+    ] = {
+        metric: defaultdict(lambda: defaultdict(int))
+        for metric in MILESTONE_RULES
+    }
+    appearances: dict[str, set[tuple[str, str, str]]] = defaultdict(set)
+
+    def row_entry(row: list[Any]) -> dict[str, Any] | None:
+        return entry_by_alias.get(normalized_name(row[0]))
+
+    def row_key(row: list[Any]) -> tuple[str, str, str]:
+        return (row[5], row[2], row[4])
+
+    for row in records["batting"]:
+        entry = row_entry(row)
+        if not entry:
+            continue
+        player_id = entry["playerId"]
+        key = row_key(row)
+        appearances[player_id].add(key)
+        if isinstance(row[6], int):
+            events["runs"][player_id][key] += row[6]
+        events["catches"][player_id][key] += row[9]
+        events["stumpings"][player_id][key] += row[10]
+        events["runOuts"][player_id][key] += row[11]
+    for row in records["bowling"]:
+        entry = row_entry(row)
+        if not entry:
+            continue
+        player_id = entry["playerId"]
+        key = row_key(row)
+        appearances[player_id].add(key)
+        events["wickets"][player_id][key] += row[9]
+    for player_id, keys in appearances.items():
+        for key in keys:
+            events["appearances"][player_id][key] = 1
+
+    directory_by_id = {entry["playerId"]: entry for entry in directory}
+    as_of = calendar_date.fromisoformat(records["meta"]["asOfDate"])
+    month_index = as_of.month - 1 - 6
+    cutoff_year = as_of.year + month_index // 12
+    cutoff_month = month_index % 12 + 1
+    active_cutoff = as_of.replace(
+        year=cutoff_year,
+        month=cutoff_month,
+        day=min(as_of.day, calendar.monthrange(cutoff_year, cutoff_month)[1]),
+    )
+    last_appearance = {
+        player_id: max(calendar_date.fromisoformat(key[0]) for key in keys)
+        for player_id, keys in appearances.items()
+        if keys
+    }
+    achieved: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    upcoming: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for metric, rule in MILESTONE_RULES.items():
+        for player_id, player_events in events[metric].items():
+            total = 0
+            target = rule["start"]
+            for (date, team, opposition), increment in sorted(
+                player_events.items()
+            ):
+                previous = total
+                total += increment
+                while previous < target <= total:
+                    match = match_by_exact.get(
+                        (date, team, normalized_name(opposition))
+                    )
+                    if not match:
+                        candidates = matches_by_date_team.get((date, team), [])
+                        if len(candidates) == 1:
+                            match = candidates[0]
+                    achieved[metric].append(
+                        {
+                            "metric": metric,
+                            "label": rule["label"],
+                            "player": directory_by_id[player_id]["name"],
+                            "playerId": player_id,
+                            "milestone": target,
+                            "date": date,
+                            "team": team,
+                            "opposition": opposition,
+                            "fixtureId": match["fixtureId"] if match else None,
+                        }
+                    )
+                    target += rule["step"]
+            next_target = next_milestone(total, rule)
+            upcoming[metric].append(
+                {
+                    "metric": metric,
+                    "label": rule["label"],
+                    "player": directory_by_id[player_id]["name"],
+                    "playerId": player_id,
+                    "current": total,
+                    "milestone": next_target,
+                    "remaining": next_target - total,
+                }
+            )
+
+    section_metrics = {
+        "batting": ["runs"],
+        "bowling": ["wickets"],
+        "fielding": ["catches", "stumpings", "runOuts"],
+        "appearances": ["appearances"],
+    }
+    titles = {
+        "batting": "Batting",
+        "bowling": "Bowling",
+        "fielding": "Fielding",
+        "appearances": "Appearances",
+    }
+    sections = []
+    for key, metrics in section_metrics.items():
+        recent_rows = sorted(
+            [row for metric in metrics for row in achieved[metric]],
+            key=lambda row: (row["date"], row["milestone"], row["player"]),
+            reverse=True,
+        )[:5]
+        upcoming_rows = sorted(
+            [
+                row
+                for metric in metrics
+                for row in upcoming[metric]
+                if last_appearance.get(row["playerId"], calendar_date.min)
+                >= active_cutoff
+            ],
+            key=lambda row: (row["remaining"], -row["current"], row["player"]),
+        )[:5]
+        sections.append(
+            {
+                "key": key,
+                "title": titles[key],
+                "recent": recent_rows,
+                "upcoming": upcoming_rows,
+            }
+        )
+    return {
+        "schemaVersion": SCHEMA_VERSION,
+        "asOfDate": records["meta"].get("asOfDate"),
+        "sections": sections,
     }
 
 
@@ -1257,6 +1592,8 @@ def export(
             )
         )
     matches.sort(key=lambda row: (row["date"], row["fixtureId"]))
+    for match_number, match in enumerate(matches, start=1):
+        match["matchNumber"] = match_number
 
     (
         player_index,
@@ -1266,6 +1603,8 @@ def export(
         bowling_spells,
     ) = build_player_data(matches)
     player_map = build_records_player_map(records, player_index)
+    record_profiles = build_record_profiles(records, player_map["directory"])
+    milestones = build_milestones(records, player_map["directory"], matches)
     club_insights = build_club_insights(matches)
     player_link_report = build_player_link_report(matches, player_map)
     validation = validate_export(
@@ -1323,6 +1662,8 @@ def export(
             )
         for player_id, player in players.items():
             compact_json(temp_path / "players" / f"{player_id}.json", player)
+        for player_id, profile in record_profiles.items():
+            compact_json(temp_path / "profiles" / f"{player_id}.json", profile)
 
         index_rows = [match_index_row(match) for match in matches]
         index = {
@@ -1379,6 +1720,7 @@ def export(
         compact_json(temp_path / "batting-innings.json", batting_innings)
         compact_json(temp_path / "bowling-spells.json", bowling_spells)
         compact_json(temp_path / "club-insights.json", club_insights)
+        compact_json(temp_path / "milestones.json", milestones)
         readable_json(
             temp_path / "player-link-quality.json", player_link_report
         )
