@@ -611,6 +611,7 @@ export function RecordsExplorer() {
     opposition: "",
   });
   const [minimumAppearances, setMinimumAppearances] = useState(10);
+  const [rankingMinimumAppearances, setRankingMinimumAppearances] = useState(10);
   const [activeSection, setActiveSection] = useState<SectionKey>("batting");
   const [performanceDiscipline, setPerformanceDiscipline] =
     useState<PerformanceDiscipline>("batting");
@@ -1212,6 +1213,7 @@ export function RecordsExplorer() {
       setMinimumAppearances(0);
       return;
     }
+    setMinimumAppearances(rankingMinimumAppearances);
     const nextMetric = nextSection === "batting" ? "runs" : "wickets";
     setMetric(nextMetric);
     setSortDirection(defaultDirection(nextMetric));
@@ -1441,9 +1443,11 @@ export function RecordsExplorer() {
             <span>Club appearances</span>
             <select
               value={minimumAppearances}
-              onChange={(event) =>
-                setMinimumAppearances(Number(event.target.value))
-              }
+              onChange={(event) => {
+                const nextMinimum = Number(event.target.value);
+                setMinimumAppearances(nextMinimum);
+                setRankingMinimumAppearances(nextMinimum);
+              }}
             >
               <option value="0">Any</option>
               <option value="5">5+</option>
@@ -1468,6 +1472,7 @@ export function RecordsExplorer() {
       opposition: "",
     });
     setMinimumAppearances(10);
+    setRankingMinimumAppearances(10);
   }
 
   function resetRecordFilters() {

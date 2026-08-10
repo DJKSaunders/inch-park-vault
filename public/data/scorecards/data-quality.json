@@ -2999,6 +2999,31 @@
       "fixtureId": "933104",
       "inningsNumber": 2,
       "overs": "40.0"
+    },
+    {
+      "fixtureId": "925535",
+      "inningsNumber": 1,
+      "overs": "44.5"
+    },
+    {
+      "fixtureId": "933052",
+      "inningsNumber": 1,
+      "overs": "33.1"
+    },
+    {
+      "fixtureId": "933069",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933088",
+      "inningsNumber": 2,
+      "overs": "31.0"
+    },
+    {
+      "fixtureId": "933106",
+      "inningsNumber": 2,
+      "overs": "39.3"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3090,7 +3115,7 @@
   "competitionClassification": {
     "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1464,
+    "exact": 1470,
     "missing": 1
   },
   "multipleBattingInnings": [
@@ -3194,13 +3219,13 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15601,
-    "battingInningsCount": 12997,
-    "bowlingSpellCount": 9305,
-    "calculatedInningsOversCount": 600,
+    "appearanceCount": 15668,
+    "battingInningsCount": 13058,
+    "bowlingSpellCount": 9350,
+    "calculatedInningsOversCount": 605,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2423,
-    "fixtureCount": 1480,
+    "dnbOnlyAppearanceCount": 2427,
+    "fixtureCount": 1486,
     "matchedRecordPlayerCount": 648,
     "matchedScorecardPlayerCount": 645,
     "multipleBattingInningsAppearanceCount": 16,
@@ -3211,8 +3236,8 @@
     "suppressedAdministrativeFixtureCount": 15,
     "suppressedDnbRows": 12,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15601,
-    "uniqueFixtureIds": 1480,
+    "uniqueAppearanceKeys": 15668,
+    "uniqueFixtureIds": 1486,
     "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
@@ -3425,16 +3450,16 @@
       "rowNumber": 9
     },
     {
-      "fixtureId": "933104",
+      "fixtureId": "933088",
       "inningsNumber": 2,
-      "player": "Abdul Sabir",
+      "player": "Keshav Bhatnagar",
       "reason": "genuine-innings-present",
       "rowNumber": 11
     },
     {
-      "fixtureId": "933104",
+      "fixtureId": "933088",
       "inningsNumber": 2,
-      "player": "Shafay Ehsan",
+      "player": "Farhan Sheikh",
       "reason": "genuine-innings-present",
       "rowNumber": 10
     }

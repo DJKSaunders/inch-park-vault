@@ -216,8 +216,8 @@
       }
     ],
     "multipleBattingInnings": [],
-    "outputRowCount": 1296,
-    "sourceRowCount": 1300,
+    "outputRowCount": 1361,
+    "sourceRowCount": 1365,
     "suppressedDnbRows": [
       {
         "date": "2026-05-09",
@@ -227,18 +227,18 @@
         "team": "4th XI"
       },
       {
-        "date": "2026-08-02",
-        "opposition": "Drummond Trinity 5ths",
-        "player": "Abdul Sabir",
+        "date": "2026-08-08",
+        "opposition": "Leith FAB 4ths",
+        "player": "Farhan Sheikh",
         "suppressedRows": 1,
-        "team": "5th XI"
+        "team": "4th XI"
       },
       {
-        "date": "2026-08-02",
-        "opposition": "Drummond Trinity 5ths",
-        "player": "Shafay Ehsan",
+        "date": "2026-08-08",
+        "opposition": "Leith FAB 4ths",
+        "player": "Keshav Bhatnagar",
         "suppressedRows": 1,
-        "team": "5th XI"
+        "team": "4th XI"
       }
     ]
   },
