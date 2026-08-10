@@ -30,8 +30,13 @@ jobs:
         with:
           node-version: 22
 
+      - name: Use pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Restore image assets
         run: |
@@ -47,7 +52,7 @@ jobs:
           touch public/.nojekyll
 
       - name: Build static site
-        run: npm run build:pages
+        run: pnpm run build:pages
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
