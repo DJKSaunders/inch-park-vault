@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { canonicalOpponent } from "./opponents";
+import { canonicalOpponent, displayOpponent } from "./opponents";
 import { SiteHeader } from "./site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -2469,13 +2469,13 @@ export function RecordsExplorer() {
                               <a
                                 key={appearance.fixtureId}
                                 href={`${publicBasePath}/matches/${appearance.fixtureId}`}
-                                aria-label={`Open scorecard against ${appearance.opposition ?? "opposition"} on ${formatArchiveDate(appearance.date)}`}
+                                aria-label={`Open scorecard against ${displayOpponent(appearance.opposition)} on ${formatArchiveDate(appearance.date)}`}
                               >
                                 <span>
                                   {formatArchiveDate(appearance.date)}
                                 </span>
                                 <strong>
-                                  {appearance.opposition ?? "Opposition"}
+                                  {displayOpponent(appearance.opposition)}
                                 </strong>
                                 <small>
                                   Bat {batting || (appearance.didNotBat ? "DNB" : "—")}
@@ -2547,7 +2547,7 @@ export function RecordsExplorer() {
                                 <tr key={appearance.fixtureId}>
                                   <td>{formatArchiveDate(appearance.date)}</td>
                                   <th scope="row">
-                                    {appearance.opposition ?? "Opposition"}
+                                    {displayOpponent(appearance.opposition)}
                                   </th>
                                   <td>{appearance.team ?? "—"}</td>
                                   <td>

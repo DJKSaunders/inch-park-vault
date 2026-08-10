@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import milestones from "../../public/data/scorecards/milestones.json";
+import { displayOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -52,11 +53,11 @@ export default function MilestonesPage() {
                           <span>{item.label}</span>
                           {item.fixtureId ? (
                             <a href={`${publicBasePath}/matches/${item.fixtureId}/`}>
-                              {shortDate.format(new Date(`${item.date}T12:00:00`))} · {item.team} v {item.opposition}
+                              {shortDate.format(new Date(`${item.date}T12:00:00`))} · {item.team} v {displayOpponent(item.opposition)}
                             </a>
                           ) : (
                             <small>
-                              {shortDate.format(new Date(`${item.date}T12:00:00`))} · {item.team} v {item.opposition}
+                              {shortDate.format(new Date(`${item.date}T12:00:00`))} · {item.team} v {displayOpponent(item.opposition)}
                             </small>
                           )}
                         </div>

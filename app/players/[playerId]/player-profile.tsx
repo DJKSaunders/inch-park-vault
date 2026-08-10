@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { DismissalBreakdown } from "../../components/dismissal-pie";
 import { SeasonChart } from "../../components/season-chart";
 import { SiteHeader } from "../../site-header";
+import { displayOpponent } from "../../opponents";
 import {
   boundarySeasons,
   inflatePlayerStats,
@@ -469,7 +470,7 @@ export function PlayerProfile({
                       </time>
                       <strong>
                         {appearance.team ?? "ESCC"} v{" "}
-                        {appearance.opposition ?? "Opposition"}
+                        {displayOpponent(appearance.opposition)}
                       </strong>
                       <small className={`profile-result-chip outcome-${appearance.outcome}`}>
                         {appearance.outcome}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { displayOpponent } from "../../opponents";
 import { SiteHeader } from "../../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -206,7 +207,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
         </div>
         <h1>
           {match.esccTeam ?? "Edinburgh South"} <em>v</em>{" "}
-          {match.opposition ?? "Opposition"}
+          {displayOpponent(match.opposition)}
         </h1>
         <p>{formatDate(match.date)}</p>
         <strong className={`scorecard-result outcome-${match.result.outcome}`}>
@@ -219,7 +220,11 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
           <div className="innings-summary" aria-label="Match scores">
             {match.innings.map((innings) => (
               <div key={innings.id}>
-                <span>{innings.battingTeam}</span>
+                <span>
+                  {innings.battingTeamRole === "opponent"
+                    ? displayOpponent(innings.battingTeam)
+                    : innings.battingTeam}
+                </span>
                 <strong>{totalLabel(innings)}</strong>
                 <small>
                   {innings.total?.overs
@@ -248,7 +253,11 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
               <header>
                 <div>
                   <span>Innings {innings.number}</span>
-                  <h2>{innings.battingTeam}</h2>
+                  <h2>
+                    {innings.battingTeamRole === "opponent"
+                      ? displayOpponent(innings.battingTeam)
+                      : innings.battingTeam}
+                  </h2>
                 </div>
                 <div className="innings-total">
                   <strong>{totalLabel(innings)}</strong>
@@ -264,7 +273,12 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                 <h3>Batting</h3>
                 <div className="scorecard-table-scroll">
                   <table className="scorecard-table batting-card">
-                    <caption>{innings.battingTeam} batting</caption>
+                    <caption>
+                      {innings.battingTeamRole === "opponent"
+                        ? displayOpponent(innings.battingTeam)
+                        : innings.battingTeam}{" "}
+                      batting
+                    </caption>
                     <colgroup>
                       <col className="scorecard-player-column" />
                       <col className="scorecard-dismissal-column" />
@@ -336,10 +350,20 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
               </section>
 
               <section className="scorecard-section">
-                <h3>{innings.bowlingTeam} bowling</h3>
+                <h3>
+                  {innings.bowlingTeamRole === "opponent"
+                    ? displayOpponent(innings.bowlingTeam)
+                    : innings.bowlingTeam}{" "}
+                  bowling
+                </h3>
                 <div className="scorecard-table-scroll">
                   <table className="scorecard-table bowling-card">
-                    <caption>{innings.bowlingTeam} bowling</caption>
+                    <caption>
+                      {innings.bowlingTeamRole === "opponent"
+                        ? displayOpponent(innings.bowlingTeam)
+                        : innings.bowlingTeam}{" "}
+                      bowling
+                    </caption>
                     <colgroup>
                       <col className="scorecard-player-column" />
                       <col className="scorecard-stat-column" span={5} />

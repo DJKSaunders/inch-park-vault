@@ -1,4 +1,5 @@
 import { SiteHeader } from "./site-header";
+import { displayOpponent } from "./opponents";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -134,7 +135,7 @@ export function PortalHome({ summary, latestMatches }: PortalHomeProps) {
                 </time>
                 <strong>
                   {match.team ?? "ESCC"} <span>v</span>{" "}
-                  {match.opposition ?? "Opposition"}
+                  {displayOpponent(match.opposition)}
                 </strong>
                 <p>{match.result}</p>
               </a>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import matchIndex from "../../../public/data/scorecards/index.json";
+import { displayOpponent } from "../../opponents";
 import { MatchScorecard } from "./scorecard";
 
 type MatchPageProps = {
@@ -21,7 +22,7 @@ export async function generateMetadata({
   const match = matchIndex.matches.find((item) => item.fixtureId === fixtureId);
   return {
     title: match
-      ? `${match.esccTeam ?? "ESCC"} v ${match.opposition ?? "opposition"}`
+      ? `${match.esccTeam ?? "ESCC"} v ${displayOpponent(match.opposition)}`
       : "Match scorecard",
     description: match?.result ?? "Edinburgh South Cricket Club match scorecard.",
   };

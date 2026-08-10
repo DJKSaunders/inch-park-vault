@@ -1,5 +1,57 @@
 const opponentCache = new Map<string, string>();
 
+// Clubs whose archive contains more than one XI. Kelso and St Boswells are
+// retained here because their historical lower XIs pre-date parts of the
+// scorecard archive; Dunbar deliberately remains unnumbered.
+const multiXiOpponents = new Set([
+  "Bass Rock",
+  "Boroughmuir",
+  "Broomhall",
+  "Carlton",
+  "Clackmannan County",
+  "Drummond Trinity",
+  "Dunfermline & Carnegie",
+  "Dunnikier",
+  "Edinburgh",
+  "Edinburgh Academicals",
+  "Edinburgh South",
+  "Falkland",
+  "Fauldhouse",
+  "Freuchie",
+  "Gala",
+  "Glasgow Accies",
+  "Glenrothes",
+  "Grange",
+  "Heriot's",
+  "Holy Cross",
+  "Kelso",
+  "Kirk Brae",
+  "Kismet",
+  "Largo",
+  "Leith FAB",
+  "Linlithgow",
+  "Livingston",
+  "Marchmont",
+  "MDAFS",
+  "Morton",
+  "Murrayfield DAFS",
+  "Musselburgh",
+  "Peebles County",
+  "Penicuik",
+  "Preston Village",
+  "RH Corstorphine",
+  "St Boswells",
+  "Stenhousemuir",
+  "Stewart's Melville",
+  "Stirling County",
+  "Strathmore",
+  "Tranent",
+  "Tranent & Preston Village",
+  "Watsonians",
+  "West Lothian",
+  "Westquarter & Redding",
+]);
+
 const fuzzyOpponentAnchors = [
   "Cask and Barrel",
   "Clackmannan County",
@@ -147,4 +199,42 @@ export function canonicalOpponent(rawOpponent: string | null | undefined) {
     .join(" ");
   opponentCache.set(raw, canonical);
   return canonical;
+}
+
+function opponentTeamNumber(rawOpponent: string) {
+  const arabic = rawOpponent.match(
+    /(?:^|\s)([1-6])(?:st|nd|rd|th)?(?:[’']?s)?(?:\s*(?:xi|x1))?(?=\s|$|[.,;:)])/i,
+  );
+  if (arabic) return Number(arabic[1]);
+
+  const word = rawOpponent.match(
+    /\b(first|second|third|fourth|fifth|sixth)(?:s)?\b/i,
+  );
+  if (word) {
+    return ["first", "second", "third", "fourth", "fifth", "sixth"].indexOf(
+      word[1].toLowerCase(),
+    ) + 1;
+  }
+
+  const roman = rawOpponent.match(/(?:^|\s)(vi|iv|v|iii|ii)(?:[’']?s)?(?=\s|$|[.,;:)])/i);
+  if (!roman) return null;
+  return ({ ii: 2, iii: 3, iv: 4, v: 5, vi: 6 } as const)[
+    roman[1].toLowerCase() as "ii" | "iii" | "iv" | "v" | "vi"
+  ];
+}
+
+/**
+ * A fixture-facing opponent label. Parent-club aggregation should continue to
+ * use canonicalOpponent; this function preserves the specific XI for display.
+ */
+export function displayOpponent(rawOpponent: string | null | undefined) {
+  const raw = (rawOpponent || "").trim();
+  const club = canonicalOpponent(raw);
+  if (!raw || club === "Unknown opposition" || club === "Internal Friendly") {
+    return club;
+  }
+
+  const teamNumber = opponentTeamNumber(raw);
+  if (teamNumber) return `${club} ${teamNumber}`;
+  return multiXiOpponents.has(club) ? `${club} 1` : club;
 }

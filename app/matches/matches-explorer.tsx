@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { canonicalOpponent } from "../opponents";
+import { canonicalOpponent, displayOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -87,6 +87,16 @@ function scoreLabel(score: ScoreSummary) {
         ? ""
         : `/${score.wickets}`;
   return `${score.runs}${wickets}`;
+}
+
+function scoreTeamLabel(score: ScoreSummary, match: MatchIndexRow) {
+  if (
+    score.team &&
+    canonicalOpponent(score.team) === canonicalOpponent(match.opposition)
+  ) {
+    return displayOpponent(score.team);
+  }
+  return score.team;
 }
 
 function matchSearchText(match: MatchIndexRow) {
@@ -305,13 +315,13 @@ export function MatchesExplorer() {
                   <span>{match.competition ?? "Match"}</span>
                   <span>Match #{match.matchNumber}</span>
                 </div>
-                <h3>v {canonicalOpponent(match.opposition)}</h3>
+                <h3>v {displayOpponent(match.opposition)}</h3>
                 <p>{match.result}</p>
               </div>
               <div className="match-card-scores" aria-label="Innings scores">
                 {match.scores.map((score, index) => (
                   <span key={`${match.fixtureId}-${score.team}-${index}`}>
-                    <small>{score.team}</small>
+                    <small>{scoreTeamLabel(score, match)}</small>
                     <strong>{scoreLabel(score)}</strong>
                   </span>
                 ))}
