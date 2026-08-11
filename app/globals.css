@@ -415,7 +415,13 @@
 .archive-summary-hero > p:last-child { max-width: 680px; color: var(--cream-2); font-size: 18px; }
 .archive-summary-shell { margin-bottom: 90px; padding: 28px; border: 1px solid var(--line); background: var(--navy-900); }
 .archive-summary-shell > label { display: grid; gap: 7px; max-width: 320px; }
+.archive-summary-shell > label.archive-team-select { display: none; }
 .archive-summary-shell select { min-height: 48px; padding: 0 12px; color: var(--cream); border: 1px solid var(--line); background: var(--navy-850); font: inherit; }
+.archive-team-tabs { display: flex; border-bottom: 1px solid var(--line); }
+.archive-team-tabs button { min-width: 112px; min-height: 48px; padding: 0 18px; color: var(--cream-2); border: 1px solid var(--line); border-bottom: 0; background: transparent; font: inherit; font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+.archive-team-tabs button + button { border-left: 0; }
+.archive-team-tabs button:hover { color: var(--gold); background: var(--navy-850); }
+.archive-team-tabs button.active { color: var(--navy-950); border-color: var(--gold); background: var(--gold); }
 .archive-summary-shell > header { padding: 44px 0 22px; }
 .archive-summary-shell h2 { margin: 0; font-family: var(--font-display); font-size: 54px; text-transform: uppercase; }
 .archive-summary-stats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border: 1px solid var(--line); }
@@ -426,11 +432,14 @@
 .archive-leader-columns section > header { padding: 18px; border-bottom: 1px solid var(--line); }
 .archive-leader-columns h3 { margin: 0; color: var(--gold); font-family: var(--font-display); font-size: 24px; text-transform: uppercase; }
 .archive-leader-columns section > div { padding: 12px 18px; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); }
-.archive-leader-actions { padding: 14px; display: grid; gap: 8px; border-top: 1px solid var(--line); }
-.archive-leader-actions button { width: 100%; min-height: 44px; color: var(--navy-950); border: 0; background: var(--gold); font: inherit; font-weight: 700; cursor: pointer; }
-.archive-leader-actions button.secondary { color: var(--cream); border: 1px solid var(--line); background: transparent; }
-.archive-leader-actions button:hover { filter: brightness(1.08); }
-@media (max-width: 760px) { .archive-summary-hero,.archive-summary-shell { width: calc(100% - 28px); } .archive-summary-stats { grid-template-columns: repeat(2,1fr); } .archive-leader-columns { grid-template-columns: 1fr; } }
+.archive-leader-actions { min-height: 66px; padding: 11px 14px 11px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--navy-850) 72%, transparent); }
+.archive-leader-actions > span { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
+.archive-leader-actions nav { display: flex; align-items: center; gap: 8px; }
+.archive-leader-actions button { min-height: 40px; padding: 0 15px; color: var(--gold); border: 1px solid color-mix(in srgb, var(--gold) 58%, var(--line)); background: transparent; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.archive-leader-actions button.secondary { color: var(--cream-2); border-color: transparent; }
+.archive-leader-actions button:hover { color: var(--navy-950); background: var(--gold); }
+.archive-leader-actions button.secondary:hover { color: var(--cream); background: var(--navy-700); }
+@media (max-width: 760px) { .archive-summary-hero,.archive-summary-shell { width: calc(100% - 28px); } .archive-summary-shell > label.archive-team-select { display: grid; } .archive-team-tabs { display: none; } .archive-summary-stats { grid-template-columns: repeat(2,1fr); } .archive-leader-columns { grid-template-columns: 1fr; } .archive-leader-actions { align-items: stretch; flex-direction: column; } .archive-leader-actions nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); } .archive-leader-actions nav button:only-child { grid-column: 1 / -1; } }
 
 .achievement-sections { margin-top: 40px; }
 .achievement-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
