@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public" / "data"
 TEAMS = ["1st XI", "2nd XI", "3rd XI", "4th XI", "5th XI"]
+PERFORMANCE_TEAMS = [*TEAMS, "Mitres", "Women's"]
 
 
 def load(path: Path):
@@ -132,6 +133,28 @@ def main():
     appearances_data = load(PUBLIC / "scorecards" / "appearances.json")
     matches = index["matches"]
 
+    alias_to_id = {
+        " ".join(alias.casefold().split()): player["playerId"]
+        for player in directory["players"]
+        for alias in player["aliases"]
+    }
+    player_stats = defaultdict(lambda: {"innings": 0, "runs": 0, "outs": 0, "bowlingRuns": 0, "wickets": 0})
+    for row in records["batting"]:
+        player_id = alias_to_id.get(" ".join(row[0].casefold().split()))
+        if not player_id:
+            continue
+        player_stats[player_id]["runs"] += row[6] or 0
+        if not row[8]:
+            player_stats[player_id]["innings"] += 1
+            if not row[7]:
+                player_stats[player_id]["outs"] += 1
+    for row in records["bowling"]:
+        player_id = alias_to_id.get(" ".join(row[0].casefold().split()))
+        if not player_id:
+            continue
+        player_stats[player_id]["bowlingRuns"] += row[8] or 0
+        player_stats[player_id]["wickets"] += row[9] or 0
+
     team_summaries = []
     for team in TEAMS:
         team_matches = [match for match in matches if match.get("esccTeam") == team]
@@ -159,6 +182,25 @@ def main():
             "bowlingEconomy": sorted((row for row in bowling_spells if (row.get("balls") or 0) >= 18 and row.get("economy") is not None), key=lambda row: (row["economy"], -row["wickets"]))[:10],
             "bowlingStrikeRate": sorted(({**row, "strikeRate": round(row["balls"] / row["wickets"], 2)} for row in bowling_spells if (row.get("wickets") or 0) >= 2 and row.get("balls")), key=lambda row: (row["strikeRate"], -row["wickets"]))[:10],
         },
+        "teamPerformances": {
+            team: {
+                "batting": [
+                    {key: row.get(key) for key in ("date", "fixtureId", "player", "playerId", "runs", "notOut", "balls", "team", "opposition")}
+                    for row in sorted(
+                        (item for item in batting_innings if item.get("team") == team and item.get("runs") is not None),
+                        key=lambda item: (-(item.get("runs") or 0), item.get("balls") or 10**9, item["date"]),
+                    )[:100]
+                ],
+                "bowling": [
+                    {key: row.get(key) for key in ("date", "fixtureId", "player", "playerId", "wickets", "runs", "balls", "overs", "team", "opposition")}
+                    for row in sorted(
+                        (item for item in bowling_spells if item.get("team") == team and (item.get("wickets") or 0) > 0),
+                        key=lambda item: (-(item.get("wickets") or 0), item.get("runs") or 0, item["date"]),
+                    )[:100]
+                ],
+            }
+            for team in PERFORMANCE_TEAMS
+        },
         "recordProgression": {
             "highestScore": [],
             "bestBowling": [],
@@ -169,11 +211,32 @@ def main():
     for appearance in appearances_data:
         latest_by_player[appearance["playerId"]] = max(latest_by_player[appearance["playerId"]], appearance["date"])
     active_cutoff = (date.fromisoformat(records["meta"]["asOfDate"]) - timedelta(days=183)).isoformat()
-    output["similarityPlayers"] = [
-        {"playerId": player["playerId"], "name": player["name"], **player["career"], "runsPerAppearance": round(player["career"]["runs"] / player["career"]["appearances"], 2), "wicketsPerAppearance": round(player["career"]["wickets"] / player["career"]["appearances"], 2)}
-        for player in directory["players"]
-        if player["career"]["appearances"] >= 20 and latest_by_player[player["playerId"]] >= active_cutoff
-    ]
+    output["similarityPlayers"] = []
+    for player in directory["players"]:
+        stats = player_stats[player["playerId"]]
+        if player["career"]["appearances"] < 20 or latest_by_player[player["playerId"]] < active_cutoff:
+            continue
+        batting_average = stats["runs"] / stats["outs"] if stats["outs"] else None
+        bowling_average = stats["bowlingRuns"] / stats["wickets"] if stats["wickets"] else None
+        qualifies_allrounder = stats["innings"] >= 20 and stats["wickets"] >= 20 and batting_average is not None and batting_average >= 15 and bowling_average is not None and bowling_average <= 30
+        qualifies_batter = stats["innings"] >= 20 and batting_average is not None and batting_average >= 18
+        qualifies_bowler = stats["wickets"] >= 20 and bowling_average is not None and bowling_average <= 30
+        role = "allrounder" if qualifies_allrounder else "batter" if qualifies_batter else "bowler" if qualifies_bowler else None
+        if not role:
+            continue
+        output["similarityPlayers"].append({
+            "playerId": player["playerId"],
+            "name": player["name"],
+            "appearances": player["career"]["appearances"],
+            "innings": stats["innings"],
+            "runs": stats["runs"],
+            "outs": stats["outs"],
+            "battingAverage": round(batting_average, 2) if batting_average is not None else None,
+            "wickets": stats["wickets"],
+            "bowlingRuns": stats["bowlingRuns"],
+            "bowlingAverage": round(bowling_average, 2) if bowling_average is not None else None,
+            "role": role,
+        })
     high = -1
     for row in sorted(batting_innings, key=lambda item: (item["date"], item["fixtureId"])):
         if (row.get("runs") or 0) > high:

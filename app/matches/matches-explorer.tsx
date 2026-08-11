@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { canonicalOpponent, displayOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
@@ -118,6 +118,7 @@ export function MatchesExplorer() {
   const [data, setData] = useState<MatchIndex | null>(null);
   const [error, setError] = useState(false);
   const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [queryInput, setQueryInput] = useState("");
   const [visible, setVisible] = useState(pageSize);
 
   useEffect(() => {
@@ -163,6 +164,16 @@ export function MatchesExplorer() {
   function updateFilter<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((current) => ({ ...current, [key]: value }));
     setVisible(pageSize);
+  }
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    updateFilter("query", queryInput.trim());
+  }
+
+  function clearSearch() {
+    setQueryInput("");
+    updateFilter("query", "");
   }
 
   if (error) {
@@ -217,6 +228,7 @@ export function MatchesExplorer() {
             type="button"
             onClick={() => {
               setFilters(initialFilters);
+              setQueryInput("");
               setVisible(pageSize);
             }}
           >
@@ -224,15 +236,21 @@ export function MatchesExplorer() {
           </button>
         </div>
 
-        <div className="match-filters">
+        <form className="match-filters" onSubmit={submitSearch}>
           <label className="match-query">
             <span>Player or opposition</span>
-            <input
-              type="search"
-              value={filters.query}
-              onChange={(event) => updateFilter("query", event.target.value)}
-              placeholder="Search the archive"
-            />
+            <div><input
+                type="search"
+                value={queryInput}
+                onChange={(event) => setQueryInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    updateFilter("query", queryInput.trim());
+                  }
+                }}
+                placeholder="Search the archive"
+              /><button type="submit">Search</button></div>
           </label>
           <label>
             <span>Season</span>
@@ -288,12 +306,13 @@ export function MatchesExplorer() {
               ))}
             </select>
           </label>
-        </div>
+        </form>
+
+        {filters.query && <div className="match-active-search"><span>Search</span><button type="button" onClick={clearSearch} aria-label={`Remove search for ${filters.query}`}>{filters.query} <b aria-hidden="true">×</b></button></div>}
 
         <div className="match-results-context" aria-live="polite">
           <span>
-            Showing {Math.min(visible, matches.length).toLocaleString("en-GB")} of{" "}
-            {matches.length.toLocaleString("en-GB")} matches
+            <strong>{matches.length.toLocaleString("en-GB")}</strong> matching {matches.length === 1 ? "scorecard" : "scorecards"} · showing {Math.min(visible, matches.length).toLocaleString("en-GB")}
           </span>
           <span>Newest first</span>
         </div>

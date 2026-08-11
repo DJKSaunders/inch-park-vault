@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import Script from "next/script";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 const measurementId = "G-KY87HDT0QL";
 
@@ -12,30 +14,30 @@ declare global {
 }
 
 export function GoogleAnalytics() {
+  const pathname = usePathname();
+  const initialPage = useRef(true);
+
   useEffect(() => {
-    if (
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1" ||
-      document.querySelector(`script[data-vault-analytics="${measurementId}"]`)
-    ) {
+    if (initialPage.current) {
+      initialPage.current = false;
       return;
     }
+    if (!window.gtag || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") return;
+    window.gtag("event", "page_view", {
+      page_path: `${pathname}${window.location.search}`,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [pathname]);
 
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = (...args: unknown[]) => window.dataLayer.push(args);
-    window.gtag("js", new Date());
-    window.gtag("config", measurementId);
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    script.dataset.vaultAnalytics = measurementId;
-    document.head.appendChild(script);
-
-    return () => {
-      script.remove();
-    };
-  }, []);
-
-  return null;
+  return <>
+    <Script src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} strategy="afterInteractive" data-vault-analytics={measurementId}/>
+    <Script id="vault-google-analytics" strategy="afterInteractive">{`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', '${measurementId}');
+    `}</Script>
+  </>;
 }
