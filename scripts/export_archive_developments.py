@@ -71,7 +71,7 @@ def performance_streaks(rows, thresholds, value_field):
     return output
 
 
-def multi_xi_achievements(batting, bowling):
+def multi_xi_achievements(batting, bowling, player_ids):
     appearances = defaultdict(set)
     runs = defaultdict(lambda: defaultdict(int))
     wickets = defaultdict(lambda: defaultdict(int))
@@ -101,7 +101,24 @@ def multi_xi_achievements(batting, bowling):
             elif len(passed) == 4:
                 close.append({"player": player, "missing": next(team for team in TEAMS if team not in passed)})
         if complete or len(close) >= 3:
-            result.append({"key": key, "label": label, "complete": sorted(complete), "close": sorted(close, key=lambda item: item["player"])})
+            def values_for(player):
+                if key == "appearance":
+                    return {team: len({(row[5], row[4]) for row in batting if row[0] == player and row[2] == team}) for team in TEAMS}
+                source = wickets if key in ("wicket", "ten-wickets") else runs
+                return {team: source[player][team] for team in TEAMS}
+
+            result.append({
+                "key": key,
+                "label": label,
+                "complete": [
+                    {"player": player, "playerId": player_ids.get(player), "values": values_for(player)}
+                    for player in sorted(complete)
+                ],
+                "close": [
+                    {**item, "playerId": player_ids.get(item["player"]), "values": values_for(item["player"])}
+                    for item in sorted(close, key=lambda item: item["player"])
+                ],
+            })
     return result
 
 
@@ -137,7 +154,6 @@ def main():
             "batting": performance_streaks(batting_innings, [20, 30, 50, 100], "runs"),
             "bowling": performance_streaks(bowling_spells, [1, 2], "wickets"),
         },
-        "multiXiAchievements": multi_xi_achievements(records["batting"], records["bowling"]),
         "personalBests": {
             "battingStrikeRate": sorted((row for row in batting_innings if (row.get("balls") or 0) >= 20 and row.get("strikeRate") is not None), key=lambda row: (-row["strikeRate"], -row["runs"]))[:10],
             "bowlingEconomy": sorted((row for row in bowling_spells if (row.get("balls") or 0) >= 18 and row.get("economy") is not None), key=lambda row: (row["economy"], -row["wickets"]))[:10],
@@ -165,6 +181,8 @@ def main():
             output["recordProgression"]["highestScore"].append({key: row[key] for key in ("date", "fixtureId", "player", "runs", "notOut", "team", "opposition")})
     best = (-1, 10**9)
     for row in sorted(bowling_spells, key=lambda item: (item["date"], item["fixtureId"])):
+        if (row.get("wickets") or 0) < 1:
+            continue
         figure = (row.get("wickets") or 0, -(row.get("runs") or 0))
         if figure > best:
             best = figure
