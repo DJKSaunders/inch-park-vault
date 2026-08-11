@@ -33,3 +33,12 @@ test("mobile navigation retains an accessible working toggle", async () => {
   assert.ok(visibleRule >= 0);
   assert.match(styles.slice(visibleRule), /display:\s*grid/);
 });
+
+test("opposition summaries use parent clubs rather than individual XIs", async () => {
+  const insights = await readFile(
+    new URL("../app/insights/insights-explorer.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(insights, /const name = canonicalOpponent\(match\.opposition\)/);
+  assert.doesNotMatch(insights, /function compactOpponent/);
+});

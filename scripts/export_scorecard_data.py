@@ -648,7 +648,9 @@ def build_player_data(
                             )
                         },
                     }
-                    batting_innings.append(item)
+                    batting_innings.append(
+                        {**item, "battingPosition": row["rowNumber"]}
+                    )
                     player["battingInnings"].append(item)
                     appearance["battingInningsCount"] += 1
                 else:

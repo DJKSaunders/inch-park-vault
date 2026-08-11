@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import milestones from "../../public/data/scorecards/milestones.json";
+import archive from "../../public/data/archive-developments.json";
 import { displayOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
@@ -96,6 +97,10 @@ export default function MilestonesPage() {
               </div>
             </section>
           ))}
+        </div>
+        <div className="milestone-sections achievement-sections">
+          <section className="milestone-section"><header><p className="eyebrow">Across the club</p><h2>Multi-XI achievements</h2></header><div className="achievement-grid">{archive.multiXiAchievements.map((achievement) => <article key={achievement.key}><h3>{achievement.label}</h3><strong>{achievement.complete.length} completed</strong>{achievement.complete.length > 0 && <p>{achievement.complete.join(" · ")}</p>}<small>{achievement.close.length} one XI away</small></article>)}</div></section>
+          <section className="milestone-section"><header><p className="eyebrow">Performance sequences</p><h2>Longest streaks</h2></header><div className="achievement-grid">{Object.entries(archive.streaks.batting).map(([threshold, rows]) => <article key={`bat-${threshold}`}><h3>{threshold}+ runs</h3>{rows.slice(0,3).map((row) => <p key={row.player}><strong>{row.length}</strong> {row.player}</p>)}</article>)}{Object.entries(archive.streaks.bowling).map(([threshold, rows]) => <article key={`bowl-${threshold}`}><h3>{threshold}+ wickets</h3>{rows.slice(0,3).map((row) => <p key={row.player}><strong>{row.length}</strong> {row.player}</p>)}</article>)}</div><p className="method-note">DNBs and matches without a bowling spell do not interrupt streaks. Concessions and abandonments neither extend nor break them. Streaks continue across seasons and follow only the player’s own appearances.</p></section>
         </div>
       </main>
     </>

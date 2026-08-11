@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { canonicalOpponent } from "../opponents";
 import { DismissalStackedBars } from "../components/dismissal-stacked-bars";
 import {
   ComparisonSelect,
@@ -137,14 +138,6 @@ const clubTrendDirection: Record<
   battingRunsPerWicket: "higher",
   bowlingRunsPerWicket: "lower",
 };
-
-function compactOpponent(value: string | null) {
-  return (value ?? "Unknown opposition")
-    .replace(/\s+/g, " ")
-    .replace(/\bC\.?\s*C\.?\b/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 function comparisonValue(
   entry: PlayerDirectoryEntry,
@@ -328,7 +321,7 @@ export function InsightsExplorer() {
       ) {
         continue;
       }
-      const name = compactOpponent(match.opposition);
+      const name = canonicalOpponent(match.opposition);
       const key = name.toLocaleLowerCase();
       const summary = summaries.get(key) ?? {
         name,
@@ -767,6 +760,9 @@ export function InsightsExplorer() {
           <a href="#club-trends">Club trends</a>
           <a href="#dismissals">Dismissals</a>
           <a href="#compare">Player comparison</a>
+          <a href={`${publicBasePath}/insights/teams/`}>Team histories</a>
+          <a href={`${publicBasePath}/insights/seasons/`}>Season reviews</a>
+          <a href={`${publicBasePath}/insights/records/`}>Records laboratory</a>
         </nav>
 
         <section className="insight-filter-bar" id="overview">
