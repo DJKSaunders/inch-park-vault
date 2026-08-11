@@ -120,7 +120,7 @@ def main():
         team_matches = [match for match in matches if match.get("esccTeam") == team]
         team_batting = [row for row in records["batting"] if row[2] == team]
         team_bowling = [row for row in records["bowling"] if row[2] == team]
-        team_summaries.append({"team": team, **result_summary(team_matches), "runLeaders": leaders(team_batting, 6), "wicketLeaders": leaders(team_bowling, 9)})
+        team_summaries.append({"team": team, **result_summary(team_matches), "runLeaders": leaders(team_batting, 6, 100), "wicketLeaders": leaders(team_bowling, 9, 100)})
 
     seasons = []
     for season in range(records["meta"]["seasonStart"], records["meta"]["seasonEnd"] + 1):

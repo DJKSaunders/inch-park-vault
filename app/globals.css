@@ -423,11 +423,13 @@
 .archive-summary-stats strong { font-family: var(--font-display); font-size: 34px; }
 .archive-leader-columns { margin-top: 26px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
 .archive-leader-columns section { border: 1px solid var(--line); }
-.archive-leader-columns section > header { padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.archive-leader-columns section > header { padding: 18px; border-bottom: 1px solid var(--line); }
 .archive-leader-columns h3 { margin: 0; color: var(--gold); font-family: var(--font-display); font-size: 24px; text-transform: uppercase; }
-.archive-leader-columns header label { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
-.archive-leader-columns header select { min-height: 34px; padding: 0 28px 0 9px; }
 .archive-leader-columns section > div { padding: 12px 18px; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); }
+.archive-leader-actions { padding: 14px; display: grid; gap: 8px; border-top: 1px solid var(--line); }
+.archive-leader-actions button { width: 100%; min-height: 44px; color: var(--navy-950); border: 0; background: var(--gold); font: inherit; font-weight: 700; cursor: pointer; }
+.archive-leader-actions button.secondary { color: var(--cream); border: 1px solid var(--line); background: transparent; }
+.archive-leader-actions button:hover { filter: brightness(1.08); }
 @media (max-width: 760px) { .archive-summary-hero,.archive-summary-shell { width: calc(100% - 28px); } .archive-summary-stats { grid-template-columns: repeat(2,1fr); } .archive-leader-columns { grid-template-columns: 1fr; } }
 
 .achievement-sections { margin-top: 40px; }

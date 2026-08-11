@@ -5,7 +5,6 @@ import archive from "../../public/data/archive-developments.json";
 import { SiteHeader } from "../site-header";
 
 const integer = new Intl.NumberFormat("en-GB");
-const limits = [10, 25, 50, 100];
 
 export function ArchiveSummary({ mode }: { mode: "teams" | "seasons" }) {
   const options = mode === "teams" ? archive.teams : archive.seasons;
@@ -33,8 +32,8 @@ export function ArchiveSummary({ mode }: { mode: "teams" | "seasons" }) {
       <header><p className="eyebrow">Selected view</p><h2>{label}</h2></header>
       <div className="archive-summary-stats"><div><span>Played</span><strong>{integer.format(item.played)}</strong></div><div><span>Won</span><strong>{integer.format(item.won)}</strong></div><div><span>Lost</span><strong>{integer.format(item.lost)}</strong></div><div><span>Win rate</span><strong>{item.winPercentage === null ? "—" : `${item.winPercentage}%`}</strong></div>{"runs" in item && <><div><span>Runs</span><strong>{integer.format(item.runs)}</strong></div><div><span>Wickets</span><strong>{integer.format(item.wickets)}</strong></div></>}</div>
       <div className="archive-leader-columns">
-        <section><header><h3>Leading run-scorers</h3><label>Show <select aria-label="Run-scorers shown" value={runLimit} onChange={(event) => setRunLimit(Number(event.target.value))}>{limits.map((limit) => <option key={limit}>{limit}</option>)}</select></label></header>{item.runLeaders.slice(0, runLimit).map((leader, index) => <div key={leader.player}><span>{index + 1}. {leader.player}</span><strong>{integer.format(leader.value)}</strong></div>)}</section>
-        <section><header><h3>Leading wicket-takers</h3><label>Show <select aria-label="Wicket-takers shown" value={wicketLimit} onChange={(event) => setWicketLimit(Number(event.target.value))}>{limits.map((limit) => <option key={limit}>{limit}</option>)}</select></label></header>{item.wicketLeaders.slice(0, wicketLimit).map((leader, index) => <div key={leader.player}><span>{index + 1}. {leader.player}</span><strong>{integer.format(leader.value)}</strong></div>)}</section>
+        <section><header><h3>Leading run-scorers</h3></header>{item.runLeaders.slice(0, runLimit).map((leader, index) => <div key={leader.player}><span>{index + 1}. {leader.player}</span><strong>{integer.format(leader.value)}</strong></div>)}{(runLimit < item.runLeaders.length || runLimit > 10) && <footer className="archive-leader-actions">{runLimit < item.runLeaders.length && <button type="button" onClick={() => setRunLimit((current) => current + 10)}>Show {Math.min(10, item.runLeaders.length - runLimit)} more</button>}{runLimit > 10 && <button type="button" className="secondary" onClick={() => setRunLimit(10)}>Show fewer</button>}</footer>}</section>
+        <section><header><h3>Leading wicket-takers</h3></header>{item.wicketLeaders.slice(0, wicketLimit).map((leader, index) => <div key={leader.player}><span>{index + 1}. {leader.player}</span><strong>{integer.format(leader.value)}</strong></div>)}{(wicketLimit < item.wicketLeaders.length || wicketLimit > 10) && <footer className="archive-leader-actions">{wicketLimit < item.wicketLeaders.length && <button type="button" onClick={() => setWicketLimit((current) => current + 10)}>Show {Math.min(10, item.wicketLeaders.length - wicketLimit)} more</button>}{wicketLimit > 10 && <button type="button" className="secondary" onClick={() => setWicketLimit(10)}>Show fewer</button>}</footer>}</section>
       </div>
     </section>
   </main>;
