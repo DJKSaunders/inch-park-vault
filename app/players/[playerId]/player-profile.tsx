@@ -81,6 +81,7 @@ export function PlayerProfile({
   const [metric, setMetric] = useState<ProfileMetric>("runs");
   const [historyPage, setHistoryPage] = useState(1);
   const [historyPageSize, setHistoryPageSize] = useState(8);
+  const [historySort, setHistorySort] = useState<"date" | "batting" | "bowling">("date");
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -256,11 +257,20 @@ export function PlayerProfile({
           ? decimal.format(player.scorecardMetrics.battingStrikeRate)
           : "—"
       : metricDisplay(metric, stats);
-  const sortedAppearances = [...(history?.appearances ?? [])].sort(
-    (left, right) =>
-      right.date.localeCompare(left.date) ||
-      right.fixtureId.localeCompare(left.fixtureId),
-  );
+  const sortedAppearances = [...(history?.appearances ?? [])].sort((left, right) => {
+    const battingScore = (fixtureId: string) => Math.max(...(history?.battingInnings ?? []).filter((innings) => innings.fixtureId === fixtureId).map((innings) => innings.runs ?? -1), -1);
+    const bowlingFigures = (fixtureId: string) => (history?.bowlingSpells ?? [])
+      .filter((spell) => spell.fixtureId === fixtureId)
+      .map((spell) => ({ wickets: spell.wickets ?? 0, runs: spell.runs ?? Number.MAX_SAFE_INTEGER }))
+      .sort((a, b) => b.wickets - a.wickets || a.runs - b.runs)[0] ?? { wickets: -1, runs: Number.MAX_SAFE_INTEGER };
+    if (historySort === "batting") return battingScore(right.fixtureId) - battingScore(left.fixtureId) || right.date.localeCompare(left.date);
+    if (historySort === "bowling") {
+      const leftFigures = bowlingFigures(left.fixtureId);
+      const rightFigures = bowlingFigures(right.fixtureId);
+      return rightFigures.wickets - leftFigures.wickets || leftFigures.runs - rightFigures.runs || right.date.localeCompare(left.date);
+    }
+    return right.date.localeCompare(left.date) || right.fixtureId.localeCompare(left.fixtureId);
+  });
   const historyPageCount = Math.max(
     1,
     Math.ceil(sortedAppearances.length / historyPageSize),
@@ -454,11 +464,14 @@ export function PlayerProfile({
               <p className="eyebrow">Scorecard history</p>
               <h2>Recent appearances</h2>
             </div>
-            <span>
-              {history
-                ? `${integer.format(history.appearances.length)} linked scorecards`
-                : "No linked scorecard history"}
-            </span>
+            <label className="performance-sort">
+              <span>Sort performances by</span>
+              <select value={historySort} onChange={(event) => { setHistorySort(event.target.value as typeof historySort); setHistoryPage(1); }}>
+                <option value="date">Date — newest first</option>
+                <option value="batting">Batting score — highest first</option>
+                <option value="bowling">Bowling figures — best first</option>
+              </select>
+            </label>
           </header>
           {latestAppearances.length > 0 ? (
             <div className="profile-appearance-table">

@@ -1,6 +1,6 @@
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-export type InsightsGroup = "club" | "players" | "teams" | "archive";
+export type InsightsGroup = "club" | "players" | "xis" | "seasons" | "archive";
 export type InsightsSubsection =
   | "overview"
   | "club-trends"
@@ -37,13 +37,20 @@ const groups: {
     ],
   },
   {
-    key: "teams",
-    label: "Teams & seasons",
+    key: "xis",
+    label: "Teams",
     href: `${publicBasePath}/insights/teams/history/`,
     subsections: [
-      { key: "team-histories", label: "Team histories", href: `${publicBasePath}/insights/teams/history/` },
-      { key: "season-reviews", label: "Season overview", href: `${publicBasePath}/insights/teams/seasons/` },
+      { key: "team-histories", label: "XI records", href: `${publicBasePath}/insights/teams/history/` },
       { key: "team-performances", label: "Best performances by XI", href: `${publicBasePath}/insights/teams/performances/` },
+    ],
+  },
+  {
+    key: "seasons",
+    label: "Seasons",
+    href: `${publicBasePath}/insights/teams/seasons/`,
+    subsections: [
+      { key: "season-reviews", label: "Season overview", href: `${publicBasePath}/insights/teams/seasons/` },
     ],
   },
   {

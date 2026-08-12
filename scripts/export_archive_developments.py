@@ -102,13 +102,19 @@ def team_match_records(matches, team):
     def maximum(rows):
         return max(rows, key=lambda item: (item["value"], item["date"]), default=None)
 
+    def all_maximum(rows):
+        if not rows:
+            return []
+        highest = max(item["value"] for item in rows)
+        return sorted((item for item in rows if item["value"] == highest), key=lambda item: item["date"], reverse=True)
+
     all_out = [row for row in innings if row.get("wickets") == 10]
     lowest_pool = all_out or innings
     return {
         "highestTotal": maximum(innings),
         "lowestTotal": min(lowest_pool, key=lambda item: (item["value"], item["date"]), default=None),
         "largestWinRuns": maximum(wins_by_runs),
-        "largestWinWickets": maximum(wins_by_wickets),
+        "largestWinWickets": all_maximum(wins_by_wickets),
     }
 
 

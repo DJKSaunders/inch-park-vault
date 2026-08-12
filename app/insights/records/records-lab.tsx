@@ -35,7 +35,7 @@ export function RecordsLab({ initialSection = "progression" }: { initialSection?
 
   const navigation: { group: InsightsGroup; subsection: InsightsSubsection } =
     section === "performances"
-        ? { group: "teams", subsection: "team-performances" }
+        ? { group: "xis", subsection: "team-performances" }
         : section === "progression"
           ? { group: "archive", subsection: "record-progression" }
           : { group: "archive", subsection: "data-coverage" };
@@ -59,8 +59,7 @@ export function RecordsLab({ initialSection = "progression" }: { initialSection?
             ["Highest total", performance.team.highestTotal, "runs"],
             ["Lowest total", performance.team.lowestTotal, "runs"],
             ["Largest win by runs", performance.team.largestWinRuns, "runs"],
-            ["Largest win by wickets", performance.team.largestWinWickets, "wickets"],
-          ] as const).map(([label, record, unit]) => record && <a href={`${publicBasePath}/matches/${record.fixtureId}/`} key={label}><span>{label}</span><strong>{record.value} {unit}</strong><small>{formatDate(record.date)} · v {record.opposition}</small></a>)}</div></section>
+          ] as const).map(([label, record, unit]) => record && <a href={`${publicBasePath}/matches/${record.fixtureId}/`} key={label}><span>{label}</span><strong>{record.value} {unit}</strong><small>{formatDate(record.date)} · v {record.opposition}</small></a>)}{performance.team.largestWinWickets.map((record) => <a href={`${publicBasePath}/matches/${record.fixtureId}/`} key={`wickets-${record.fixtureId}`}><span>Largest win by wickets</span><strong>{record.value} wickets</strong><small>{formatDate(record.date)} · v {record.opposition}</small></a>)}</div></section>
         </div>}
 
         {section === "progression" && <div className="lab-progression"><div className="lab-segmented" role="group" aria-label="Record type"><button type="button" className={progressionMode === "highestScore" ? "active" : ""} onClick={() => setProgressionMode("highestScore")}>Highest score</button><button type="button" className={progressionMode === "bestBowling" ? "active" : ""} onClick={() => setProgressionMode("bestBowling")}>Best bowling</button></div><aside className="lab-takeaway"><span>Current archive benchmark</span><strong>{progressionRows.at(-1) ? `${progressionRows.at(-1)!.player} · ${formatProgressionValue(progressionRows.at(-1)!)}` : "—"}</strong></aside><ol className="record-timeline">{progressionRows.map((row) => <li key={`${row.fixtureId}-${row.player}`}><time>{formatDate(row.date)}</time><i/><div><strong>{row.player}</strong><span>{formatProgressionValue(row)}</span><small>{row.team} v {row.opposition}</small></div><a href={`${publicBasePath}/matches/${row.fixtureId}/`}>Match →</a></li>)}</ol></div>}

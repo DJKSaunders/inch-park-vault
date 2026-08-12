@@ -43,7 +43,11 @@ def date_value(candidate):
 def normalize_player_name(candidate):
     if not candidate:
         return candidate
-    return re.sub(r"\s+\((?:SM'20|SM)\)\s*$", "", str(candidate), flags=re.IGNORECASE).strip()
+    value = re.sub(r"\s+\((?:SM'20|SM)\)\s*$", "", str(candidate), flags=re.IGNORECASE).strip()
+    return {
+        "kiran sv": "Kiran Sankaran",
+        "srini m": "Srini Muthuraman",
+    }.get(value.casefold(), value)
 
 
 def normalize_team(candidate):

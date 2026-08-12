@@ -11833,14 +11833,14 @@
     },
     {
       "aliases": [
-        "Kiran SV"
+        "Kiran Sankaran"
       ],
       "career": {
         "appearances": 152,
         "runs": 1322,
         "wickets": 115
       },
-      "name": "Kiran SV",
+      "name": "Kiran Sankaran",
       "playerId": "p-kiran-sv-87ddf68c",
       "profilePath": "profiles/p-kiran-sv-87ddf68c.json",
       "scorecardMetrics": {
@@ -20092,14 +20092,14 @@
     },
     {
       "aliases": [
-        "Srini M"
+        "Srini Muthuraman"
       ],
       "career": {
         "appearances": 35,
         "runs": 197,
         "wickets": 40
       },
-      "name": "Srini M",
+      "name": "Srini Muthuraman",
       "playerId": "p-srini-m-aa58f0dc",
       "profilePath": "profiles/p-srini-m-aa58f0dc.json",
       "scorecardMetrics": {
@@ -25242,14 +25242,14 @@
       "playerId": "p-khalid-rehman-cc70faaa",
       "scorecardName": "Khalid Rehman"
     },
-    "Kiran SV": {
+    "Kiran Sankaran": {
       "appearanceCount": 145,
       "battingInningsCount": 112,
       "bowlingSpellCount": 110,
       "matchMethod": "normalized-exact",
       "path": "players/p-kiran-sv-87ddf68c.json",
       "playerId": "p-kiran-sv-87ddf68c",
-      "scorecardName": "Kiran SV"
+      "scorecardName": "Kiran Sankaran"
     },
     "Kishan Abhani": {
       "appearanceCount": 5,
@@ -27398,14 +27398,14 @@
       "playerId": "p-srihariteja-adapa-f3f8c37a",
       "scorecardName": "Srihariteja Adapa"
     },
-    "Srini M": {
+    "Srini Muthuraman": {
       "appearanceCount": 34,
       "battingInningsCount": 25,
       "bowlingSpellCount": 33,
       "matchMethod": "normalized-exact",
       "path": "players/p-srini-m-aa58f0dc.json",
       "playerId": "p-srini-m-aa58f0dc",
-      "scorecardName": "Srini M"
+      "scorecardName": "Srini Muthuraman"
     },
     "Sriram Govindan": {
       "appearanceCount": 123,

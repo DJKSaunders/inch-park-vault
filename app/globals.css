@@ -191,6 +191,31 @@
   cursor: default;
 }
 
+.vaultguru-generate {
+  min-height: 104px;
+  padding: 24px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  background: var(--navy-850);
+}
+
+.vaultguru-generate div { display: grid; gap: 5px; }
+.vaultguru-generate strong { font-family: var(--font-display); font-size: 26px; text-transform: uppercase; }
+.vaultguru-generate span { color: var(--cream-2); font-size: 12px; }
+.vaultguru-generate button { min-height: 54px; padding: 0 24px; color: var(--navy-950); border: 0; background: var(--gold); font: inherit; font-size: 13px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+.vaultguru-generate button:hover { background: var(--cream); }
+.vaultguru-generate.changed { box-shadow: inset 5px 0 0 var(--orange-bright); }
+.vaultguru-generate.changed strong { color: var(--gold); }
+
+.vaultguru-results-empty { padding: 34px 30px; }
+.vaultguru-results-empty h2 { margin: 5px 0 8px; font-family: var(--font-display); font-size: 38px; text-transform: uppercase; }
+.vaultguru-results-empty > p:last-child { margin: 0; color: var(--cream-2); }
+.vaultguru-performance-table th,
+.vaultguru-performance-table td { white-space: nowrap; }
+
 .vaultguru-report-actions {
   display: flex;
   flex-wrap: wrap;
@@ -391,8 +416,10 @@
   .vaultguru-filter-grid > label > select,
   .vaultguru-filter-grid > label > input,
   .vaultguru-multi summary { min-height: 54px; padding: 9px 12px; }
-  .vaultguru-steps fieldset { padding-top: 18px; padding-bottom: 20px; }
+  .vaultguru-steps fieldset { padding-top: 36px; padding-bottom: 20px; }
   .vaultguru-chips { margin-top: 10px; gap: 6px; }
+  .vaultguru-generate { align-items: stretch; padding: 22px 18px; flex-direction: column; }
+  .vaultguru-generate button { width: 100%; }
 }
 
 .portal-section-card {
@@ -419,6 +446,88 @@
 .archive-summary-shell > label { display: grid; gap: 7px; max-width: 320px; }
 .archive-summary-shell > label.archive-team-select { display: none; }
 .archive-summary-shell select { min-height: 48px; padding: 0 12px; color: var(--cream); border: 1px solid var(--line); background: var(--navy-850); font: inherit; }
+.archive-critical-menu {
+  position: relative;
+  max-width: 620px;
+  margin: 18px 0 30px;
+  display: grid;
+  gap: 10px;
+}
+.archive-critical-menu > span {
+  color: var(--orange);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.archive-critical-menu > button {
+  min-height: 82px;
+  padding: 8px 54px 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--cream);
+  border: 0;
+  border-bottom: 5px solid var(--cream);
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 5vw, 66px);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.archive-critical-menu > button i { color: var(--gold); font-family: Arial, sans-serif; font-size: 30px; font-style: normal; }
+.archive-critical-menu > div {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  right: 0;
+  left: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  background: var(--navy-850);
+  box-shadow: 0 18px 36px rgb(0 0 0 / 35%);
+}
+.archive-critical-menu > div > button {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--cream);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+.archive-critical-menu > div > button:hover,
+.archive-critical-menu > div > button[aria-selected="true"] { color: var(--navy-950); background: var(--gold); }
+
+.performance-sort {
+  display: grid;
+  gap: 6px;
+  min-width: 190px;
+}
+.performance-sort span {
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.performance-sort select {
+  min-height: 40px;
+  padding: 0 34px 0 12px;
+  color: var(--cream);
+  border: 1px solid var(--line);
+  background: var(--navy-850);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
 .archive-team-tabs,
 .performance-team-tabs {
   display: grid;
@@ -464,7 +573,9 @@
 .archive-leader-columns section { border: 1px solid var(--line); }
 .archive-leader-columns section > header { padding: 18px; border-bottom: 1px solid var(--line); }
 .archive-leader-columns h3 { margin: 0; color: var(--gold); font-family: var(--font-display); font-size: 24px; text-transform: uppercase; }
-.archive-leader-columns section > div { padding: 12px 18px; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); }
+.archive-leader-columns section > div { min-height: 58px; padding: 10px 18px; display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 16px; border-top: 1px solid var(--line); }
+.archive-leader-columns section > div > b { color: var(--gold); font-family: var(--font-display); font-size: 24px; }
+.archive-leader-columns section > div > strong { color: var(--gold); font-family: var(--font-display); font-size: 25px; font-weight: 800; }
 .archive-leader-actions { min-height: 66px; padding: 11px 14px 11px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--navy-850) 72%, transparent); }
 .archive-leader-actions > span { color: var(--muted); font-size: 12px; letter-spacing: .04em; }
 .archive-leader-actions nav { display: flex; align-items: center; gap: 8px; }
@@ -1781,7 +1892,7 @@
 
 .insights-primary-tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .insights-primary-tabs a {
@@ -1879,6 +1990,9 @@
   .insights-primary-tabs a:nth-child(-n + 2) {
     border-bottom: 1px solid var(--line);
   }
+
+  .insights-primary-tabs a:nth-child(4) { border-right: 0; }
+  .insights-primary-tabs a:last-child { grid-column: 1 / -1; }
 
   .insights-secondary-tabs a {
     min-width: 0;

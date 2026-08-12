@@ -609,6 +609,7 @@ export function RecordsExplorer() {
     string | null
   >(null);
   const [historyLimit, setHistoryLimit] = useState(12);
+  const [historySort, setHistorySort] = useState<"date" | "batting" | "bowling">("date");
   const [loadError, setLoadError] = useState(false);
   const [filters, setFilters] = useState<PerformanceFilters>({
     startYear: 2004,
@@ -988,6 +989,18 @@ export function RecordsExplorer() {
   const seasonTrend = useMemo(() => {
     if (!openPlayer) return [];
     const points: { season: number; value: number; display: string }[] = [];
+    const playingSeasons = [
+      ...selectedRows.batting.filter((row) => row[0] === openPlayer).map((row) => row[1]),
+      ...selectedRows.bowling.filter((row) => row[0] === openPlayer).map((row) => row[1]),
+      ...(activeScorecardHistory?.appearances ?? [])
+        .filter((appearance) =>
+          appearance.season >= recordFilters.startYear &&
+          appearance.season <= recordFilters.endYear)
+        .map((appearance) => appearance.season),
+    ];
+    if (playingSeasons.length === 0) return points;
+    const firstPlayingSeason = Math.max(recordFilters.startYear, Math.min(...playingSeasons));
+    const lastPlayingSeason = Math.min(recordFilters.endYear, Math.max(...playingSeasons));
     const boundaryMetric =
       profileMetric === "fours" || profileMetric === "sixes"
         ? profileMetric
@@ -1010,8 +1023,8 @@ export function RecordsExplorer() {
         .map((appearance) => appearance.fixtureId),
     );
     for (
-      let season = recordFilters.startYear;
-      season <= recordFilters.endYear;
+      let season = firstPlayingSeason;
+      season <= lastPlayingSeason;
       season += 1
     ) {
       if (boundaryMetric) {
@@ -1098,6 +1111,25 @@ export function RecordsExplorer() {
           right.fixtureId.localeCompare(left.fixtureId),
       );
   }, [activeScorecardHistory, recordFilters]);
+
+  const sortedScorecardHistoryRows = useMemo(() => {
+    const rows = [...scorecardHistoryRows];
+    const battingScore = (row: (typeof rows)[number]) =>
+      Math.max(...row.batting.map((innings) => innings.runs ?? -1), -1);
+    const bowlingFigures = (row: (typeof rows)[number]) => {
+      const spells = row.bowling.map((spell) => ({ wickets: spell.wickets ?? 0, runs: spell.runs ?? Number.MAX_SAFE_INTEGER }));
+      return spells.sort((left, right) => right.wickets - left.wickets || left.runs - right.runs)[0] ?? { wickets: -1, runs: Number.MAX_SAFE_INTEGER };
+    };
+    return rows.sort((left, right) => {
+      if (historySort === "batting") return battingScore(right) - battingScore(left) || right.date.localeCompare(left.date);
+      if (historySort === "bowling") {
+        const leftFigures = bowlingFigures(left);
+        const rightFigures = bowlingFigures(right);
+        return rightFigures.wickets - leftFigures.wickets || leftFigures.runs - rightFigures.runs || right.date.localeCompare(left.date);
+      }
+      return right.date.localeCompare(left.date) || right.fixtureId.localeCompare(left.fixtureId);
+    });
+  }, [historySort, scorecardHistoryRows]);
 
   const scorecardHistorySummary = useMemo(
     () => ({
@@ -2479,7 +2511,7 @@ export function RecordsExplorer() {
                       <div className="recent-form">
                         <h4>Recent scorecard form</h4>
                         <div>
-                          {scorecardHistoryRows.slice(0, 5).map((appearance) => {
+                          {sortedScorecardHistoryRows.slice(0, 5).map((appearance) => {
                             const batting = appearance.batting
                               .map((innings) =>
                                 innings.runs === null
@@ -2556,6 +2588,14 @@ export function RecordsExplorer() {
 
                   {scorecardHistoryRows.length > 0 ? (
                     <>
+                      <label className="performance-sort">
+                        <span>Sort performances by</span>
+                        <select value={historySort} onChange={(event) => { setHistorySort(event.target.value as typeof historySort); setHistoryLimit(12); }}>
+                          <option value="date">Date — newest first</option>
+                          <option value="batting">Batting score — highest first</option>
+                          <option value="bowling">Bowling figures — best first</option>
+                        </select>
+                      </label>
                       <div className="history-table-scroll">
                         <table className="history-table">
                           <thead>
@@ -2569,7 +2609,7 @@ export function RecordsExplorer() {
                             </tr>
                           </thead>
                           <tbody>
-                            {scorecardHistoryRows
+                            {sortedScorecardHistoryRows
                               .slice(0, historyLimit)
                               .map((appearance) => (
                                 <tr key={appearance.fixtureId}>

@@ -75,7 +75,11 @@ def display_name(value: str) -> str:
     value = re.sub(
         r"\s+\((?:SM'20|SM)\)\s*$", "", value, flags=re.IGNORECASE
     )
-    return re.sub(r"\s+", " ", value).strip()
+    value = re.sub(r"\s+", " ", value).strip()
+    return {
+        "kiran sv": "Kiran Sankaran",
+        "srini m": "Srini Muthuraman",
+    }.get(value.casefold(), value)
 
 
 def is_placeholder(value: str) -> bool:
@@ -113,6 +117,10 @@ def slug(value: str) -> str:
 
 def canonical_player_id(value: str) -> str:
     identity = normalized_name(value)
+    identity = {
+        "kiran sankaran": "kiran sv",
+        "srini muthuraman": "srini m",
+    }.get(identity, identity)
     digest = hashlib.sha1(identity.encode("utf-8")).hexdigest()[:8]
     return f"p-{slug(value)}-{digest}"
 

@@ -27,6 +27,8 @@ const decimal = new Intl.NumberFormat("en-GB", {
 
 type Discipline = "batting" | "bowling" | "fielding" | "allround";
 type GroupBy = "player" | "season" | "team" | "opposition" | "matchType";
+type ReportMode = "performances" | "summary";
+type PerformanceMetric = "runs" | "balls" | "strikeRate" | "wickets" | "runsConceded" | "economy";
 type Metric =
   | "runs"
   | "average"
@@ -95,6 +97,16 @@ type BowlingPerformance = {
 };
 
 type ReportRow = { label: string; stats: PlayerStats; playerId?: string };
+type GeneratedConfig = {
+  discipline: Discipline;
+  groupBy: GroupBy;
+  metric: Metric;
+  minimum: number;
+  sortAscending: boolean;
+  reportMode: ReportMode;
+  performanceMetric: PerformanceMetric;
+  filters: Filters;
+};
 type SavedReport = { name: string; query: string };
 
 const disciplineMetrics: Record<Discipline, Metric[]> = {
@@ -152,19 +164,10 @@ function recordMatchKey(row: BattingRow | BowlingRow) {
   return `${row[5]}|${row[2]}|${canonicalOpponent(row[4])}`;
 }
 
-function performanceKey(row: { player: string; date: string; team: string; opposition: string }) {
-  return `${row.date}|${row.team}|${canonicalOpponent(row.opposition)}|${row.player.toLowerCase()}`;
-}
-
-function recordPerformanceKey(row: BattingRow | BowlingRow) {
-  return `${recordMatchKey(row)}|${row[0].toLowerCase()}`;
-}
-
 function rowPasses(
   row: BattingRow | BowlingRow,
   filters: Filters,
   contexts: Map<string, MatchContext[]>,
-  qualifiedPlayers: Set<string> | null,
 ) {
   const matchContexts = contexts.get(recordMatchKey(row)) ?? [];
   const contextualMatch = matchContexts.some(
@@ -183,8 +186,7 @@ function rowPasses(
       canonicalOpponent(row[4])
         .toLowerCase()
         .includes(filters.opposition.toLowerCase())) &&
-    ((filters.results.length === 0 && filters.firstAction === "either") || contextualMatch) &&
-    (!qualifiedPlayers || qualifiedPlayers.has(recordPerformanceKey(row)))
+    ((filters.results.length === 0 && filters.firstAction === "either") || contextualMatch)
   );
 }
 
@@ -229,6 +231,9 @@ export function VaultGuruExplorer() {
   const [metric, setMetric] = useState<Metric>("runs");
   const [minimum, setMinimum] = useState(0);
   const [sortAscending, setSortAscending] = useState(false);
+  const [reportMode, setReportMode] = useState<ReportMode>("performances");
+  const [performanceMetric, setPerformanceMetric] = useState<PerformanceMetric>("runs");
+  const [generatedConfig, setGeneratedConfig] = useState<GeneratedConfig | null>(null);
   const [ready, setReady] = useState(false);
   const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
   const [filters, setFilters] = useState<Filters>({
@@ -288,15 +293,13 @@ export function VaultGuruExplorer() {
         setBattingPerformances(nextBatting);
         setBowlingPerformances(nextBowling);
         const params = new URLSearchParams(window.location.search);
-        const nextDiscipline = params.get("area") as Discipline | null;
-        if (nextDiscipline && disciplineMetrics[nextDiscipline]) {
-          setDiscipline(nextDiscipline);
-          setMetric((params.get("metric") as Metric) || disciplineMetrics[nextDiscipline][0]);
-        }
-        setGroupBy((params.get("group") as GroupBy) || "player");
-        setMinimum(Number(params.get("minimum") || 0));
-        setFilters((current) => ({
-          ...current,
+        const nextDiscipline = (params.get("area") as Discipline | null) || "batting";
+        const nextMetric = (params.get("metric") as Metric) || disciplineMetrics[nextDiscipline][0];
+        const nextGroup = (params.get("group") as GroupBy) || "player";
+        const nextMinimum = Number(params.get("minimum") || 0);
+        const nextMode = (params.get("format") as ReportMode) || "performances";
+        const nextPerformanceMetric = (params.get("performanceMetric") as PerformanceMetric) || (nextDiscipline === "bowling" ? "wickets" : "runs");
+        const nextFilters: Filters = {
           startYear: Number(params.get("from") || records.meta.seasonStart),
           endYear: Number(params.get("to") || records.meta.seasonEnd),
           teams: params.get("teams")?.split(",").filter(Boolean) ?? [],
@@ -312,7 +315,15 @@ export function VaultGuruExplorer() {
           minimumWickets: Number(params.get("wickets") || 0),
           minimumOvers: Number(params.get("overs") || 0),
           maximumBowlingRuns: Number(params.get("conceded") || 0),
-        }));
+        };
+        setDiscipline(nextDiscipline);
+        setMetric(nextMetric);
+        setGroupBy(nextGroup);
+        setMinimum(nextMinimum);
+        setReportMode(nextMode);
+        setPerformanceMetric(nextPerformanceMetric);
+        setFilters(nextFilters);
+        if (params.get("generated") === "1") setGeneratedConfig({ discipline: nextDiscipline, metric: nextMetric, groupBy: nextGroup, minimum: nextMinimum, sortAscending: params.get("order") === "asc", reportMode: nextMode, performanceMetric: nextPerformanceMetric, filters: nextFilters });
         try { setSavedReports(JSON.parse(localStorage.getItem("vaultguru-reports") || "[]")); } catch { setSavedReports([]); }
         setReady(true);
       })
@@ -333,27 +344,29 @@ export function VaultGuruExplorer() {
   }, []);
 
   useEffect(() => {
-    if (!ready || !data) return;
+    if (!ready || !data || !generatedConfig) return;
+    const { discipline: appliedDiscipline, groupBy: appliedGroup, metric: appliedMetric, minimum: appliedMinimum, sortAscending: appliedAscending, reportMode: appliedMode, performanceMetric: appliedPerformanceMetric, filters: appliedFilters } = generatedConfig;
     const params = new URLSearchParams();
-    params.set("area", discipline); params.set("group", groupBy); params.set("metric", metric);
-    if (minimum) params.set("minimum", String(minimum));
-    if (filters.startYear !== data.meta.seasonStart) params.set("from", String(filters.startYear));
-    if (filters.endYear !== data.meta.seasonEnd) params.set("to", String(filters.endYear));
-    if (filters.teams.length) params.set("teams", filters.teams.join(","));
-    if (filters.matchTypes.length) params.set("types", filters.matchTypes.join(","));
-    if (filters.opposition) params.set("opposition", filters.opposition);
-    if (filters.results.length) params.set("results", filters.results.join(","));
-    if (filters.firstAction !== "either") params.set("first", filters.firstAction);
-    if (filters.inningsNumbers.length) params.set("innings", filters.inningsNumbers.join(","));
-    if (filters.battingPosition !== "all") params.set("position", filters.battingPosition);
-    if (filters.minimumRuns) params.set("runs", String(filters.minimumRuns));
-    if (filters.minimumBalls) params.set("balls", String(filters.minimumBalls));
-    if (filters.dismissalStatus !== "either") params.set("dismissal", filters.dismissalStatus);
-    if (filters.minimumWickets) params.set("wickets", String(filters.minimumWickets));
-    if (filters.minimumOvers) params.set("overs", String(filters.minimumOvers));
-    if (filters.maximumBowlingRuns) params.set("conceded", String(filters.maximumBowlingRuns));
+    params.set("generated", "1"); params.set("area", appliedDiscipline); params.set("format", appliedMode); params.set("group", appliedGroup); params.set("metric", appliedMetric); params.set("performanceMetric", appliedPerformanceMetric);
+    if (appliedMinimum) params.set("minimum", String(appliedMinimum));
+    if (appliedAscending) params.set("order", "asc");
+    if (appliedFilters.startYear !== data.meta.seasonStart) params.set("from", String(appliedFilters.startYear));
+    if (appliedFilters.endYear !== data.meta.seasonEnd) params.set("to", String(appliedFilters.endYear));
+    if (appliedFilters.teams.length) params.set("teams", appliedFilters.teams.join(","));
+    if (appliedFilters.matchTypes.length) params.set("types", appliedFilters.matchTypes.join(","));
+    if (appliedFilters.opposition) params.set("opposition", appliedFilters.opposition);
+    if (appliedFilters.results.length) params.set("results", appliedFilters.results.join(","));
+    if (appliedFilters.firstAction !== "either") params.set("first", appliedFilters.firstAction);
+    if (appliedFilters.inningsNumbers.length) params.set("innings", appliedFilters.inningsNumbers.join(","));
+    if (appliedFilters.battingPosition !== "all") params.set("position", appliedFilters.battingPosition);
+    if (appliedFilters.minimumRuns) params.set("runs", String(appliedFilters.minimumRuns));
+    if (appliedFilters.minimumBalls) params.set("balls", String(appliedFilters.minimumBalls));
+    if (appliedFilters.dismissalStatus !== "either") params.set("dismissal", appliedFilters.dismissalStatus);
+    if (appliedFilters.minimumWickets) params.set("wickets", String(appliedFilters.minimumWickets));
+    if (appliedFilters.minimumOvers) params.set("overs", String(appliedFilters.minimumOvers));
+    if (appliedFilters.maximumBowlingRuns) params.set("conceded", String(appliedFilters.maximumBowlingRuns));
     window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
-  }, [data, discipline, filters, groupBy, metric, minimum, ready]);
+  }, [data, generatedConfig, ready]);
 
   function saveReport() {
     const name = window.prompt("Name this report");
@@ -372,34 +385,6 @@ export function VaultGuruExplorer() {
     return map;
   }, [matchContexts]);
 
-  const qualifiedPlayers = useMemo(() => {
-    const hasBattingQualification =
-      filters.inningsNumbers.length > 0 || filters.battingPosition !== "all" ||
-      filters.minimumRuns > 0 || filters.minimumBalls > 0 || filters.dismissalStatus !== "either";
-    const hasBowlingQualification = filters.minimumWickets > 0 || filters.minimumOvers > 0 || filters.maximumBowlingRuns > 0;
-    if (discipline === "batting" && hasBattingQualification) {
-      return new Set(battingPerformances.filter((row) => {
-        const position = row.battingPosition ?? 0;
-        return (filters.inningsNumbers.length === 0 || filters.inningsNumbers.includes(row.inningsNumberInMatch)) &&
-          (filters.battingPosition === "all" ||
-            (filters.battingPosition === "opening" && position <= 2) ||
-            (filters.battingPosition === "top" && position <= 3) ||
-            (filters.battingPosition === "middle" && position >= 4 && position <= 7) ||
-            (filters.battingPosition === "lower" && position >= 8)) &&
-          (row.runs ?? 0) >= filters.minimumRuns && (row.balls ?? 0) >= filters.minimumBalls &&
-          (filters.dismissalStatus === "either" || (filters.dismissalStatus === "notOut" ? row.notOut : !row.notOut));
-      }).map(performanceKey));
-    }
-    if (discipline === "bowling" && hasBowlingQualification) {
-      return new Set(bowlingPerformances.filter((row) =>
-        (row.wickets ?? 0) >= filters.minimumWickets &&
-        (row.balls ?? 0) >= filters.minimumOvers * 6 &&
-        (filters.maximumBowlingRuns === 0 || (row.runs ?? 0) <= filters.maximumBowlingRuns),
-      ).map(performanceKey));
-    }
-    return null;
-  }, [battingPerformances, bowlingPerformances, discipline, filters]);
-
   const opponents = useMemo(() => {
     if (!data) return [];
     return [
@@ -412,7 +397,8 @@ export function VaultGuruExplorer() {
   }, [data]);
 
   const report = useMemo(() => {
-    if (!data) return [];
+    if (!data || !generatedConfig || generatedConfig.reportMode === "performances") return [];
+    const { discipline, filters, groupBy, metric, minimum, sortAscending } = generatedConfig;
     const hasBattingQualification = filters.inningsNumbers.length > 0 || filters.battingPosition !== "all" || filters.minimumRuns > 0 || filters.minimumBalls > 0 || filters.dismissalStatus !== "either";
     const hasBowlingQualification = filters.minimumWickets > 0 || filters.minimumOvers > 0 || filters.maximumBowlingRuns > 0;
     if ((discipline === "batting" && hasBattingQualification) || (discipline === "bowling" && hasBowlingQualification)) {
@@ -457,8 +443,8 @@ export function VaultGuruExplorer() {
         return sortAscending ? a - b : b - a;
       });
     }
-    const batting = data.batting.filter((row) => rowPasses(row, filters, contextMap, qualifiedPlayers));
-    const bowling = data.bowling.filter((row) => rowPasses(row, filters, contextMap, qualifiedPlayers));
+    const batting = data.batting.filter((row) => rowPasses(row, filters, contextMap));
+    const bowling = data.bowling.filter((row) => rowPasses(row, filters, contextMap));
     const grouped = new Map<string, ReportRow>();
     const get = (label: string) => {
       const existing = grouped.get(label);
@@ -488,12 +474,54 @@ export function VaultGuruExplorer() {
         const b = metricValue(metric, right.stats) ?? 0;
         return sortAscending ? a - b : b - a;
       });
-  }, [battingPerformances, bowlingPerformances, contextMap, data, discipline, filters, groupBy, metric, minimum, playerIds, qualifiedPlayers, sortAscending]);
+  }, [battingPerformances, bowlingPerformances, contextMap, data, generatedConfig, playerIds]);
+
+  const performanceReport = useMemo(() => {
+    if (!generatedConfig || generatedConfig.reportMode !== "performances") return [];
+    const { discipline, filters, performanceMetric, sortAscending } = generatedConfig;
+    if (discipline === "batting") {
+      return battingPerformances.filter((row) => {
+        const position = row.battingPosition ?? 0;
+        return performancePasses(row, filters, contextMap) &&
+          (filters.inningsNumbers.length === 0 || filters.inningsNumbers.includes(row.inningsNumberInMatch)) &&
+          (filters.battingPosition === "all" ||
+            (filters.battingPosition === "opening" && position >= 1 && position <= 2) ||
+            (filters.battingPosition === "top" && position >= 1 && position <= 3) ||
+            (filters.battingPosition === "middle" && position >= 4 && position <= 7) ||
+            (filters.battingPosition === "lower" && position >= 8 && position <= 11)) &&
+          (row.runs ?? 0) >= filters.minimumRuns && (row.balls ?? 0) >= filters.minimumBalls &&
+          (filters.dismissalStatus === "either" || (filters.dismissalStatus === "notOut" ? row.notOut : !row.notOut));
+      }).sort((left, right) => {
+        const value = (row: BattingPerformance) => performanceMetric === "balls" ? row.balls ?? 0 : performanceMetric === "strikeRate" ? (row.balls ? (row.runs ?? 0) * 100 / row.balls : -1) : row.runs ?? 0;
+        return sortAscending ? value(left) - value(right) : value(right) - value(left);
+      });
+    }
+    if (discipline === "bowling") {
+      return bowlingPerformances.filter((row) => performancePasses(row, filters, contextMap) &&
+        (row.wickets ?? 0) >= filters.minimumWickets && (row.balls ?? 0) >= filters.minimumOvers * 6 &&
+        (filters.maximumBowlingRuns === 0 || (row.runs ?? 0) <= filters.maximumBowlingRuns)).sort((left, right) => {
+          const value = (row: BowlingPerformance) => performanceMetric === "runsConceded" ? row.runs ?? 0 : performanceMetric === "economy" ? (row.balls ? (row.runs ?? 0) * 6 / row.balls : Number.POSITIVE_INFINITY) : row.wickets ?? 0;
+          return sortAscending ? value(left) - value(right) : value(right) - value(left);
+        });
+    }
+    return [];
+  }, [battingPerformances, bowlingPerformances, contextMap, generatedConfig]);
 
   function chooseDiscipline(next: Discipline) {
     setDiscipline(next);
     setMetric(disciplineMetrics[next][0]);
+    setReportMode(next === "batting" || next === "bowling" ? "performances" : "summary");
+    setPerformanceMetric(next === "bowling" ? "wickets" : "runs");
     setSortAscending(false);
+  }
+
+  function generateReport() {
+    setGeneratedConfig(currentDraftConfig());
+    window.setTimeout(() => document.querySelector(".vaultguru-results")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  }
+
+  function currentDraftConfig(): GeneratedConfig {
+    return { discipline, groupBy, metric, minimum, sortAscending, reportMode, performanceMetric, filters: { ...filters, teams: [...filters.teams], matchTypes: [...filters.matchTypes], results: [...filters.results], inningsNumbers: [...filters.inningsNumbers] } };
   }
 
   function reset() {
@@ -510,11 +538,24 @@ export function VaultGuruExplorer() {
     });
     setGroupBy("player");
     setMinimum(0);
+    setReportMode("performances");
+    setPerformanceMetric("runs");
+    setGeneratedConfig(null);
   }
 
   function exportCsv() {
-    const headings = [
-      groupBy === "player" ? "Player" : "Group",
+    if (!generatedConfig) return;
+    let headings: Array<string>;
+    let lines: Array<Array<string | number | boolean>>;
+    if (generatedConfig.reportMode === "performances" && generatedConfig.discipline === "batting") {
+      headings = ["Date", "Player", "Team", "Opposition", "Position", "Runs", "Not out", "Balls", "Strike rate", "Fixture"];
+      lines = (performanceReport as BattingPerformance[]).map((row) => [row.date, row.player, row.team, canonicalOpponent(row.opposition), row.battingPosition ?? "", row.runs ?? "", row.notOut, row.balls ?? "", row.balls ? decimal.format((row.runs ?? 0) * 100 / row.balls) : "", row.fixtureId]);
+    } else if (generatedConfig.reportMode === "performances") {
+      headings = ["Date", "Player", "Team", "Opposition", "Overs", "Runs conceded", "Wickets", "Economy", "Fixture"];
+      lines = (performanceReport as BowlingPerformance[]).map((row) => [row.date, row.player, row.team, canonicalOpponent(row.opposition), oversFromBalls(row.balls ?? 0), row.runs ?? "", row.wickets ?? "", row.balls ? decimal.format((row.runs ?? 0) * 6 / row.balls) : "", row.fixtureId]);
+    } else {
+      headings = [
+      generatedConfig.groupBy === "player" ? "Player" : "Group",
       "Appearances",
       "Innings",
       "Runs",
@@ -524,8 +565,8 @@ export function VaultGuruExplorer() {
       "Economy",
       "Catches",
       "Stumpings",
-    ];
-    const lines = report.map(({ label, stats }) => [
+      ];
+      lines = report.map(({ label, stats }) => [
       label,
       stats.matches.size,
       stats.innings,
@@ -536,7 +577,8 @@ export function VaultGuruExplorer() {
       economy(stats) ?? "",
       stats.catches,
       stats.stumpings,
-    ]);
+      ]);
+    }
     const csv = [headings, ...lines]
       .map((row) =>
         row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","),
@@ -544,7 +586,7 @@ export function VaultGuruExplorer() {
       .join("\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    link.download = `vaultguru-${discipline}-${groupBy}.csv`;
+    link.download = `vaultguru-${generatedConfig.discipline}-${generatedConfig.reportMode}.csv`;
     link.click();
     URL.revokeObjectURL(link.href);
   }
@@ -569,6 +611,7 @@ export function VaultGuruExplorer() {
     Number(filters.minimumRuns > 0 || filters.minimumBalls > 0 || filters.dismissalStatus !== "either") +
     Number(filters.minimumWickets > 0 || filters.minimumOvers > 0 || filters.maximumBowlingRuns > 0) +
     Number(filters.startYear !== data.meta.seasonStart || filters.endYear !== data.meta.seasonEnd);
+  const reportNeedsUpdate = generatedConfig !== null && JSON.stringify(generatedConfig) !== JSON.stringify(currentDraftConfig());
 
   return (
     <main className="vault-app vaultguru-app">
@@ -628,28 +671,30 @@ export function VaultGuruExplorer() {
           <fieldset>
             <legend><b>03</b> Shape the results</legend>
             <div className="vaultguru-filter-grid vaultguru-shape-grid">
-              <label><span>Group rows by</span><select value={groupBy} onChange={(event) => setGroupBy(event.target.value as GroupBy)}><option value="player">Player</option><option value="season">Season</option><option value="team">Team</option><option value="opposition">Opposition</option><option value="matchType">Match type</option></select></label>
-              <label><span>Rank by</span><select value={metric} onChange={(event) => { setMetric(event.target.value as Metric); setSortAscending(false); }}>{disciplineMetrics[discipline].map((item) => <option value={item} key={item}>{metricLabels[item]}</option>)}</select></label>
-              <label><span>Minimum appearances</span><select value={minimum} onChange={(event) => setMinimum(Number(event.target.value))}><option value="0">Any</option><option value="5">5+</option><option value="10">10+</option><option value="25">25+</option><option value="50">50+</option></select></label>
+              <label><span>Report format</span><select value={reportMode} disabled={discipline === "fielding" || discipline === "allround"} onChange={(event) => setReportMode(event.target.value as ReportMode)}><option value="performances">Individual performances</option><option value="summary">Summary table</option></select></label>
+              {reportMode === "summary" ? <><label><span>Group rows by</span><select value={groupBy} onChange={(event) => setGroupBy(event.target.value as GroupBy)}><option value="player">Player</option><option value="season">Season</option><option value="team">Team</option><option value="opposition">Opposition</option><option value="matchType">Match type</option></select></label>
+              <label><span>Rank by</span><select value={metric} onChange={(event) => { const next = event.target.value as Metric; setMetric(next); setSortAscending(["average", "bowlingAverage", "economy", "bowlingStrikeRate"].includes(next)); }}>{disciplineMetrics[discipline].map((item) => <option value={item} key={item}>{metricLabels[item]}</option>)}</select></label>
+              <label><span>Minimum appearances</span><select value={minimum} onChange={(event) => setMinimum(Number(event.target.value))}><option value="0">Any</option><option value="5">5+</option><option value="10">10+</option><option value="25">25+</option><option value="50">50+</option></select></label></> : <label><span>Rank performances by</span><select value={performanceMetric} onChange={(event) => { const next = event.target.value as PerformanceMetric; setPerformanceMetric(next); setSortAscending(next === "economy" || next === "runsConceded"); }}>{discipline === "bowling" ? <><option value="wickets">Wickets</option><option value="runsConceded">Runs conceded</option><option value="economy">Economy</option></> : <><option value="runs">Runs</option><option value="balls">Balls faced</option><option value="strikeRate">Strike rate</option></>}</select></label>}
               <button type="button" className="vaultguru-sort" onClick={() => setSortAscending((current) => !current)}>{sortAscending ? "Lowest first ↑" : "Highest first ↓"}</button>
             </div>
           </fieldset>
         </div>
+        <footer className={`vaultguru-generate${reportNeedsUpdate ? " changed" : ""}`}><div><strong>{reportNeedsUpdate ? "Parameters changed" : generatedConfig ? "Report generated" : "Ready to build"}</strong><span>{reportNeedsUpdate ? "Generate again to apply these changes." : "Results will only change when you generate the report."}</span></div><button type="button" onClick={generateReport}>{generatedConfig ? "Update report →" : "Generate report →"}</button></footer>
       </section>
 
-      <section className="vaultguru-results">
+      {generatedConfig ? <section className="vaultguru-results">
         <header>
-          <div><span>Generated report</span><h2>{metricLabels[metric]} by {groupBy === "matchType" ? "match type" : groupBy}</h2><p>{integer.format(report.length)} rows · {filters.startYear}–{filters.endYear}</p></div>
-          <button type="button" onClick={exportCsv} disabled={report.length === 0}>Export CSV</button>
+          <div><span>Generated report</span><h2>{generatedConfig.reportMode === "performances" ? `${generatedConfig.discipline === "bowling" ? "Bowling spells" : "Batting innings"}` : `${metricLabels[generatedConfig.metric]} by ${generatedConfig.groupBy === "matchType" ? "match type" : generatedConfig.groupBy}`}</h2><p>{integer.format(generatedConfig.reportMode === "performances" ? performanceReport.length : report.length)} rows · {generatedConfig.filters.startYear}–{generatedConfig.filters.endYear}</p></div>
+          <button type="button" onClick={exportCsv} disabled={(generatedConfig.reportMode === "performances" ? performanceReport.length : report.length) === 0}>Export CSV</button>
         </header>
-        <div className="stats-table-wrap">
+        {generatedConfig.reportMode === "summary" ? <div className="stats-table-wrap">
           <table className="stats-table vaultguru-table">
-            <thead><tr><th>Rank</th><th>{groupBy === "player" ? "Player" : "Group"}</th><th>Mat</th><th>Inn</th><th>Runs</th><th>Bat avg</th><th>HS</th><th>Overs</th><th>Wkts</th><th>Bowl avg</th><th>Econ</th><th>Bowl SR</th><th>Ct</th><th>St</th></tr></thead>
-            <tbody>{report.slice(0, 200).map(({ label, stats, playerId }, index) => <tr key={label}><td>{String(index + 1).padStart(2, "0")}</td><th scope="row">{playerId ? <a href={`${publicBasePath}/players/${playerId}/`}>{label}</a> : label}</th><td>{integer.format(stats.matches.size)}</td><td>{integer.format(stats.innings)}</td><td className={metric === "runs" || metric === "runsAndWickets" ? "active-sort" : ""}>{integer.format(stats.runs)}</td><td className={metric === "average" ? "active-sort" : ""}>{battingAverage(stats) === null ? "—" : decimal.format(battingAverage(stats)!)}</td><td className={metric === "highScore" ? "active-sort" : ""}>{integer.format(stats.highScore)}</td><td>{oversFromBalls(stats.balls)}</td><td className={metric === "wickets" || metric === "runsAndWickets" ? "active-sort" : ""}>{integer.format(stats.wickets)}</td><td className={metric === "bowlingAverage" ? "active-sort" : ""}>{bowlingAverage(stats) === null ? "—" : decimal.format(bowlingAverage(stats)!)}</td><td className={metric === "economy" ? "active-sort" : ""}>{economy(stats) === null ? "—" : decimal.format(economy(stats)!)}</td><td className={metric === "bowlingStrikeRate" ? "active-sort" : ""}>{bowlingStrikeRate(stats) === null ? "—" : decimal.format(bowlingStrikeRate(stats)!)}</td><td className={metric === "catches" ? "active-sort" : ""}>{integer.format(stats.catches)}</td><td className={metric === "stumpings" ? "active-sort" : ""}>{integer.format(stats.stumpings)}</td></tr>)}</tbody>
+            <thead><tr><th>Rank</th><th>{generatedConfig.groupBy === "player" ? "Player" : "Group"}</th><th>Mat</th><th>Inn</th><th>Runs</th><th>Bat avg</th><th>HS</th><th>Overs</th><th>Wkts</th><th>Bowl avg</th><th>Econ</th><th>Bowl SR</th><th>Ct</th><th>St</th></tr></thead>
+            <tbody>{report.slice(0, 200).map(({ label, stats, playerId }, index) => <tr key={label}><td>{String(index + 1).padStart(2, "0")}</td><th scope="row">{playerId ? <a href={`${publicBasePath}/players/${playerId}/`}>{label}</a> : label}</th><td>{integer.format(stats.matches.size)}</td><td>{integer.format(stats.innings)}</td><td className={generatedConfig.metric === "runs" || generatedConfig.metric === "runsAndWickets" ? "active-sort" : ""}>{integer.format(stats.runs)}</td><td>{battingAverage(stats) === null ? "—" : decimal.format(battingAverage(stats)!)}</td><td>{integer.format(stats.highScore)}</td><td>{oversFromBalls(stats.balls)}</td><td>{integer.format(stats.wickets)}</td><td>{bowlingAverage(stats) === null ? "—" : decimal.format(bowlingAverage(stats)!)}</td><td>{economy(stats) === null ? "—" : decimal.format(economy(stats)!)}</td><td>{bowlingStrikeRate(stats) === null ? "—" : decimal.format(bowlingStrikeRate(stats)!)}</td><td>{integer.format(stats.catches)}</td><td>{integer.format(stats.stumpings)}</td></tr>)}</tbody>
           </table>
-        </div>
-        {report.length === 0 && <p className="empty-state">No results meet these report conditions.</p>}
-      </section>
+        </div> : generatedConfig.discipline === "batting" ? <div className="stats-table-wrap"><table className="stats-table vaultguru-table vaultguru-performance-table"><thead><tr><th>Rank</th><th>Date</th><th>Player</th><th>Team</th><th>Opposition</th><th>Pos</th><th>Runs</th><th>Balls</th><th>SR</th><th>Dismissal</th><th>Match</th></tr></thead><tbody>{(performanceReport as BattingPerformance[]).slice(0, 500).map((row, index) => <tr key={`${row.fixtureId}-${row.player}-${row.inningsNumberInMatch}`}><td>{String(index + 1).padStart(2, "0")}</td><td>{row.date}</td><th scope="row">{playerIds[row.player.toLowerCase()] ? <a href={`${publicBasePath}/players/${playerIds[row.player.toLowerCase()]}/`}>{row.player}</a> : row.player}</th><td>{row.team}</td><td>{canonicalOpponent(row.opposition)}</td><td>{row.battingPosition ?? "—"}</td><td className="active-sort">{row.runs ?? "—"}{row.notOut ? "*" : ""}</td><td>{row.balls ?? "—"}</td><td>{row.balls ? decimal.format((row.runs ?? 0) * 100 / row.balls) : "—"}</td><td>{row.notOut ? "Not out" : "Out"}</td><td><a href={`${publicBasePath}/matches/${row.fixtureId}/`}>View →</a></td></tr>)}</tbody></table></div> : <div className="stats-table-wrap"><table className="stats-table vaultguru-table vaultguru-performance-table"><thead><tr><th>Rank</th><th>Date</th><th>Player</th><th>Team</th><th>Opposition</th><th>Overs</th><th>Runs</th><th>Wkts</th><th>Econ</th><th>Match</th></tr></thead><tbody>{(performanceReport as BowlingPerformance[]).slice(0, 500).map((row, index) => <tr key={`${row.fixtureId}-${row.player}`}><td>{String(index + 1).padStart(2, "0")}</td><td>{row.date}</td><th scope="row">{playerIds[row.player.toLowerCase()] ? <a href={`${publicBasePath}/players/${playerIds[row.player.toLowerCase()]}/`}>{row.player}</a> : row.player}</th><td>{row.team}</td><td>{canonicalOpponent(row.opposition)}</td><td>{oversFromBalls(row.balls ?? 0)}</td><td>{row.runs ?? "—"}</td><td className="active-sort">{row.wickets ?? "—"}</td><td>{row.balls ? decimal.format((row.runs ?? 0) * 6 / row.balls) : "—"}</td><td><a href={`${publicBasePath}/matches/${row.fixtureId}/`}>View →</a></td></tr>)}</tbody></table></div>}
+        {(generatedConfig.reportMode === "performances" ? performanceReport.length : report.length) === 0 && <p className="empty-state">No results meet these report conditions.</p>}
+      </section> : <section className="vaultguru-results vaultguru-results-empty"><p className="eyebrow">Generated report</p><h2>Set your parameters, then generate a report</h2><p>Your results will appear here without changing while you adjust the next query.</p></section>}
     </main>
   );
 }

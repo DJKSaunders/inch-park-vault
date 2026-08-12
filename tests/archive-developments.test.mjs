@@ -28,14 +28,14 @@ test("Insights uses a two-level tab hierarchy", async () => {
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  for (const label of ["Club", "Players", "Teams & seasons", "Archive"]) {
+  for (const label of ["Club", "Players", "Teams", "Seasons", "Archive"]) {
     assert.match(navigation, new RegExp(label.replace("&", "&"), "i"));
   }
   assert.match(insights, /InsightsNavigation/);
   assert.match(records, /InsightsNavigation/);
   assert.doesNotMatch(records, /Records laboratory<\/h1>/i);
   assert.match(styles, /\.insights-secondary-tabs\.count-3[\s\S]*repeat\(3, 1fr\)/);
-  assert.match(styles, /\.insights-primary-tabs[\s\S]*repeat\(4, 1fr\)/);
+  assert.match(styles, /\.insights-primary-tabs[\s\S]*repeat\(5, 1fr\)/);
   assert.doesNotMatch(navigation, /Similar players/i);
   assert.doesNotMatch(navigation, /\/insights\/#/);
 });
@@ -54,7 +54,7 @@ test("Insights reports retain their existing content", async () => {
   for (const label of ["Best performances by XI", "How records evolved", "Data coverage"]) {
     assert.match(records, new RegExp(label, "i"));
   }
-  for (const label of ["Team histories", "Season overview", "Leading run-scorers", "Leading wicket-takers"]) {
+  for (const label of ["XI records", "Season overview", "Leading run-scorers", "Leading wicket-takers"]) {
     assert.match(summary, new RegExp(label, "i"));
   }
   assert.doesNotMatch(generatedSections, /similarity/);
@@ -73,6 +73,34 @@ test("Club Insights uses anchored sections and XI performances include team reco
   assert.match(records, /Team records/);
   for (const team of Object.values(archive.teamPerformances)) {
     for (const key of ["highestTotal", "lowestTotal", "largestWinRuns", "largestWinWickets"]) assert.ok(key in team.team);
+    assert.ok(Array.isArray(team.team.largestWinWickets));
+    assert.ok(team.team.largestWinWickets.every((record) => record.value === team.team.largestWinWickets[0]?.value));
+  }
+});
+
+test("player performance histories can be sorted consistently", async () => {
+  const [quickView, profile] = await Promise.all([
+    readFile(new URL("../app/records-explorer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/players/[playerId]/player-profile.tsx", import.meta.url), "utf8"),
+  ]);
+  for (const source of [quickView, profile]) {
+    assert.match(source, /Sort performances by/);
+    assert.match(source, /Batting score — highest first/);
+    assert.match(source, /Bowling figures — best first/);
+  }
+});
+
+test("approved player names are expanded across generated records", async () => {
+  const [records, archive, directory] = await Promise.all([
+    readFile(new URL("../public/data/records.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/archive-developments.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/scorecards/player-directory.json", import.meta.url), "utf8"),
+  ]);
+  for (const source of [records, archive, directory]) {
+    assert.doesNotMatch(source, /\"Kiran SV\"/);
+    assert.doesNotMatch(source, /\"Srini M\"/);
+    assert.match(source, /Kiran Sankaran/);
+    assert.match(source, /Srini Muthuraman/);
   }
 });
 
