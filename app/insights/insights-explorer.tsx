@@ -9,6 +9,8 @@ import {
 } from "../components/comparison-select";
 import { SeasonChart } from "../components/season-chart";
 import { SiteHeader } from "../site-header";
+import { InsightsNavigation } from "./insights-navigation";
+import { InsightsPageHeader } from "./insights-page-header";
 import {
   aggregatePlayer,
   battingAverage,
@@ -147,7 +149,9 @@ function comparisonValue(
   return aggregatePlayer(entry.name, rows.batting, rows.bowling);
 }
 
-export function InsightsExplorer() {
+export type InsightsReport = "overview" | "club-trends" | "dismissals" | "compare";
+
+export function InsightsExplorer({ report = "overview" }: { report?: InsightsReport }) {
   const [records, setRecords] = useState<RecordsData | null>(null);
   const [directory, setDirectory] = useState<PlayerDirectory | null>(null);
   const [matches, setMatches] = useState<MatchIndex | null>(null);
@@ -746,26 +750,14 @@ export function InsightsExplorer() {
     <>
       <SiteHeader active="insights" />
       <main className="portal-page insights-page">
-        <header className="portal-page-heading">
-          <p className="eyebrow">Visual analysis</p>
-          <h1>Insights</h1>
-          <p>
-            Follow the archive through time, inspect team outcomes and compare
-            careers on the same scale.
-          </p>
-        </header>
+        <InsightsPageHeader />
 
-        <nav className="insights-subnav" aria-label="Insights sections">
-          <a href="#overview">Overview</a>
-          <a href="#club-trends">Club trends</a>
-          <a href="#dismissals">Dismissals</a>
-          <a href="#compare">Player comparison</a>
-          <a href={`${publicBasePath}/insights/teams/`}>Team histories</a>
-          <a href={`${publicBasePath}/insights/seasons/`}>Season reviews</a>
-          <a href={`${publicBasePath}/insights/records/`}>Records laboratory</a>
-        </nav>
+        <InsightsNavigation
+          activeGroup={report === "compare" ? "players" : "club"}
+          activeSubsection={report}
+        />
 
-        <section className="insight-filter-bar" id="overview">
+        {report !== "compare" && <section className="insight-filter-bar" id="overview">
           <label>
             <span>Team</span>
             <select value={team} onChange={(event) => setTeam(event.target.value)}>
@@ -787,9 +779,9 @@ export function InsightsExplorer() {
               ))}
             </select>
           </label>
-        </section>
+        </section>}
 
-        <section className="insight-panel season-insight">
+        {report === "overview" && <section className="insight-panel season-insight">
           <header>
             <div>
               <p className="eyebrow">Archive over time</p>
@@ -818,9 +810,9 @@ export function InsightsExplorer() {
                 : undefined
             }
           />
-        </section>
+        </section>}
 
-        <section className="insight-panel club-trend-panel" id="club-trends">
+        {report !== "compare" && <section className="insight-panel club-trend-panel" id="club-trends">
           <header>
             <div>
               <p className="eyebrow">Club comparisons</p>
@@ -851,9 +843,9 @@ export function InsightsExplorer() {
             direction={clubTrendDirection[clubTrendMetric]}
             note="Excludes concessions, abandoned matches and innings that were not played."
           />
-        </section>
+        </section>}
 
-        <section className="insight-panel dismissal-trend-panel" id="dismissals">
+        {report !== "compare" && <section className="insight-panel dismissal-trend-panel" id="dismissals">
           <header>
             <div>
               <p className="eyebrow">Batting dismissals</p>
@@ -868,9 +860,9 @@ export function InsightsExplorer() {
           <p className="chart-note">
             Not-outs and did-not-bat entries are excluded.
           </p>
-        </section>
+        </section>}
 
-        <div className="insight-two-column">
+        {report === "overview" && <div className="insight-two-column">
           <section className="insight-panel result-insight">
             <header>
               <div>
@@ -917,9 +909,9 @@ export function InsightsExplorer() {
               ))}
             </div>
           </section>
-        </div>
+        </div>}
 
-        <section className="insight-panel comparison-panel" id="compare">
+        {report === "compare" && <section className="insight-panel comparison-panel">
           <header>
             <div>
               <p className="eyebrow">Career comparison</p>
@@ -1143,7 +1135,7 @@ export function InsightsExplorer() {
               </div>
             </div>
           )}
-        </section>
+        </section>}
       </main>
     </>
   );

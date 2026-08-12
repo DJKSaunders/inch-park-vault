@@ -28,7 +28,7 @@ export default function MilestonesPage() {
           <h1>Milestones</h1>
           <p>
             The latest career landmarks across the club, and the players who
-            are closest to reaching the next one.
+            are closest to the next.
           </p>
           <span>Updated through {shortDate.format(new Date(`${milestones.asOfDate}T12:00:00`))}</span>
         </header>

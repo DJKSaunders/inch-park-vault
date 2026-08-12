@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
@@ -70,6 +71,45 @@ def performance_streaks(rows, thresholds, value_field):
                 records.append({"player": player, "length": best, "from": best_start, "to": best_end})
         output[str(threshold)] = sorted(records, key=lambda item: (-item["length"], item["player"]))[:10]
     return output
+
+
+def team_match_records(matches, team):
+    team_matches = [match for match in matches if match.get("esccTeam") == team]
+    innings = []
+    wins_by_runs = []
+    wins_by_wickets = []
+    for match in team_matches:
+        south_scores = [score for score in match.get("scores", []) if "edinburgh south" in score.get("team", "").casefold()]
+        for score in south_scores:
+            innings.append({
+                "value": score.get("runs", 0),
+                "wickets": score.get("wickets"),
+                "fixtureId": match["fixtureId"],
+                "date": match["date"],
+                "opposition": match["opposition"],
+            })
+        if match.get("outcome") != "win":
+            continue
+        result = match.get("result", "")
+        run_margin = re.search(r"(?:by\s+)?(\d+)\s+runs?\b", result, re.I)
+        wicket_margin = re.search(r"(?:by\s+)?(\d+)\s+wickets?\b", result, re.I)
+        base = {"fixtureId": match["fixtureId"], "date": match["date"], "opposition": match["opposition"]}
+        if run_margin:
+            wins_by_runs.append({**base, "value": int(run_margin.group(1))})
+        if wicket_margin:
+            wins_by_wickets.append({**base, "value": int(wicket_margin.group(1))})
+
+    def maximum(rows):
+        return max(rows, key=lambda item: (item["value"], item["date"]), default=None)
+
+    all_out = [row for row in innings if row.get("wickets") == 10]
+    lowest_pool = all_out or innings
+    return {
+        "highestTotal": maximum(innings),
+        "lowestTotal": min(lowest_pool, key=lambda item: (item["value"], item["date"]), default=None),
+        "largestWinRuns": maximum(wins_by_runs),
+        "largestWinWickets": maximum(wins_by_wickets),
+    }
 
 
 def multi_xi_achievements(batting, bowling, player_ids):
@@ -198,6 +238,7 @@ def main():
                         key=lambda item: (-(item.get("wickets") or 0), item.get("runs") or 0, item["date"]),
                     )[:100]
                 ],
+                "team": team_match_records(matches, team),
             }
             for team in PERFORMANCE_TEAMS
         },

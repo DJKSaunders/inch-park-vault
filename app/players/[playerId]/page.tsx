@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import directory from "../../../public/data/scorecards/player-directory.json";
+import { capEntryForPlayerId } from "../../cap-numbers";
 import { PlayerProfile } from "./player-profile";
 
 type PlayerPageProps = {
@@ -19,10 +20,12 @@ export async function generateMetadata({
 }: PlayerPageProps): Promise<Metadata> {
   const { playerId } = await params;
   const player = directory.players.find((entry) => entry.playerId === playerId);
+  const capEntry = capEntryForPlayerId(playerId);
+  const displayName = capEntry?.displayName ?? player?.name;
   return {
-    title: player?.name ?? "Player profile",
-    description: player
-      ? `${player.name}'s Edinburgh South Cricket Club career profile and season charts.`
+    title: displayName ?? "Player profile",
+    description: displayName
+      ? `${displayName}'s Edinburgh South Cricket Club career profile and season charts.`
       : "Edinburgh South Cricket Club player profile.",
   };
 }
@@ -30,5 +33,6 @@ export async function generateMetadata({
 export default async function PlayerPage({ params }: PlayerPageProps) {
   const { playerId } = await params;
   const player = directory.players.find((entry) => entry.playerId === playerId);
-  return <PlayerProfile player={player ?? null} />;
+  const capEntry = capEntryForPlayerId(playerId);
+  return <PlayerProfile player={player ?? null} capEntry={capEntry} />;
 }

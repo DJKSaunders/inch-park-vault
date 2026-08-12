@@ -3,6 +3,13 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { canonicalOpponent, displayOpponent } from "./opponents";
 import { SiteHeader } from "./site-header";
+import {
+  capEntryForName,
+  capEntryForNumber,
+  capEntryForPlayerId,
+  capSearchNumber,
+  capTooltip,
+} from "./cap-numbers";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -1231,7 +1238,16 @@ export function RecordsExplorer() {
     event.preventDefault();
     if (!data) return;
     const query = playerQuery.trim().toLowerCase();
+    const capEntry = capEntryForNumber(capSearchNumber(playerQuery));
+    const capName = capEntry
+      ? data.meta.playerNames.find(
+          (name) =>
+            identityMap?.players[name]?.playerId === capEntry.playerId ||
+            capEntryForName(name)?.playerId === capEntry.playerId,
+        )
+      : undefined;
     const match =
+      capName ??
       data.meta.playerNames.find((name) => name.toLowerCase() === query) ??
       data.meta.playerNames.find((name) =>
         name.toLowerCase().includes(query),
@@ -1288,17 +1304,29 @@ export function RecordsExplorer() {
     preferredMetric: MetricKey = metric,
   ) {
     const profileId = profileIdByName.get(playerKey(name));
+    const capEntry = capEntryForPlayerId(profileId) ?? capEntryForName(name);
+    const displayName = capEntry?.displayName ?? name;
     return (
       <span className="player-reference-actions">
         {profileId ? (
           <a href={`${publicBasePath}/players/${profileId}/`}>
-            <span>{name}</span>
+            <span className="player-reference-name">
+              <span>{displayName}</span>
+              {capEntry && (
+                <small title={capTooltip}>#{integer.format(capEntry.capNumber)}</small>
+              )}
+            </span>
             <span className="player-link-icon" aria-hidden="true">
               ↗
             </span>
           </a>
         ) : (
-          <span>{name}</span>
+          <span className="player-reference-name">
+            <span>{displayName}</span>
+            {capEntry && (
+              <small title={capTooltip}>#{integer.format(capEntry.capNumber)}</small>
+            )}
+          </span>
         )}
         <button
           type="button"
@@ -1620,7 +1648,7 @@ export function RecordsExplorer() {
                 list="player-names"
                 value={playerQuery}
                 onChange={(event) => setPlayerQuery(event.target.value)}
-                placeholder="Search player"
+              placeholder="Search player or cap number"
               />
               <button type="submit">Open</button>
             </div>

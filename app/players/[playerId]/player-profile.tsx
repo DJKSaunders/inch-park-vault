@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { DismissalBreakdown } from "../../components/dismissal-pie";
 import { SeasonChart } from "../../components/season-chart";
+import { capTooltip } from "../../cap-numbers";
 import { SiteHeader } from "../../site-header";
 import { displayOpponent } from "../../opponents";
 import {
@@ -70,8 +71,10 @@ const statGroups: {
 
 export function PlayerProfile({
   player,
+  capEntry,
 }: {
   player: PlayerDirectoryEntry | null;
+  capEntry: { capNumber: number; displayName: string } | null;
 }) {
   const [profile, setProfile] = useState<PlayerProfileSummary | null>(null);
   const [history, setHistory] = useState<ScorecardPlayerHistory | null>(null);
@@ -238,7 +241,7 @@ export function PlayerProfile({
         <SiteHeader active="players" />
         <main className="status-screen" aria-live="polite">
           <div className="loading-line" />
-          <p>Opening {player.name}&apos;s profile…</p>
+          <p>Opening {capEntry?.displayName ?? player.name}&apos;s profile…</p>
         </main>
       </>
     );
@@ -285,6 +288,7 @@ export function PlayerProfile({
             : 0,
       }
     : null;
+  const displayName = capEntry?.displayName ?? player.name;
 
   function appearanceSummary(
     appearance: NonNullable<typeof history>["appearances"][number],
@@ -340,12 +344,12 @@ export function PlayerProfile({
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <a href={`${publicBasePath}/players/`}>Players</a>
           <span aria-hidden="true">/</span>
-          <span>{player.name}</span>
+          <span>{displayName}</span>
         </nav>
 
         <header className="profile-hero">
           <span className="profile-hero-monogram" aria-hidden="true">
-            {player.name
+            {displayName
               .split(/\s+/)
               .filter(Boolean)
               .slice(0, 2)
@@ -354,8 +358,15 @@ export function PlayerProfile({
               .toUpperCase()}
           </span>
           <div>
-            <p className="eyebrow">Player profile</p>
-            <h1>{player.name}</h1>
+            <div className="profile-identity-line">
+              <p className="eyebrow">Player profile</p>
+              {capEntry && (
+                <span className="profile-cap-number" title={capTooltip}>
+                  Cap #{integer.format(capEntry.capNumber)}
+                </span>
+              )}
+            </div>
+            <h1>{displayName}</h1>
             <p>
               {integer.format(stats.matches.size)} appearances ·{" "}
               {integer.format(stats.runs)} runs · {integer.format(stats.wickets)} wickets

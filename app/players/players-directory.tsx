@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  capEntryForNumber,
+  capEntryForPlayerId,
+  capSearchNumber,
+  capTooltip,
+} from "../cap-numbers";
 import { SiteHeader } from "../site-header";
 import { type PlayerDirectory, type PlayerDirectoryEntry } from "../statistics";
 
@@ -11,6 +17,8 @@ type DirectoryPlayer = PlayerDirectoryEntry & {
   appearances: number;
   runs: number;
   wickets: number;
+  capNumber: number | null;
+  displayName: string;
 };
 
 export function PlayersDirectory() {
@@ -34,29 +42,38 @@ export function PlayersDirectory() {
 
   const players = useMemo<DirectoryPlayer[]>(() => {
     if (!directory) return [];
-    return directory.players.map((player) => ({
-      ...player,
-      appearances: player.career.appearances,
-      runs: player.career.runs,
-      wickets: player.career.wickets,
-    }));
+    return directory.players.map((player) => {
+      const capEntry = capEntryForPlayerId(player.playerId);
+      return {
+        ...player,
+        appearances: player.career.appearances,
+        runs: player.career.runs,
+        wickets: player.career.wickets,
+        capNumber: capEntry?.capNumber ?? null,
+        displayName: capEntry?.displayName ?? player.name,
+      };
+    });
   }, [directory]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase();
+    const capNeedle = capSearchNumber(query);
+    const capMatch = capEntryForNumber(capNeedle);
     return players
       .filter(
         (player) =>
           !needle ||
+          (capMatch !== null && player.playerId === capMatch.playerId) ||
+          player.displayName.toLocaleLowerCase().includes(needle) ||
           player.name.toLocaleLowerCase().includes(needle) ||
           player.aliases.some((alias) =>
             alias.toLocaleLowerCase().includes(needle),
           ),
       )
       .sort((left, right) => {
-        if (sort === "name") return left.name.localeCompare(right.name);
+        if (sort === "name") return left.displayName.localeCompare(right.displayName);
         const difference = right[sort] - left[sort];
-        return difference || left.name.localeCompare(right.name);
+        return difference || left.displayName.localeCompare(right.displayName);
       });
   }, [players, query, sort]);
 
@@ -106,7 +123,7 @@ export function PlayersDirectory() {
                 setQuery(event.target.value);
                 setLimit(96);
               }}
-              placeholder="Search by name"
+              placeholder="Search by name or cap number"
             />
           </label>
           <label>
@@ -137,7 +154,7 @@ export function PlayersDirectory() {
               key={player.playerId}
             >
               <span className="player-monogram" aria-hidden="true">
-                {player.name
+                {player.displayName
                   .split(/\s+/)
                   .filter(Boolean)
                   .slice(0, 2)
@@ -145,7 +162,12 @@ export function PlayersDirectory() {
                   .join("")
                   .toUpperCase()}
               </span>
-              <h2>{player.name}</h2>
+              <div className="directory-player-identity">
+                <h2>{player.displayName}</h2>
+                {player.capNumber !== null && (
+                  <span title={capTooltip}>#{integer.format(player.capNumber)}</span>
+                )}
+              </div>
               <dl>
                 <div>
                   <dt>Matches</dt>
