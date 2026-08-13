@@ -24,12 +24,12 @@ class RecordsSnapshotRefreshTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         return path
 
-    def row(self, score, catches=0, innings=1):
+    def row(self, score, catches=0, innings=1, team="1st XI"):
         return f"""
         <BattingPerfomance>
           <FirstName>Test</FirstName><Surname>Player</Surname>
           <FixDate>2026-08-01T00:00:00+01:00</FixDate>
-          <TeamName>1st XI</TeamName><Opposition>Visitors</Opposition>
+          <TeamName>{team}</TeamName><Opposition>Visitors</Opposition>
           <Type_Desc>League</Type_Desc><innings>{innings}</innings>
           <Score>{score}</Score><notout>{str(score == 'DNB').lower()}</notout>
           <catches>{catches}</catches><stumpings>0</stumpings><runouts>0</runouts>
@@ -62,6 +62,11 @@ class RecordsSnapshotRefreshTests(unittest.TestCase):
         self.assertEqual(rows[0][9], 1)
         self.assertEqual(len(quality["collapsedDuplicateDnbRows"]), 1)
 
+    def test_mitres_league_source_rows_are_treated_as_friendlies(self):
+        path = self.write_batting(self.row("25", team="Mitres"))
+        rows, _ = MODULE.parse_batting_snapshot(path, 2026)
+        self.assertEqual(rows[0][3], "Friendly")
+
     def test_refresh_replaces_season_and_is_idempotent(self):
         payload = {
             "meta": {},
@@ -80,6 +85,18 @@ class RecordsSnapshotRefreshTests(unittest.TestCase):
         self.assertEqual(second["batting"], [payload["batting"][0], new_batting[0]])
         self.assertEqual(second["boundaries"], [["New", 4, 1]])
         self.assertEqual(second["meta"]["asOfDate"], "2026-08-01")
+
+    def test_refresh_corrects_historical_mitres_league_rows(self):
+        payload = {
+            "meta": {},
+            "batting": [
+                ["Player", 2025, "Mitres", "League", "A", "2025-01-01", 1, False, False, 0, 0, 0]
+            ],
+            "bowling": [],
+            "boundaries": [],
+        }
+        refreshed = MODULE.refresh_payload(payload, 2026, [], [], [])
+        self.assertEqual(refreshed["batting"][0][3], "Friendly")
 
 
 if __name__ == "__main__":

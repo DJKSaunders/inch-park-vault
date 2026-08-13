@@ -1287,7 +1287,7 @@
       "playerId": "p-khalid-rehman-cc70faaa"
     },
     "p-kiran-sv-87ddf68c": {
-      "capNumber": 458,
+      "capNumber": 370,
       "displayName": "Kiran Sankaran",
       "playerId": "p-kiran-sv-87ddf68c"
     },
@@ -2903,6 +2903,11 @@
       "displayName": "Cameron Walker",
       "playerId": "p-cameron-walker-58b92187"
     },
+    "cbarrett": {
+      "capNumber": 8,
+      "displayName": "Charlie Barratt",
+      "playerId": "p-charlie-barratt-1343e236"
+    },
     "chamodsandaru": {
       "capNumber": 492,
       "displayName": "Chamod Sandaru",
@@ -3753,8 +3758,13 @@
       "displayName": "Khalid Rehman",
       "playerId": "p-khalid-rehman-cc70faaa"
     },
+    "kiransankaran": {
+      "capNumber": 370,
+      "displayName": "Kiran Sankaran",
+      "playerId": "p-kiran-sv-87ddf68c"
+    },
     "kiransv": {
-      "capNumber": 458,
+      "capNumber": 370,
       "displayName": "Kiran Sankaran",
       "playerId": "p-kiran-sv-87ddf68c"
     },
@@ -3997,6 +4007,11 @@
       "capNumber": 427,
       "displayName": "M. Qasim Faizan",
       "playerId": "p-m-qasim-faizan-49bde0ed"
+    },
+    "mreid": {
+      "capNumber": 48,
+      "displayName": "Mark Reid",
+      "playerId": "p-mark-reid-563729e9"
     },
     "muhallibhassan": {
       "capNumber": 469,
@@ -4959,13 +4974,6 @@
       "name": "Charanjit Singh",
       "date": "2014-04-27",
       "team": "4th XI",
-      "competition": "League"
-    },
-    {
-      "capNumber": 370,
-      "name": "Kiran Sankaran",
-      "date": "2021-05-22",
-      "team": "1st XI",
       "competition": "League"
     },
     {

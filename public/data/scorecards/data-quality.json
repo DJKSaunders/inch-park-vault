@@ -3230,7 +3230,7 @@
     "matchedScorecardPlayerCount": 645,
     "multipleBattingInningsAppearanceCount": 16,
     "playerCount": 646,
-    "recordPlayerCount": 659,
+    "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedAdministrativeFixtureCount": 15,
@@ -3238,7 +3238,7 @@
     "suppressedUnplayedInningsCount": 44,
     "uniqueAppearanceKeys": 15668,
     "uniqueFixtureIds": 1486,
-    "unmatchedRecordPlayerCount": 11,
+    "unmatchedRecordPlayerCount": 12,
     "unmatchedScorecardPlayerCount": 1
   },
   "suppressedAdministrativeFixtures": [

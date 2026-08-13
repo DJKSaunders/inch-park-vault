@@ -25,7 +25,8 @@ MANUAL_ALIASES = {
     "jackmcluckie": "jackmcluckiepettegree",
     "ajaykumarjangikiti": "ajaykumarjangiti",
     "qasimfaizan": "mqasimfaizan",
-    "srinimuthuraman": "srinim",
+    "srinim": "srinimuthuraman",
+    "kiransv": "kiransankaran",
 }
 
 
@@ -91,7 +92,8 @@ def main() -> None:
             "displayName": display_name,
             "playerId": player["playerId"],
         }
-        by_player_id[player["playerId"]] = mapped
+        # A duplicated historical identity must retain the earlier cap number.
+        mapped = by_player_id.setdefault(player["playerId"], mapped)
         for alias in {
             name,
             display_name,
@@ -100,6 +102,10 @@ def main() -> None:
         }:
             by_name[normalise(alias)] = mapped
         register.append({**record, "playerId": player["playerId"], "displayName": display_name})
+
+    for alias, canonical in MANUAL_ALIASES.items():
+        if canonical in by_name:
+            by_name[alias] = by_name[canonical]
 
     numbers = [row["capNumber"] for row in register]
     if numbers != list(range(1, len(numbers) + 1)):

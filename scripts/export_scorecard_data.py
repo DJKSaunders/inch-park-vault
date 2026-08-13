@@ -122,7 +122,7 @@ def canonical_player_id(value: str) -> str:
         "srini muthuraman": "srini m",
     }.get(identity, identity)
     digest = hashlib.sha1(identity.encode("utf-8")).hexdigest()[:8]
-    return f"p-{slug(value)}-{digest}"
+    return f"p-{slug(identity)}-{digest}"
 
 
 def placeholder_player_id(

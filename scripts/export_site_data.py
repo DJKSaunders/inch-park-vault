@@ -56,6 +56,10 @@ def normalize_team(candidate):
     return candidate
 
 
+def normalize_match_type(team, candidate):
+    return "Friendly" if team == "Mitres" and candidate == "League" else candidate
+
+
 batting = []
 bowling = []
 boundary_totals = {}
@@ -70,7 +74,7 @@ for row in rows:
     player = normalize_player_name(value(row, "Player Name"))
     season = number(row, "Season")
     team = normalize_team(value(row, "Team"))
-    match_type = value(row, "Match Type")
+    match_type = normalize_match_type(team, value(row, "Match Type"))
     opposition = value(row, "Opposition")
     record_date = date_value(value(row, "Date"))
     common = [
@@ -177,7 +181,7 @@ if season_files:
         record_date = xml_value(node, "FixDate")[:10]
         season = int(record_date[:4])
         team = normalize_team(xml_value(node, "TeamName"))
-        match_type = xml_value(node, "Type_Desc")
+        match_type = normalize_match_type(team, xml_value(node, "Type_Desc"))
         opposition = xml_value(node, "Opposition")
         score = xml_value(node, "Score")
         did_not_bat = score.casefold() == "dnb"
@@ -208,7 +212,7 @@ if season_files:
         record_date = xml_value(node, "FixDate")[:10]
         season = int(record_date[:4])
         team = normalize_team(xml_value(node, "TeamName"))
-        match_type = xml_value(node, "Type_Desc")
+        match_type = normalize_match_type(team, xml_value(node, "Type_Desc"))
         opposition = xml_value(node, "Opposition")
 
         bowling.append(

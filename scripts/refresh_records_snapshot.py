@@ -30,15 +30,25 @@ ROOT = Path(__file__).resolve().parents[1]
 def normalize_player_name(candidate: str | None) -> str:
     if not candidate:
         return ""
-    return re.sub(
+    value = re.sub(
         r"\s+\((?:SM'20|SM)\)\s*$", "", str(candidate), flags=re.IGNORECASE
     ).strip()
+    return {
+        "kiran sv": "Kiran Sankaran",
+        "srini m": "Srini Muthuraman",
+        "zunaira aman": "Zunaira Aman",
+    }.get(value.casefold(), value)
 
 
 def normalize_team(candidate: str) -> str:
     if candidate == "Women's Premier (SM combined)":
         return "Women's"
     return candidate
+
+
+def normalize_match_type(team: str, candidate: str) -> str:
+    """Mitres do not play league fixtures; correct that source mislabelling."""
+    return "Friendly" if team == "Mitres" and candidate == "League" else candidate
 
 
 def xml_value(node: ET.Element, field: str) -> str:
@@ -84,11 +94,12 @@ def parse_batting_snapshot(path: Path, season: int) -> tuple[list[list[Any]], di
             continue
         score = xml_value(node, "Score")
         did_not_bat = score.casefold() == "dnb"
+        team = normalize_team(xml_value(node, "TeamName"))
         row = {
             "player": xml_player_name(node),
             "season": season,
-            "team": normalize_team(xml_value(node, "TeamName")),
-            "matchType": xml_value(node, "Type_Desc"),
+            "team": team,
+            "matchType": normalize_match_type(team, xml_value(node, "Type_Desc")),
             "opposition": xml_value(node, "Opposition"),
             "date": record_date,
             "runs": None if did_not_bat else int(score),
@@ -184,12 +195,13 @@ def parse_bowling_snapshot(path: Path, season: int) -> list[list[Any]]:
         record_date = xml_value(node, "FixDate")[:10]
         if not record_date or int(record_date[:4]) != season:
             continue
+        team = normalize_team(xml_value(node, "TeamName"))
         output.append(
             [
                 xml_player_name(node),
                 season,
-                normalize_team(xml_value(node, "TeamName")),
-                xml_value(node, "Type_Desc"),
+                team,
+                normalize_match_type(team, xml_value(node, "Type_Desc")),
                 xml_value(node, "Opposition"),
                 record_date,
                 xml_number(node, "totalballs"),
@@ -243,6 +255,9 @@ def refresh_payload(
     payload["batting"] = [row for row in payload["batting"] if row[1] != season] + batting
     payload["bowling"] = [row for row in payload["bowling"] if row[1] != season] + bowling
     payload["boundaries"] = boundaries
+
+    for row in payload["batting"] + payload["bowling"]:
+        row[3] = normalize_match_type(row[2], row[3])
 
     rows = payload["batting"] + payload["bowling"]
     dates = [row[5] for row in rows if row[5]]
