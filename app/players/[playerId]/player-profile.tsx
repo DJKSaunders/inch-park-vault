@@ -326,7 +326,7 @@ export function PlayerProfile({
     let bowlingSummary = "—";
     if (bowling.length > 0) {
       bowlingSummary = bowling
-          .map((spell) => `${spell.wickets ?? 0}/${spell.runs ?? "—"}`)
+          .map((spell) => `${spell.wickets ?? 0}/${spell.runs ?? "—"} (${spell.overs ?? "—"})`)
           .join(", ");
     }
     const fielding = [
@@ -382,7 +382,7 @@ export function PlayerProfile({
               {integer.format(stats.runs)} runs · {integer.format(stats.wickets)} wickets
             </p>
           </div>
-          <a href={`${publicBasePath}/insights/?player=${player.playerId}`}>
+          <a href={`${publicBasePath}/insights/players/compare/?player=${player.playerId}`}>
             Compare player →
           </a>
         </header>
@@ -447,8 +447,8 @@ export function PlayerProfile({
         <section className="profile-history-panel dismissal-profile-panel">
           <header>
             <div>
-              <p className="eyebrow">Batting dismissals</p>
-              <h2>How the wickets fell</h2>
+              <p className="eyebrow">Batting outcomes</p>
+              <h2>Innings conclusion summary</h2>
             </div>
             <span>Recorded scorecard innings only</span>
           </header>
@@ -506,7 +506,7 @@ export function PlayerProfile({
                     <span className="profile-performance-figure" data-label="Bowling">
                       {performance.bowling}
                     </span>
-                    <span data-label="Fielding">{performance.fielding}</span>
+                    <span className="profile-performance-figure" data-label="Fielding">{performance.fielding}</span>
                   </a>
                 );
               })}

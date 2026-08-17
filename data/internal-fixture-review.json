@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "review-only",
+  "generatedThrough": "2026-08-11",
+  "notes": "Candidate mappings are explicit. No fixture is classified as internal merely because Edinburgh South Mitres played it.",
+  "fuseCandidates": [
+    {
+      "date": "2011-07-23",
+      "label": "2nd XI v 3rd XI",
+      "sourceFixtureIds": ["179737", "214189"],
+      "confidence": "high",
+      "reason": "Reciprocal South XI scorecards with equal and opposite three-wicket results."
+    },
+    {
+      "date": "2012-04-14",
+      "label": "3rd XI v 4th XI",
+      "sourceFixtureIds": ["262610", "262611"],
+      "confidence": "high",
+      "reason": "Reciprocal South XI scorecards with equal and opposite eight-wicket results."
+    },
+    {
+      "date": "2020-08-01",
+      "label": "Mitres internal match — 12-run result",
+      "sourceFixtureIds": ["750495", "752126"],
+      "confidence": "high",
+      "reason": "Mirrored innings totals of 105 and 93 with opposite 12-run results."
+    },
+    {
+      "date": "2020-08-01",
+      "label": "Mitres internal match — 24-run result",
+      "sourceFixtureIds": ["752127", "752128"],
+      "confidence": "high",
+      "reason": "Mirrored innings totals of 147 and 123 with opposite 24-run results."
+    },
+    {
+      "date": "2020-08-01",
+      "label": "Mitres internal match — 34-run result",
+      "sourceFixtureIds": ["752129", "752130"],
+      "confidence": "high",
+      "reason": "Mirrored innings totals and opposite 34-run results."
+    },
+    {
+      "date": "2020-08-08",
+      "label": "Mitres internal match — two-wicket result",
+      "sourceFixtureIds": ["753019", "753021"],
+      "confidence": "high",
+      "reason": "Mirrored innings totals with opposite two-wicket results."
+    },
+    {
+      "date": "2020-08-08",
+      "label": "Mitres internal match — 45-run result",
+      "sourceFixtureIds": ["753407", "753480"],
+      "confidence": "medium",
+      "reason": "Opposite 45-run results and matching first-innings total; one source has a small second-innings total discrepancy."
+    },
+    {
+      "date": "2020-08-08",
+      "label": "Mitres internal match — 24-run result",
+      "sourceFixtureIds": ["753409", "753410"],
+      "confidence": "high",
+      "reason": "Mirrored innings totals of 141 and 117 with opposite 24-run results."
+    },
+    {
+      "date": "2021-04-10",
+      "label": "Mitres v Mitres",
+      "sourceFixtureIds": ["779649", "780720"],
+      "confidence": "high",
+      "reason": "Reciprocal Mitres scorecards with mirrored 162 and 163 totals."
+    },
+    {
+      "date": "2021-04-18",
+      "label": "Mitres v Mitres",
+      "sourceFixtureIds": ["781386", "782086"],
+      "confidence": "high",
+      "reason": "Reciprocal Mitres scorecards with mirrored 160 and 169 totals."
+    },
+    {
+      "date": "2021-04-25",
+      "label": "Mitres v Mitres",
+      "sourceFixtureIds": ["781394", "783630"],
+      "confidence": "high",
+      "reason": "Reciprocal Mitres scorecards with mirrored 181 and 228 totals."
+    },
+    {
+      "date": "2022-09-03",
+      "label": "Team Aaron v Team Jas",
+      "sourceFixtureIds": ["830735", "831124"],
+      "scratchSides": ["Team Aaron", "Team Jas"],
+      "confidence": "high",
+      "reason": "Mirrored 200 and 149 totals with opposite 51-run results."
+    },
+    {
+      "date": "2023-04-15",
+      "label": "Mitres Team A v Mitres Team B",
+      "sourceFixtureIds": ["855610", "855611"],
+      "scratchSides": ["Mitres Team A", "Mitres Team B"],
+      "confidence": "high",
+      "reason": "Reciprocal scorecards for a tied intra-club match."
+    },
+    {
+      "date": "2023-08-20",
+      "label": "Mitres internal match",
+      "sourceFixtureIds": ["863352", "863353"],
+      "confidence": "medium",
+      "reason": "Opposite one-run results; one source contains a first-innings total discrepancy."
+    },
+    {
+      "date": "2026-04-12",
+      "label": "Martin's Marvellous Men v Prab's Passionate People",
+      "sourceFixtureIds": ["941085", "941086"],
+      "scratchSides": ["Martin's Marvellous Men", "Prab's Passionate People"],
+      "confidence": "high",
+      "reason": "Mirrored 176 and 160 totals with opposite 16-run results."
+    },
+    {
+      "date": "2026-05-04",
+      "label": "Ansh's Banshees v Kasun's Passions",
+      "sourceFixtureIds": ["943511", "943706"],
+      "scratchSides": ["Ansh's Banshees", "Kasun's Passions"],
+      "confidence": "high",
+      "reason": "Mirrored 219 and 220 totals and complementary one-off South team names."
+    },
+    {
+      "date": "2026-08-11",
+      "label": "Peter's Pirates v Kasun's Passions",
+      "sourceFixtureIds": [],
+      "sourceAliases": ["Peter's Pirates", "Kasun's Passions"],
+      "scratchSides": ["Peter's Pirates", "Kasun's Passions"],
+      "confidence": "high",
+      "reason": "Complementary aggregate batting and bowling records reconstruct one 144 v 138 internal fixture; source scorecards are not currently available."
+    }
+  ],
+  "singleInternalCandidates": [
+    {
+      "date": "2022-04-17",
+      "sourceFixtureIds": ["817885"],
+      "label": "Mitres intra-club friendly"
+    },
+    {
+      "date": "2023-07-09",
+      "sourceFixtureIds": ["861615"],
+      "label": "5th XI v Mitres"
+    },
+    {
+      "date": "2024-04-25",
+      "sourceFixtureIds": ["888229"],
+      "label": "Mitres v Mitres"
+    },
+    {
+      "date": "2024-08-31",
+      "sourceFixtureIds": ["893661"],
+      "label": "Mitres Team A intra-club match"
+    },
+    {
+      "date": "2024-09-01",
+      "sourceFixtureIds": ["893643"],
+      "label": "Mitres intra-club friendly"
+    },
+    {
+      "date": "2025-04-05",
+      "sourceFixtureIds": ["914524"],
+      "label": "Mitres Team A intra-club match"
+    },
+    {
+      "date": "2025-04-13",
+      "sourceFixtureIds": ["912172"],
+      "label": "Practice match — 11am"
+    },
+    {
+      "date": "2025-04-13",
+      "sourceFixtureIds": ["914941"],
+      "label": "Practice match — 2.30pm"
+    },
+    {
+      "date": "2025-09-06",
+      "sourceFixtureIds": ["921570"],
+      "label": "Mitres intra-club match"
+    },
+    {
+      "date": "2026-04-12",
+      "sourceFixtureIds": ["935422"],
+      "label": "Mitres intra-club tied match"
+    }
+  ],
+  "externalControlCases": [
+    {"date": "2023-05-11", "sourceFixtureIds": ["837298"], "opposition": "E=MCC"},
+    {"date": "2023-05-11", "sourceFixtureIds": ["858740"], "opposition": "Eccentric Flamingoes"},
+    {"date": "2026-05-19", "sourceFixtureIds": ["935417"], "opposition": "Carlton"},
+    {"date": "2026-05-26", "sourceFixtureIds": ["943528"], "opposition": "Eccentric Flamingoes"},
+    {"date": "2026-06-23", "sourceFixtureIds": ["945488"], "opposition": "E=MCC"},
+    {"date": "2026-07-22", "sourceFixtureIds": ["935419"], "opposition": "Carlton"},
+    {"date": "2026-08-06", "sourceFixtureIds": ["946312"], "opposition": "Boroughmuir"}
+  ]
+}

@@ -1807,7 +1807,7 @@ export function RecordsExplorer() {
         <p className="table-scroll-hint">
           <span aria-hidden="true">↔</span> Scroll sideways for every statistic
         </p>
-        <div className="stats-table-wrap">
+        <div className="stats-table-wrap records-table-wrap">
           {activeSection === "performances" ? (
             <>
               <table className="stats-table performance-table">

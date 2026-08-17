@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { DismissalType } from "../statistics";
 
 const labels: Record<DismissalType, string> = {
@@ -33,7 +34,8 @@ export function DismissalBreakdown({
   notOuts: number;
   minimum?: number;
 }) {
-  const rows = (Object.keys(labels) as DismissalType[])
+  const [excludeNotOuts, setExcludeNotOuts] = useState(false);
+  const dismissalRows = (Object.keys(labels) as DismissalType[])
     .map((type) => ({
       type,
       label: labels[type],
@@ -42,15 +44,23 @@ export function DismissalBreakdown({
     }))
     .filter((row) => row.count > 0)
     .sort((left, right) => right.count - left.count);
+  const rows = excludeNotOuts
+    ? dismissalRows
+    : [
+        ...dismissalRows,
+        ...(notOuts > 0
+          ? [{ type: "not-out", label: "Not out", colour: "#526070", count: notOuts }]
+          : []),
+      ];
   const total = rows.reduce((sum, row) => sum + row.count, 0);
   const maximum = Math.max(...rows.map((row) => row.count), 1);
 
   if (total < minimum) {
     return (
       <div className="dismissal-small-sample">
-        <strong>{total} recorded dismissals</strong>
+        <strong>{total} recorded innings conclusions</strong>
         <p>
-          A breakdown is shown after five dismissals. {notOuts} not-out
+          A breakdown is shown after five recorded innings. {notOuts} not-out
           {notOuts === 1 ? "" : "s"} recorded.
         </p>
       </div>
@@ -58,13 +68,22 @@ export function DismissalBreakdown({
   }
 
   return (
-    <div className="dismissal-bar-layout">
+    <div className="dismissal-breakdown">
+      <label className="dismissal-not-out-toggle">
+        <input
+          type="checkbox"
+          checked={excludeNotOuts}
+          onChange={(event) => setExcludeNotOuts(event.target.checked)}
+        />
+        Exclude Not Outs
+      </label>
+      <div className="dismissal-bar-layout">
       <div className="dismissal-bar-summary">
         <strong>{total}</strong>
-        <span>recorded dismissals</span>
-        <small>{notOuts} not-out innings excluded</small>
+        <span>innings conclusions</span>
+        <small>{excludeNotOuts ? `${notOuts} not-out innings excluded` : "not-outs included"}</small>
       </div>
-      <div className="dismissal-bars" role="img" aria-label={`${total} dismissals by type`}>
+      <div className="dismissal-bars" role="img" aria-label={`${total} innings conclusions by type`}>
         {rows.map((row) => {
           const percent = (row.count / total) * 100;
           return (
@@ -83,6 +102,7 @@ export function DismissalBreakdown({
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

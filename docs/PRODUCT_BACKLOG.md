@@ -63,7 +63,7 @@ approval.
 
 ### DATA-002 — Identify historical internal fixtures
 
-- **Status:** Queued; follows DATA-001
+- **Status:** Candidate audit ready for review; follows DATA-001
 - Build a repeatable audit that proposes other possible internal fixtures from
   the archive.
 - Use date, team, named scratch sides, player overlap and complementary batting
@@ -71,20 +71,32 @@ approval.
 - Require explicit confirmation before fusing ambiguous same-day matches, as
   some dates may contain festivals or multiple separate games.
 - Initial candidates include Mitres records from 12 April and 4 May 2026.
+- Review files:
+  - `data/internal-fixture-review.json`
+  - `docs/internal-fixture-candidates.csv`
+  - `docs/internal-friendly-design.md`
 
 ## Ideas requiring a mockup
 
+### VIS-002 — Bowler dismissal summary
+
+- **Status:** Deferred
+- Show how a bowler's wickets were taken, by dismissal mode.
+- The present structured archive does not reliably attribute individual
+  dismissal modes to bowlers. Revisit only with a source-text parsing and data
+  coverage approach that makes the limitations clear.
+
 ### VIS-001 — Batting-score distribution on player profiles
 
-- **Status:** Mockup required
+- **Status:** Deferred
 - Show the distribution of a player's runs across individual innings.
-- Compare two approaches in one representative player profile:
-  - vertical bar chart with one bar per innings;
-  - heatmap showing the concentration of scores across ranges and time.
+- The initial density-heatmap prototype was not useful enough to retain.
+- Revisit with a stronger visual model before implementation; do not reintroduce
+  the current prototype.
 - Exclude DNB records from the distribution.
-- Retain a clear visual distinction for not-outs.
+- Decide later how, or whether, not-outs should be distinguished.
 - Apply the existing season, XI, match-type and opposition filters.
-- Use a single mockup to choose the chart form before generating profile pages.
+- Use a single mockup before any profile-wide implementation.
 
 ## Data audits
 

@@ -1516,6 +1516,30 @@
   line-height: 1;
 }
 
+.dismissal-breakdown {
+  display: grid;
+  gap: 18px;
+}
+
+.dismissal-not-out-toggle {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cream-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dismissal-not-out-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--gold);
+}
+
 .profile-history-pagination {
   padding-top: 18px;
   display: flex;
@@ -1638,7 +1662,7 @@
 }
 
 .milestone-list article {
-  min-height: 82px;
+  min-height: 104px;
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
@@ -1709,6 +1733,25 @@
   height: 100%;
   display: block;
   background: var(--orange-bright);
+}
+
+.milestone-show-more {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.milestone-show-more:hover {
+  border-color: var(--gold);
+  background: var(--navy-850);
 }
 
 @media (max-width: 780px) {
@@ -3186,6 +3229,15 @@ body.iframe-mode .table-scroll-hint {
   font-weight: 900;
 }
 
+.milestones-heading .milestones-as-of {
+  width: auto;
+  margin-top: 22px;
+  padding: 11px 14px 10px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+}
+
 .section-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -3573,6 +3625,14 @@ body.iframe-mode .table-scroll-hint {
   border: 1px solid rgba(6, 16, 28, 0.22);
   background: white;
   scrollbar-color: var(--orange) #d7d0c4;
+}
+
+/* The main records table owns its vertical scroll, so its header remains in
+   view while the wide table is explored on both desktop and touch screens. */
+.records-table-wrap {
+  max-height: min(72vh, 860px);
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .stats-table {
@@ -4928,6 +4988,10 @@ footer p {
     max-width: calc(100% + 24px);
     border-right: 0;
     border-left: 0;
+  }
+
+  .records-table-wrap {
+    max-height: 70dvh;
   }
 
   .leaderboard-table {

@@ -1205,7 +1205,7 @@ def build_milestones(
             [row for metric in metrics for row in achieved[metric]],
             key=lambda row: (row["date"], row["milestone"], row["player"]),
             reverse=True,
-        )[:5]
+        )[:25]
         upcoming_rows = sorted(
             [
                 row
@@ -1215,7 +1215,7 @@ def build_milestones(
                 >= active_cutoff
             ],
             key=lambda row: (row["remaining"], -row["current"], row["player"]),
-        )[:5]
+        )[:25]
         sections.append(
             {
                 "key": key,

@@ -42,3 +42,15 @@ test("opposition summaries use parent clubs rather than individual XIs", async (
   assert.match(insights, /const name = canonicalOpponent\(match\.opposition\)/);
   assert.doesNotMatch(insights, /function compactOpponent/);
 });
+
+test("records tables retain a sticky header inside a bounded table scroller", async () => {
+  const [records, styles] = await Promise.all([
+    readFile(new URL("../app/records-explorer.tsx", import.meta.url), "utf8"),
+    readFile(stylesPath, "utf8"),
+  ]);
+
+  assert.match(records, /className="stats-table-wrap records-table-wrap"/);
+  assert.match(styles, /\.records-table-wrap\s*\{[\s\S]*?max-height:[\s\S]*?overflow:\s*auto/);
+  assert.match(styles, /\.stats-table thead th\s*\{[\s\S]*?position:\s*sticky/);
+  assert.match(styles, /\.records-table-wrap\s*\{[\s\S]*?70dvh/);
+});

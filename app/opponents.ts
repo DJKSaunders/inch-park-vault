@@ -120,6 +120,9 @@ export function canonicalOpponent(rawOpponent: string | null | undefined) {
     [/^bass\s+rock\b/i, "Bass Rock"],
     [/^carlton\b/i, "Carlton"],
     [/^edinburgh (?:accies|academicals)\b/i, "Edinburgh Academicals"],
+    // University Staff is a distinct side, not an Edinburgh University XI.
+    // Source scorecards confirm this from 2008 through the 2026 fixtures.
+    [/^edinburgh (?:uni|university) staff\b/i, "Edinburgh University Staff"],
     [/^edinburgh (?:uni|university)\b/i, "Edinburgh University"],
     [/^dunfermline\b/i, "Dunfermline & Carnegie"],
     [/^drummond trin(?:ity|ithy)\b/i, "Drummond Trinity"],
