@@ -3024,6 +3024,31 @@
       "fixtureId": "933106",
       "inningsNumber": 2,
       "overs": "39.3"
+    },
+    {
+      "fixtureId": "925537",
+      "inningsNumber": 2,
+      "overs": "48.2"
+    },
+    {
+      "fixtureId": "933051",
+      "inningsNumber": 2,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "933070",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933087",
+      "inningsNumber": 2,
+      "overs": "35.5"
+    },
+    {
+      "fixtureId": "933107",
+      "inningsNumber": 2,
+      "overs": "40.0"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3115,7 +3140,7 @@
   "competitionClassification": {
     "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1470,
+    "exact": 1478,
     "missing": 1
   },
   "multipleBattingInnings": [
@@ -3219,26 +3244,26 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15668,
-    "battingInningsCount": 13058,
-    "bowlingSpellCount": 9350,
-    "calculatedInningsOversCount": 605,
+    "appearanceCount": 15757,
+    "battingInningsCount": 13141,
+    "bowlingSpellCount": 9407,
+    "calculatedInningsOversCount": 610,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2427,
-    "fixtureCount": 1486,
-    "matchedRecordPlayerCount": 648,
-    "matchedScorecardPlayerCount": 645,
+    "dnbOnlyAppearanceCount": 2433,
+    "fixtureCount": 1494,
+    "matchedRecordPlayerCount": 649,
+    "matchedScorecardPlayerCount": 646,
     "multipleBattingInningsAppearanceCount": 16,
-    "playerCount": 646,
+    "playerCount": 647,
     "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedAdministrativeFixtureCount": 15,
     "suppressedDnbRows": 12,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15668,
-    "uniqueFixtureIds": 1486,
-    "unmatchedRecordPlayerCount": 12,
+    "uniqueAppearanceKeys": 15757,
+    "uniqueFixtureIds": 1494,
+    "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
   "suppressedAdministrativeFixtures": [

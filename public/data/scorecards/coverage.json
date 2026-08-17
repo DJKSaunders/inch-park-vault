@@ -201,13 +201,13 @@
       "matches": 121
     },
     "2026": {
-      "battingBallsAvailable": 863,
-      "battingInnings": 1064,
-      "boundariesAvailable": 565,
-      "bowlingBallsAvailable": 813,
-      "bowlingSpells": 813,
-      "fieldingAvailable": 310,
-      "matches": 122
+      "battingBallsAvailable": 946,
+      "battingInnings": 1147,
+      "boundariesAvailable": 622,
+      "bowlingBallsAvailable": 870,
+      "bowlingSpells": 870,
+      "fieldingAvailable": 333,
+      "matches": 130
     }
   }
 }
