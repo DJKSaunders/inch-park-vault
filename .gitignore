@@ -44,8 +44,12 @@ next-env.d.ts
 
 # locally cached source pages for the scorecard enrichment pipeline
 /data/scorecards/cache/
-/data/scorecards/archive/
 /data/scorecards/pilot/
+
+# Keep the compact parsed archive in Git so a GitHub Action can refresh just
+# the current season without re-scraping 2004 onwards. Raw HTML remains local.
+/data/scorecards/archive/*
+!/data/scorecards/archive/scorecards.json
 
 # local backup packages are intentionally kept outside the deployed site
 /backups/

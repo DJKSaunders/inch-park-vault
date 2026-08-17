@@ -1,0 +1,103 @@
+name: Refresh Vault data
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_directory:
+        description: "Folder in data/updates (for example data/updates/2026-08-17)"
+        required: true
+        type: string
+      season:
+        description: "Season represented by the XML exports"
+        required: true
+        type: string
+      scrape_scorecards:
+        description: "Discover and refresh scorecards for this season"
+        required: true
+        default: true
+        type: boolean
+      apply_changes:
+        description: "Commit validated output and trigger the Pages deployment"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: vault-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      UPDATE_DIRECTORY: ${{ inputs.update_directory }}
+      SEASON: ${{ inputs.season }}
+      SCRAPE_SCORECARDS: ${{ inputs.scrape_scorecards }}
+      APPLY_CHANGES: ${{ inputs.apply_changes }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install spreadsheet reader
+        run: python -m pip install --disable-pip-version-check openpyxl
+
+      - name: Validate update package
+        run: |
+          python scripts/validate_update_package.py "$UPDATE_DIRECTORY" --season "$SEASON" --output update-validation.json
+
+      - name: Discover selected season's scorecards
+        if: env.SCRAPE_SCORECARDS == 'true'
+        run: |
+          python scripts/scrape_scorecards.py --seasons "$SEASON" --sample-per-season 0 --delay 1.0 \
+            --output-dir data/scorecards/refresh --cache-dir data/scorecards/cache --quiet > scorecard-refresh.json
+          python scripts/merge_scorecard_archive.py data/scorecards/archive/scorecards.json \
+            data/scorecards/refresh/scorecards.json --season "$SEASON" > scorecard-merge.json
+
+      - name: Refresh authoritative career records
+        run: |
+          python scripts/refresh_records_snapshot.py public/data/records.json \
+            "$UPDATE_DIRECTORY/batting.xml" "$UPDATE_DIRECTORY/bowling.xml" "$UPDATE_DIRECTORY/averages.xlsx" \
+            --season "$SEASON" > records-refresh.json
+
+      - name: Rebuild scorecard enrichment
+        if: env.SCRAPE_SCORECARDS == 'true'
+        run: |
+          python scripts/export_scorecard_data.py > scorecard-export.json
+
+      - name: Run data checks
+        run: |
+          python -m unittest discover -s tests -p 'test_*.py'
+          node --test tests/*.test.mjs
+
+      - name: Publish review report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vault-refresh-${{ inputs.season }}-${{ github.run_number }}
+          path: |
+            update-validation.json
+            records-refresh.json
+            scorecard-refresh.json
+            scorecard-merge.json
+            scorecard-export.json
+            public/data/records-quality.json
+            public/data/scorecards/data-quality.json
+          if-no-files-found: ignore
+
+      - name: Commit approved refresh
+        if: env.APPLY_CHANGES == 'true'
+        run: |
+          git config user.name "Vault refresh bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data data/scorecards/archive/scorecards.json
+          git diff --cached --quiet || git commit -m "Refresh Vault data through $SEASON"
+          git push
+          gh workflow run deploy-pages.yml --ref main

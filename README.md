@@ -15,6 +15,19 @@ pnpm run build
 
 ## Annual data update
 
+### Routine updates without Codex
+
+The normal operational route is **GitHub → Actions → Refresh Vault data**.
+Upload the three exports to a dated folder in [`data/updates`](data/updates/README.md),
+run the action once with **Apply changes** off, inspect its downloadable report,
+then rerun it with **Apply changes** on. It refreshes the selected season,
+optionally scrapes only that season's public scorecards, runs the tests, commits
+the resulting static data and lets the existing Pages deployment publish it.
+
+This needs no database, paid backend or running Mac. The full scorecard archive
+is retained in compact parsed form so a new season can be merged without
+re-scraping the historic archive.
+
 For a complete replacement workbook, regenerate the compact website dataset:
 
 ```bash
