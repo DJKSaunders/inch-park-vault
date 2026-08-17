@@ -84,7 +84,8 @@ test("server-renders a permanent scorecard route", async () => {
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /Falkland CC/i);
+  // Fixture references use the Vault's concise opposing-XI convention.
+  assert.match(html, /Falkland 1/i);
   assert.match(html, /925531/);
   assert.match(html, /Opening the scorecard/i);
 });
