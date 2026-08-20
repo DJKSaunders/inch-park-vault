@@ -28,6 +28,7 @@ SCRAPER_PATH = ROOT / "scripts" / "scrape_scorecards.py"
 COMPETITION_OVERRIDES_PATH = (
     ROOT / "data" / "scorecards" / "competition-overrides.json"
 )
+INTERNAL_FIXTURE_REVIEW_PATH = ROOT / "data" / "internal-fixture-review.json"
 SCHEMA_VERSION = "1.0.0"
 PLACEHOLDER_NAMES = {
     "a.n. other",
@@ -971,8 +972,44 @@ def serialized_record_stats(stats: dict[str, Any]) -> dict[str, Any]:
     return {**stats, "matches": len(stats["matches"])}
 
 
+def record_fixture_key(date: str, team: str, opposition: str) -> tuple[str, str, str]:
+    """Tolerate punctuation differences between workbook and scorecard labels."""
+
+    compact = lambda value: re.sub(r"[^a-z0-9]+", "", value.casefold())
+    return (date, compact(team), compact(opposition))
+
+
+def internal_record_keys(matches: list[dict[str, Any]]) -> set[tuple[str, str, str]]:
+    """Return the workbook match signatures approved as internal fixtures."""
+
+    review = json.loads(INTERNAL_FIXTURE_REVIEW_PATH.read_text())
+    fixture_ids = {
+        fixture_id
+        for section in ("fuseCandidates", "singleInternalCandidates")
+        for candidate in review[section]
+        for fixture_id in candidate.get("sourceFixtureIds", [])
+    }
+    return {
+        record_fixture_key(
+            match["date"], match["esccTeam"], match["opposition"]
+        )
+        for match in matches
+        if match["fixtureId"] in fixture_ids and match.get("esccTeam")
+    }
+
+
+def record_team(row: list[Any], internal_keys: set[tuple[str, str, str]]) -> str:
+    return (
+        "Internal"
+        if record_fixture_key(row[5], row[2], row[4]) in internal_keys
+        else row[2]
+    )
+
+
 def build_record_profiles(
-    records: dict[str, Any], directory: list[dict[str, Any]]
+    records: dict[str, Any],
+    directory: list[dict[str, Any]],
+    matches: list[dict[str, Any]] | None = None,
 ) -> dict[str, dict[str, Any]]:
     entry_by_alias = {
         normalized_name(alias): entry
@@ -986,6 +1023,8 @@ def build_record_profiles(
     seasons: dict[str, dict[int, dict[str, Any]]] = defaultdict(dict)
     batting_seasons: dict[str, set[int]] = defaultdict(set)
     bowling_seasons: dict[str, set[int]] = defaultdict(set)
+    internal_keys = internal_record_keys(matches or [])
+    teams: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
 
     def season_stats(entry: dict[str, Any], season: int) -> dict[str, Any]:
         player_seasons = seasons[entry["playerId"]]
@@ -993,12 +1032,17 @@ def build_record_profiles(
             season, empty_record_stats(entry["name"])
         )
 
+    def team_stats(entry: dict[str, Any], team: str) -> dict[str, Any]:
+        player_teams = teams[entry["playerId"]]
+        return player_teams.setdefault(team, empty_record_stats(entry["name"]))
+
     for row in records["batting"]:
         entry = entry_by_alias.get(normalized_name(row[0]))
         if not entry:
             continue
         add_record_batting(career[entry["playerId"]], row)
         add_record_batting(season_stats(entry, row[1]), row)
+        add_record_batting(team_stats(entry, record_team(row, internal_keys)), row)
         batting_seasons[entry["playerId"]].add(row[1])
     for row in records["bowling"]:
         entry = entry_by_alias.get(normalized_name(row[0]))
@@ -1006,6 +1050,7 @@ def build_record_profiles(
             continue
         add_record_bowling(career[entry["playerId"]], row)
         add_record_bowling(season_stats(entry, row[1]), row)
+        add_record_bowling(team_stats(entry, record_team(row, internal_keys)), row)
         bowling_seasons[entry["playerId"]].add(row[1])
 
     boundaries = defaultdict(lambda: {"fours": 0, "sixes": 0})
@@ -1036,6 +1081,20 @@ def build_record_profiles(
                     "stats": serialized_record_stats(stats),
                 }
                 for season, stats in sorted(seasons[player_id].items())
+            ],
+            "teams": [
+                {
+                    "team": team,
+                    "stats": serialized_record_stats(stats),
+                }
+                for team, stats in sorted(
+                    teams[player_id].items(),
+                    key=lambda item: (
+                        item[0] == "Internal",
+                        item[0] == "Mitres",
+                        item[0],
+                    ),
+                )
             ],
             "battingSeasons": sorted(batting_seasons[player_id]),
             "bowlingSeasons": sorted(bowling_seasons[player_id]),
@@ -1613,7 +1672,7 @@ def export(
         bowling_spells,
     ) = build_player_data(matches)
     player_map = build_records_player_map(records, player_index)
-    record_profiles = build_record_profiles(records, player_map["directory"])
+    record_profiles = build_record_profiles(records, player_map["directory"], matches)
     milestones = build_milestones(records, player_map["directory"], matches)
     club_insights = build_club_insights(matches)
     player_link_report = build_player_link_report(matches, player_map)

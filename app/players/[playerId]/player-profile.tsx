@@ -82,6 +82,7 @@ export function PlayerProfile({
   const [historyPage, setHistoryPage] = useState(1);
   const [historyPageSize, setHistoryPageSize] = useState(8);
   const [historySort, setHistorySort] = useState<"date" | "batting" | "bowling">("date");
+  const [xiDiscipline, setXiDiscipline] = useState<"batting" | "bowling">("batting");
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -120,6 +121,14 @@ export function PlayerProfile({
     [profile],
   );
   const careerBoundaries = profile?.boundaries ?? { fours: 0, sixes: 0 };
+  const teamRows = useMemo(
+    () =>
+      (profile?.teams ?? []).map((row) => ({
+        team: row.team,
+        stats: inflatePlayerStats(row.stats),
+      })),
+    [profile],
+  );
   const seasonBoundaries = useMemo(() => boundarySeasons(history), [history]);
   const battingSeasons = useMemo(
     () => new Set(profile?.battingSeasons ?? []),
@@ -442,6 +451,51 @@ export function PlayerProfile({
                 : undefined
             }
           />
+        </section>
+
+        <section className="profile-history-panel profile-xi-summary">
+          <header>
+            <div>
+              <p className="eyebrow">Career by team</p>
+              <h2>XI summary</h2>
+            </div>
+            <span>Internal fixtures are shown separately from Mitres</span>
+          </header>
+          <div className="profile-xi-tabs" role="tablist" aria-label="XI summary discipline">
+            <button type="button" role="tab" aria-selected={xiDiscipline === "batting"} className={xiDiscipline === "batting" ? "active" : undefined} onClick={() => setXiDiscipline("batting")}>Batting</button>
+            <button type="button" role="tab" aria-selected={xiDiscipline === "bowling"} className={xiDiscipline === "bowling" ? "active" : undefined} onClick={() => setXiDiscipline("bowling")}>Bowling</button>
+          </div>
+          <div className="profile-xi-table-wrap">
+            <table className={`profile-xi-table profile-xi-batting ${xiDiscipline === "batting" ? "active" : ""}`}>
+              <caption>Batting by team</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Team</th>
+                  <th scope="col">Matches</th><th scope="col">Inns</th><th scope="col">Runs</th><th scope="col">Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teamRows.map(({ team, stats: teamStats }) => (
+                  <tr key={team}>
+                    <th scope="row">{team}</th>
+                    <td>{integer.format(teamStats.matches.size)}</td><td>{integer.format(teamStats.innings)}</td><td>{integer.format(teamStats.runs)}</td><td>{metricDisplay("battingAverage", teamStats)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row">Total</th>
+                  <td>{integer.format(stats.matches.size)}</td><td>{integer.format(stats.innings)}</td><td>{integer.format(stats.runs)}</td><td>{metricDisplay("battingAverage", stats)}</td>
+                </tr>
+              </tfoot>
+            </table>
+            <table className={`profile-xi-table profile-xi-bowling ${xiDiscipline === "bowling" ? "active" : ""}`}>
+              <caption>Bowling by team</caption>
+              <thead><tr><th scope="col">Team</th><th scope="col">Overs</th><th scope="col">Mdns</th><th scope="col">Runs</th><th scope="col">Wkts</th><th scope="col">Avg</th></tr></thead>
+              <tbody>{teamRows.map(({ team, stats: teamStats }) => <tr key={team}><th scope="row">{team}</th><td>{metricDisplay("overs", teamStats)}</td><td>{integer.format(teamStats.maidens)}</td><td>{integer.format(teamStats.bowlingRuns)}</td><td>{integer.format(teamStats.wickets)}</td><td>{metricDisplay("bowlingAverage", teamStats)}</td></tr>)}</tbody>
+              <tfoot><tr><th scope="row">Total</th><td>{metricDisplay("overs", stats)}</td><td>{integer.format(stats.maidens)}</td><td>{integer.format(stats.bowlingRuns)}</td><td>{integer.format(stats.wickets)}</td><td>{metricDisplay("bowlingAverage", stats)}</td></tr></tfoot>
+            </table>
+          </div>
         </section>
 
         <section className="profile-history-panel dismissal-profile-panel">

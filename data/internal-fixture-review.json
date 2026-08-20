@@ -50,8 +50,9 @@
       "date": "2020-08-08",
       "label": "Mitres internal match — 45-run result",
       "sourceFixtureIds": ["753407", "753480"],
-      "confidence": "medium",
-      "reason": "Opposite 45-run results and matching first-innings total; one source has a small second-innings total discrepancy."
+      "confidence": "high",
+      "canonicalInningsTotals": [163, 117],
+      "reason": "Opposite 45-run results. Where the reciprocal cards disagree, the higher recorded total is retained: 163 and 117."
     },
     {
       "date": "2020-08-08",
@@ -101,8 +102,9 @@
       "date": "2023-08-20",
       "label": "Mitres internal match",
       "sourceFixtureIds": ["863352", "863353"],
-      "confidence": "medium",
-      "reason": "Opposite one-run results; one source contains a first-innings total discrepancy."
+      "confidence": "high",
+      "canonicalInningsTotals": [89, 79],
+      "reason": "Opposite one-run results. Where the reciprocal cards disagree, the higher recorded total is retained: 89 and 79."
     },
     {
       "date": "2026-04-12",
@@ -123,11 +125,11 @@
     {
       "date": "2026-08-11",
       "label": "Peter's Pirates v Kasun's Passions",
-      "sourceFixtureIds": [],
-      "sourceAliases": ["Peter's Pirates", "Kasun's Passions"],
+      "sourceFixtureIds": ["946893", "946894"],
       "scratchSides": ["Peter's Pirates", "Kasun's Passions"],
       "confidence": "high",
-      "reason": "Complementary aggregate batting and bowling records reconstruct one 144 v 138 internal fixture; source scorecards are not currently available."
+      "canonicalInningsTotals": [146, 146],
+      "reason": "Reciprocal scorecards for a tied internal match. The supplied Kasun's Passions card establishes its side assignment."
     }
   ],
   "singleInternalCandidates": [

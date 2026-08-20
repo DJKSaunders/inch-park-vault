@@ -5,14 +5,14 @@ fuse,2020-08-01,Mitres internal match — 12-run result,high,"750495, 752126",,M
 fuse,2020-08-01,Mitres internal match — 24-run result,high,"752127, 752128",,Mirrored innings totals of 147 and 123 with opposite 24-run results.
 fuse,2020-08-01,Mitres internal match — 34-run result,high,"752129, 752130",,Mirrored innings totals and opposite 34-run results.
 fuse,2020-08-08,Mitres internal match — two-wicket result,high,"753019, 753021",,Mirrored innings totals with opposite two-wicket results.
-fuse,2020-08-08,Mitres internal match — 45-run result,medium,"753407, 753480",,Opposite 45-run results and matching first-innings total; one source has a small second-innings total discrepancy.
+fuse,2020-08-08,Mitres internal match — 45-run result,high,"753407, 753480",,"Opposite 45-run results. Where the reciprocal cards disagree, the higher recorded total is retained: 163 and 117."
 fuse,2020-08-08,Mitres internal match — 24-run result,high,"753409, 753410",,Mirrored innings totals of 141 and 117 with opposite 24-run results.
 fuse,2021-04-10,Mitres v Mitres,high,"779649, 780720",,Reciprocal Mitres scorecards with mirrored 162 and 163 totals.
 fuse,2021-04-18,Mitres v Mitres,high,"781386, 782086",,Reciprocal Mitres scorecards with mirrored 160 and 169 totals.
 fuse,2021-04-25,Mitres v Mitres,high,"781394, 783630",,Reciprocal Mitres scorecards with mirrored 181 and 228 totals.
 fuse,2022-09-03,Team Aaron v Team Jas,high,"830735, 831124",Team Aaron v Team Jas,Mirrored 200 and 149 totals with opposite 51-run results.
 fuse,2023-04-15,Mitres Team A v Mitres Team B,high,"855610, 855611",Mitres Team A v Mitres Team B,Reciprocal scorecards for a tied intra-club match.
-fuse,2023-08-20,Mitres internal match,medium,"863352, 863353",,Opposite one-run results; one source contains a first-innings total discrepancy.
+fuse,2023-08-20,Mitres internal match,high,"863352, 863353",,"Opposite one-run results. Where the reciprocal cards disagree, the higher recorded total is retained: 89 and 79."
 fuse,2026-04-12,Martin's Marvellous Men v Prab's Passionate People,high,"941085, 941086",Martin's Marvellous Men v Prab's Passionate People,Mirrored 176 and 160 totals with opposite 16-run results.
 fuse,2026-05-04,Ansh's Banshees v Kasun's Passions,high,"943511, 943706",Ansh's Banshees v Kasun's Passions,Mirrored 219 and 220 totals and complementary one-off South team names.
 fuse,2026-08-11,Peter's Pirates v Kasun's Passions,high,aggregate records only,Peter's Pirates v Kasun's Passions,Complementary aggregate batting and bowling records reconstruct one 144 v 138 internal fixture; source scorecards are not currently available.

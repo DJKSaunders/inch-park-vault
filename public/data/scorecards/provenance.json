@@ -2,7 +2,7 @@
   "authoritativeCareerRecords": true,
   "authoritativeScorecards": false,
   "careerRecords": "public/data/records.json",
-  "careerRecordsSha256": "b325c3bb4ca622a0e5e1d7c5908b84911ae1105aaa064d6e43cdb921d33d2704",
+  "careerRecordsSha256": "dc4b1a4e4e16ed320e9efba41012b82fcf6f270bfdb39903aebe3f7df4e4f9a3",
   "generatedAt": "2026-08-10T15:09:25.605881+00:00",
   "schemaVersion": "1.0.0",
   "source": "https://www.edinburghsouthcc.org",

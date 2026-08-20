@@ -48,13 +48,13 @@ class InternalFixtureAuditTests(unittest.TestCase):
             {"E=MCC", "Eccentric Flamingoes"},
         )
 
-    def test_aggregate_only_2026_fixture_has_named_sides(self):
+    def test_resolved_2026_fixture_has_source_scorecards_and_named_sides(self):
         candidate = next(
             row
             for row in self.review["fuseCandidates"]
             if row["date"] == "2026-08-11"
         )
-        self.assertEqual(candidate["sourceFixtureIds"], [])
+        self.assertEqual(candidate["sourceFixtureIds"], ["946893", "946894"])
         self.assertEqual(
             candidate["scratchSides"],
             ["Peter's Pirates", "Kasun's Passions"],

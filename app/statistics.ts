@@ -78,6 +78,7 @@ export type PlayerProfileSummary = {
   name: string;
   career: SerializedPlayerStats;
   seasons: { season: number; stats: SerializedPlayerStats }[];
+  teams: { team: string; stats: SerializedPlayerStats }[];
   battingSeasons: number[];
   bowlingSeasons: number[];
   boundaries: { fours: number; sixes: number };

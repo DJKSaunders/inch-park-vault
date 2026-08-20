@@ -1428,6 +1428,97 @@
   font-size: 12px;
 }
 
+.profile-xi-summary {
+  margin-top: 72px;
+}
+
+.profile-xi-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-xi-tabs { display: flex; border-top: 1px solid var(--line); }
+.profile-xi-tabs button { flex: 1; padding: 18px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--cream-2); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.profile-xi-tabs button.active { background: var(--gold); color: var(--navy-950); }
+.profile-xi-table { display: none; }
+.profile-xi-table.active { display: table; }
+
+.profile-xi-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-xi-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.profile-xi-table th,
+.profile-xi-table td {
+  height: 58px;
+  padding: 10px 13px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.profile-xi-table thead th {
+  color: var(--cream-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-xi-table tfoot th,
+.profile-xi-table tfoot td {
+  color: var(--gold);
+  border-top: 2px solid var(--gold);
+  border-bottom: 0;
+  font-weight: 800;
+}
+
+.profile-xi-table tfoot th {
+  font-family: var(--font-display);
+  font-size: 21px;
+  text-transform: uppercase;
+}
+
+.profile-xi-table th:first-child,
+.profile-xi-table tbody th {
+  text-align: left;
+}
+
+.profile-xi-table tbody th {
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.profile-xi-table tbody td {
+  color: var(--cream);
+  font-size: 14px;
+}
+
+.profile-xi-table tbody tr:last-child th,
+.profile-xi-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.profile-xi-table tbody tr:hover {
+  background: var(--navy-850);
+}
+
 .profile-history-panel > div {
   border-top: 1px solid var(--line);
 }
@@ -1766,6 +1857,58 @@
 }
 
 @media (max-width: 760px) {
+  .profile-xi-summary {
+    margin-top: 52px;
+  }
+
+  .profile-xi-tabs { display: none; }
+  .profile-xi-table { display: table; }
+  .profile-xi-bowling { margin-top: 24px; }
+
+  .profile-xi-table th,
+  .profile-xi-table td {
+    height: 52px;
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  .profile-xi-table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .profile-xi-table th:first-child,
+  .profile-xi-table td:first-child {
+    width: 28%;
+  }
+
+  .profile-xi-table tbody th,
+  .profile-xi-table tfoot th {
+    font-size: 15px;
+  }
+
+  .profile-xi-table thead th {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .profile-xi-table caption {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 18px 0 10px;
+    clip: auto;
+    color: var(--gold);
+    overflow: visible;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: normal;
+  }
+
   .profile-appearance-head {
     display: none;
   }

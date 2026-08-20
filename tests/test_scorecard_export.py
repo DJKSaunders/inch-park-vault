@@ -457,6 +457,15 @@ class ScorecardExportTests(unittest.TestCase):
         self.assertEqual(profile["career"]["outs"], 1)
         self.assertEqual(profile["career"]["bestWickets"], 3)
         self.assertEqual(profile["career"]["bestRuns"], 18)
+        self.assertEqual(
+            profile["teams"],
+            [
+                {
+                    "team": "1st XI",
+                    "stats": profile["career"],
+                }
+            ],
+        )
         self.assertEqual(profile["boundaries"], {"fours": 12, "sixes": 2})
         self.assertEqual(
             [row["season"] for row in profile["seasons"]], [2025, 2026]

@@ -79,6 +79,9 @@ jobs:
             "$UPDATE_DIRECTORY/batting.xml" "$UPDATE_DIRECTORY/bowling.xml" "$UPDATE_DIRECTORY/averages.xlsx" \
             --season "$SEASON" > records-refresh.json
 
+      - name: Apply approved internal-fixture rules
+        run: python scripts/apply_internal_fixture_rules.py > internal-fixture-rules.json
+
       - name: Rebuild scorecard enrichment
         if: env.SCRAPE_SCORECARDS == 'true'
         run: |
