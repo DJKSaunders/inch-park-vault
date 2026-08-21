@@ -72,7 +72,7 @@
       "bowlingBallsAvailable": 457,
       "bowlingSpells": 457,
       "fieldingAvailable": 148,
-      "matches": 71
+      "matches": 70
     },
     "2012": {
       "battingBallsAvailable": 18,
@@ -81,7 +81,7 @@
       "bowlingBallsAvailable": 354,
       "bowlingSpells": 354,
       "fieldingAvailable": 113,
-      "matches": 61
+      "matches": 60
     },
     "2013": {
       "battingBallsAvailable": 64,
@@ -153,7 +153,7 @@
       "bowlingBallsAvailable": 230,
       "bowlingSpells": 230,
       "fieldingAvailable": 47,
-      "matches": 32
+      "matches": 26
     },
     "2021": {
       "battingBallsAvailable": 307,
@@ -162,7 +162,7 @@
       "bowlingBallsAvailable": 517,
       "bowlingSpells": 517,
       "fieldingAvailable": 166,
-      "matches": 79
+      "matches": 76
     },
     "2022": {
       "battingBallsAvailable": 387,
@@ -171,7 +171,7 @@
       "bowlingBallsAvailable": 768,
       "bowlingSpells": 768,
       "fieldingAvailable": 216,
-      "matches": 112
+      "matches": 111
     },
     "2023": {
       "battingBallsAvailable": 458,
@@ -180,7 +180,7 @@
       "bowlingBallsAvailable": 796,
       "bowlingSpells": 796,
       "fieldingAvailable": 198,
-      "matches": 120
+      "matches": 118
     },
     "2024": {
       "battingBallsAvailable": 879,
@@ -207,7 +207,7 @@
       "bowlingBallsAvailable": 870,
       "bowlingSpells": 870,
       "fieldingAvailable": 333,
-      "matches": 130
+      "matches": 127
     }
   }
 }

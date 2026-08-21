@@ -5699,6 +5699,90 @@ footer p {
   color: white;
 }
 
+.outcome-internal {
+  background: var(--navy-850);
+  color: var(--cream);
+}
+
+/* The compact header applies below 1200px. Keep the burger available across
+   that entire range; previously the desktop links were hidden from 761–1200px
+   while the mobile control did not begin until 760px. */
+@media (min-width: 761px) and (max-width: 1200px) {
+  .site-header .desktop-navigation {
+    display: none;
+  }
+
+  .site-header .mobile-navigation {
+    position: relative;
+    display: block;
+  }
+
+  .site-header .mobile-navigation-toggle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    color: var(--cream);
+    border: 1px solid var(--line);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .site-header .burger-icon {
+    width: 20px;
+    height: 16px;
+    position: relative;
+    display: block;
+  }
+
+  .site-header .burger-icon i {
+    position: absolute;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    display: block;
+    background: currentColor;
+  }
+
+  .site-header .burger-icon i:nth-child(1) { top: 0; }
+  .site-header .burger-icon i:nth-child(2) { top: 7px; }
+  .site-header .burger-icon i:nth-child(3) { top: 14px; }
+
+  .site-header .mobile-navigation nav {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 210px;
+    padding: 8px;
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--navy-900);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .site-header .mobile-navigation nav[data-open="false"] { display: none; }
+  .site-header .mobile-navigation nav[data-open="true"] { display: grid; }
+
+  .site-header .mobile-navigation nav a,
+  .site-header .mobile-navigation nav a:first-child {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header .mobile-navigation nav a > img {
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
+    object-fit: contain;
+  }
+}
+
 .match-card-arrow {
   color: var(--orange);
   font-size: 25px;

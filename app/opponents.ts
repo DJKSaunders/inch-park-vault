@@ -241,3 +241,16 @@ export function displayOpponent(rawOpponent: string | null | undefined) {
   if (teamNumber) return `${club} ${teamNumber}`;
   return multiXiOpponents.has(club) ? `${club} 1` : club;
 }
+
+/** Fixture labels omit opposing XI grades in cup and Mitres-friendly games. */
+export function displayFixtureOpponent(
+  rawOpponent: string | null | undefined,
+  context?: { competition?: string | null; esccTeam?: string | null },
+) {
+  const competition = context?.competition?.toLocaleLowerCase() ?? "";
+  const esccTeam = context?.esccTeam?.toLocaleLowerCase() ?? "";
+  if (competition.includes("cup") || esccTeam.includes("mitres")) {
+    return canonicalOpponent(rawOpponent);
+  }
+  return displayOpponent(rawOpponent);
+}

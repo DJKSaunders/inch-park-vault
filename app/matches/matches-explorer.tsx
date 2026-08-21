@@ -1,7 +1,7 @@
 "use client";
 
 import { type FormEvent, useEffect, useMemo, useState } from "react";
-import { canonicalOpponent, displayOpponent } from "../opponents";
+import { canonicalOpponent, displayFixtureOpponent } from "../opponents";
 import { SiteHeader } from "../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -20,9 +20,11 @@ type MatchIndexRow = {
   date: string;
   season: number;
   esccTeam: string | null;
+  sourceTeam?: string | null;
   opposition: string | null;
   competition: string | null;
   outcome: string;
+  internalSides?: [string, string];
   result: string;
   teams: string[];
   players: string[];
@@ -66,6 +68,7 @@ const outcomeLabels: Record<string, string> = {
   draw: "Drawn",
   abandoned: "Abandoned",
   concession: "Conceded",
+  internal: "Internal",
 };
 
 function formatDate(value: string) {
@@ -90,13 +93,29 @@ function scoreLabel(score: ScoreSummary) {
 }
 
 function scoreTeamLabel(score: ScoreSummary, match: MatchIndexRow) {
+  if (match.internalSides) return score.team;
+  if (/^edinburgh south cricket club\b/i.test(score.team ?? "")) {
+    return match.sourceTeam ?? match.esccTeam ?? "Edinburgh South";
+  }
   if (
     score.team &&
     canonicalOpponent(score.team) === canonicalOpponent(match.opposition)
   ) {
-    return displayOpponent(score.team);
+    return displayFixtureOpponent(score.team, {
+      competition: match.competition,
+      esccTeam: match.sourceTeam ?? match.esccTeam,
+    });
   }
   return score.team;
+}
+
+function conciseResult(match: MatchIndexRow) {
+  if (match.outcome !== "win" && match.outcome !== "loss") return match.result;
+  const label = outcomeLabels[match.outcome];
+  const detail = match.result
+    .replace(/^edinburgh south cricket club\s+(?:won|lost)\s*(?:by\s*)?/i, "")
+    .trim();
+  return detail ? `${label} by ${detail}` : label;
 }
 
 function matchSearchText(match: MatchIndexRow) {
@@ -330,12 +349,12 @@ export function MatchesExplorer() {
               </div>
               <div className="match-card-main">
                 <div className="match-card-labels">
-                  <span>{match.esccTeam ?? "ESCC"}</span>
+                  <span>{match.outcome === "internal" ? "Internal Friendly" : match.esccTeam ?? "ESCC"}</span>
                   <span>{match.competition ?? "Match"}</span>
                   <span>Match #{match.matchNumber}</span>
                 </div>
-                <h3>v {displayOpponent(match.opposition)}</h3>
-                <p>{match.result}</p>
+                <h3>{match.internalSides ? `${match.internalSides[0]} v ${match.internalSides[1]}` : displayFixtureOpponent(match.opposition, { competition: match.competition, esccTeam: match.sourceTeam ?? match.esccTeam })}</h3>
+                <p>{conciseResult(match)}</p>
               </div>
               <div className="match-card-scores" aria-label="Innings scores">
                 {match.scores.map((score, index) => (

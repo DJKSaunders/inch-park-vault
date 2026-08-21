@@ -5,7 +5,7 @@ import { DismissalBreakdown } from "../../components/dismissal-pie";
 import { SeasonChart } from "../../components/season-chart";
 import { capTooltip } from "../../cap-numbers";
 import { SiteHeader } from "../../site-header";
-import { displayOpponent } from "../../opponents";
+import { displayFixtureOpponent } from "../../opponents";
 import {
   boundarySeasons,
   inflatePlayerStats,
@@ -548,7 +548,10 @@ export function PlayerProfile({
                       </time>
                       <strong>
                         {appearance.team ?? "ESCC"} v{" "}
-                        {displayOpponent(appearance.opposition)}
+                        {displayFixtureOpponent(appearance.opposition, {
+                          competition: appearance.competition,
+                          esccTeam: appearance.team,
+                        })}
                       </strong>
                       <small className={`profile-result-chip outcome-${appearance.outcome}`}>
                         {appearance.outcome}

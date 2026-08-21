@@ -100,6 +100,15 @@ approval.
 
 ## Data audits
 
+### DATA-004 — Venue data for scorecards
+
+- **Status:** Deferred
+- Add a reliable ground/venue field to Match Archive cards and individual
+  scorecards.
+- Source this from fixture listings or another explicit venue feed; do not
+  infer it from home/away status, as neutral grounds and exceptions exist.
+- Show the venue only where a source value is available.
+
 ### AUDIT-001 — Jaskaran Singh wicket discrepancy
 
 - **Status:** Blocked pending additional source evidence

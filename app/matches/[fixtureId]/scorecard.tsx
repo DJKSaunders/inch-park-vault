@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { displayOpponent } from "../../opponents";
+import { displayFixtureOpponent } from "../../opponents";
 import { SiteHeader } from "../../site-header";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -67,6 +67,7 @@ type Match = {
   esccTeam: string | null;
   opposition: string | null;
   competition: string | null;
+  internalSides?: [string, string];
   result: {
     summary: string;
     outcome: string;
@@ -74,6 +75,7 @@ type Match = {
   innings: Innings[];
   provenance: {
     sourceUrl: string;
+    sourceUrls?: string[];
     authoritative: boolean;
   };
 };
@@ -192,6 +194,12 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
     );
   }
 
+  const isInternal = Boolean(match.internalSides);
+  const [homeSide, awaySide] = match.internalSides ?? [
+    match.esccTeam ?? "Edinburgh South",
+    displayFixtureOpponent(match.opposition, match),
+  ];
+
   return (
     <main className="vault-app scorecard-app">
       <SiteHeader active="matches" />
@@ -202,12 +210,11 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
         </a>
         <div className="scorecard-meta">
           <span>{match.competition ?? "Match"}</span>
-          <span>{match.esccTeam ?? "ESCC"}</span>
+          <span>{isInternal ? "Internal" : match.esccTeam ?? "ESCC"}</span>
           <span>Match #{match.matchNumber}</span>
         </div>
         <h1>
-          {match.esccTeam ?? "Edinburgh South"} <em>v</em>{" "}
-          {displayOpponent(match.opposition)}
+          {homeSide} <em>v</em> {awaySide}
         </h1>
         <p>{formatDate(match.date)}</p>
         <strong className={`scorecard-result outcome-${match.result.outcome}`}>
@@ -222,7 +229,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
               <div key={innings.id}>
                 <span>
                   {innings.battingTeamRole === "opponent"
-                    ? displayOpponent(innings.battingTeam)
+                    ? displayFixtureOpponent(innings.battingTeam, match)
                     : innings.battingTeam}
                 </span>
                 <strong>{totalLabel(innings)}</strong>
@@ -255,7 +262,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                   <span>Innings {innings.number}</span>
                   <h2>
                     {innings.battingTeamRole === "opponent"
-                      ? displayOpponent(innings.battingTeam)
+                      ? displayFixtureOpponent(innings.battingTeam, match)
                       : innings.battingTeam}
                   </h2>
                 </div>
@@ -275,7 +282,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                   <table className="scorecard-table batting-card">
                     <caption>
                       {innings.battingTeamRole === "opponent"
-                        ? displayOpponent(innings.battingTeam)
+                        ? displayFixtureOpponent(innings.battingTeam, match)
                         : innings.battingTeam}{" "}
                       batting
                     </caption>
@@ -352,7 +359,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
               <section className="scorecard-section">
                 <h3>
                   {innings.bowlingTeamRole === "opponent"
-                    ? displayOpponent(innings.bowlingTeam)
+                    ? displayFixtureOpponent(innings.bowlingTeam, match)
                     : innings.bowlingTeam}{" "}
                   bowling
                 </h3>
@@ -360,7 +367,7 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
                   <table className="scorecard-table bowling-card">
                     <caption>
                       {innings.bowlingTeamRole === "opponent"
-                        ? displayOpponent(innings.bowlingTeam)
+                        ? displayFixtureOpponent(innings.bowlingTeam, match)
                         : innings.bowlingTeam}{" "}
                       bowling
                     </caption>
@@ -406,9 +413,13 @@ export function MatchScorecard({ fixtureId }: { fixtureId: string }) {
         })}
 
         <aside className="scorecard-source">
-          <a href={match.provenance.sourceUrl} target="_blank" rel="noreferrer">
-            View original scorecard <span aria-hidden="true">↗</span>
-          </a>
+          {(match.provenance.sourceUrls ?? [match.provenance.sourceUrl]).map(
+            (sourceUrl, index) => (
+              <a key={sourceUrl} href={sourceUrl} target="_blank" rel="noreferrer">
+                {isInternal ? `View original scorecard ${index + 1}` : "View original scorecard"} <span aria-hidden="true">↗</span>
+              </a>
+            ),
+          )}
         </aside>
       </section>
 

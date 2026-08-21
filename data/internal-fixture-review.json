@@ -126,6 +126,7 @@
       "date": "2026-08-11",
       "label": "Peter's Pirates v Kasun's Passions",
       "sourceFixtureIds": ["946893", "946894"],
+      "sideFixtureIds": ["946894", "946893"],
       "scratchSides": ["Peter's Pirates", "Kasun's Passions"],
       "confidence": "high",
       "canonicalInningsTotals": [146, 146],

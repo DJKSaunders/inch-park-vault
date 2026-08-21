@@ -12,14 +12,29 @@ class InternalFixtureAuditTests(unittest.TestCase):
         cls.review = json.loads((ROOT / "data/internal-fixture-review.json").read_text())
         index = json.loads((ROOT / "public/data/scorecards/index.json").read_text())
         cls.matches = {row["fixtureId"]: row for row in index["matches"]}
+        cls.source_matches = {
+            path.stem: json.loads(path.read_text())
+            for path in (ROOT / "public/data/scorecards/matches").glob("*.json")
+        }
+        cls.fused_source_ids = {
+            fixture_id
+            for match in cls.source_matches.values()
+            for fixture_id in match.get("sourceFixtureIds", [])
+        }
 
     def test_reviewed_fixture_ids_are_unique_and_exist(self):
         used = []
         for key in ("fuseCandidates", "singleInternalCandidates"):
             for candidate in self.review[key]:
                 for fixture_id in candidate.get("sourceFixtureIds", []):
-                    self.assertIn(fixture_id, self.matches)
-                    self.assertEqual(self.matches[fixture_id]["date"], candidate["date"])
+                    self.assertTrue(
+                        fixture_id in self.source_matches
+                        or fixture_id in self.fused_source_ids
+                    )
+                    if fixture_id in self.source_matches:
+                        self.assertEqual(
+                            self.source_matches[fixture_id]["date"], candidate["date"]
+                        )
                     used.append(fixture_id)
         self.assertEqual(len(used), len(set(used)))
 

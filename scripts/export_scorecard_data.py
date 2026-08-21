@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import calendar
+import copy
 import hashlib
 import importlib.util
 import json
@@ -549,7 +550,8 @@ def match_index_row(match: dict[str, Any]) -> dict[str, Any]:
         "matchNumber": match["matchNumber"],
         "date": match["date"],
         "season": match["season"],
-        "esccTeam": match["esccTeam"],
+        "esccTeam": match["archiveTeam"],
+        "sourceTeam": match["esccTeam"],
         "opposition": match["opposition"],
         "competition": match["competition"],
         "outcome": match["result"]["outcome"],
@@ -559,6 +561,100 @@ def match_index_row(match: dict[str, Any]) -> dict[str, Any]:
         "scores": score_summary(match),
         "path": f"matches/{match['fixtureId']}.json",
     }
+
+
+def apply_internal_archive_rules(matches: list[dict[str, Any]]) -> None:
+    review = json.loads(INTERNAL_FIXTURE_REVIEW_PATH.read_text())
+    primary_ids = set()
+    all_ids = set()
+    sides_by_id = {}
+    for section in ("fuseCandidates", "singleInternalCandidates"):
+        for candidate in review[section]:
+            ids = candidate.get("sourceFixtureIds", [])
+            all_ids.update(ids)
+            sides = candidate.get("scratchSides") or ["Internal A", "Internal B"]
+            for fixture_id in ids:
+                sides_by_id[fixture_id] = sides
+            if ids:
+                primary_ids.add(ids[0])
+    for match in matches:
+        internal = match["fixtureId"] in all_ids
+        match["archiveTeam"] = "Internal" if internal else match["esccTeam"]
+        match["archiveVisible"] = not internal or match["fixtureId"] in primary_ids
+        if internal:
+            match["internalSides"] = sides_by_id[match["fixtureId"]]
+
+
+def fuse_internal_scorecards(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Replace reciprocal internal cards with one canonical two-sided card."""
+
+    review = json.loads(INTERNAL_FIXTURE_REVIEW_PATH.read_text())
+    by_id = {match["fixtureId"]: match for match in matches}
+    consumed: set[str] = set()
+    fused: list[dict[str, Any]] = []
+
+    for candidate in review["fuseCandidates"]:
+        fixture_ids = candidate.get("sourceFixtureIds", [])
+        if len(fixture_ids) != 2 or not all(key in by_id for key in fixture_ids):
+            continue
+        sides = candidate.get("scratchSides") or ["Internal A", "Internal B"]
+        if len(sides) != 2:
+            continue
+        side_fixture_ids = candidate.get("sideFixtureIds") or fixture_ids
+        selected = []
+        for source_id in side_fixture_ids:
+            innings = next(
+                (section for section in by_id[source_id]["innings"]
+                 if section["battingTeamRole"] == "escc"),
+                None,
+            )
+            if innings is None:
+                selected = []
+                break
+            selected.append(copy.deepcopy(innings))
+        if len(selected) != 2:
+            continue
+
+        canonical_id = fixture_ids[0]
+        canonical = copy.deepcopy(by_id[canonical_id])
+        canonical_innings = []
+        for number, (innings, batting_side) in enumerate(zip(selected, sides), start=1):
+            bowling_side = sides[1] if number == 1 else sides[0]
+            bowling_source_id = side_fixture_ids[1] if number == 1 else side_fixture_ids[0]
+            bowling_source = next(
+                (section for section in by_id[bowling_source_id]["innings"]
+                 if section["bowlingTeamRole"] == "escc"),
+                None,
+            )
+            innings.update({
+                "id": f"{canonical_id}-{number}", "number": number,
+                "battingTeam": batting_side, "bowlingTeam": bowling_side,
+                "battingTeamRole": "escc", "bowlingTeamRole": "escc",
+                "esccTeam": "Internal", "esccBowlingTeam": "Internal",
+            })
+            if bowling_source is not None:
+                innings["bowling"] = copy.deepcopy(bowling_source["bowling"])
+            canonical_innings.append(innings)
+
+        totals = candidate.get("canonicalInningsTotals")
+        if totals:
+            for innings, runs in zip(canonical_innings, totals):
+                if innings.get("total"):
+                    innings["total"]["runs"] = runs
+        canonical.update({
+            "title": candidate.get("label", "Internal Club Friendly"),
+            "teams": sides, "esccTeam": "Internal", "opposition": "Internal",
+            "result": {"summary": "Internal Club Friendly", "outcome": "internal"},
+            "internalSides": sides, "sourceFixtureIds": fixture_ids,
+            "innings": canonical_innings,
+        })
+        canonical["provenance"]["sourceUrls"] = [
+            by_id[source_id]["provenance"]["sourceUrl"] for source_id in fixture_ids
+        ]
+        fused.append(canonical)
+        consumed.update(fixture_ids)
+
+    return [match for match in matches if match["fixtureId"] not in consumed] + fused
 
 
 def escc_player_rows(
@@ -1661,8 +1757,11 @@ def export(
             )
         )
     matches.sort(key=lambda row: (row["date"], row["fixtureId"]))
+    matches = fuse_internal_scorecards(matches)
+    matches.sort(key=lambda row: (row["date"], row["fixtureId"]))
     for match_number, match in enumerate(matches, start=1):
         match["matchNumber"] = match_number
+    apply_internal_archive_rules(matches)
 
     (
         player_index,
@@ -1734,7 +1833,7 @@ def export(
         for player_id, profile in record_profiles.items():
             compact_json(temp_path / "profiles" / f"{player_id}.json", profile)
 
-        index_rows = [match_index_row(match) for match in matches]
+        index_rows = [match_index_row(match) for match in matches if match["archiveVisible"]]
         index = {
             "schemaVersion": SCHEMA_VERSION,
             "generatedAt": source["meta"]["generatedAt"],
@@ -1745,7 +1844,7 @@ def export(
                 "seasonStart": min(row["season"] for row in matches),
                 "seasonEnd": max(row["season"] for row in matches),
                 "teams": sorted(
-                    {row["esccTeam"] for row in matches if row["esccTeam"]}
+                    {row["archiveTeam"] for row in matches if row["archiveTeam"]}
                 ),
                 "competitions": sorted(
                     {

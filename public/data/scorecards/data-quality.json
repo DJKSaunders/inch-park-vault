@@ -3157,6 +3157,30 @@
       "playerId": "p-charanjit-singh-wazir-1ca62d60"
     },
     {
+      "fixtureId": "753407",
+      "inningsCount": 2,
+      "player": "Charanjit Singh Wazir",
+      "playerId": "p-charanjit-singh-wazir-1ca62d60"
+    },
+    {
+      "fixtureId": "753409",
+      "inningsCount": 2,
+      "player": "Charanjit Singh Wazir",
+      "playerId": "p-charanjit-singh-wazir-1ca62d60"
+    },
+    {
+      "fixtureId": "779649",
+      "inningsCount": 2,
+      "player": "Anura Suriyapperuma",
+      "playerId": "p-anura-suriyapperuma-b3356594"
+    },
+    {
+      "fixtureId": "779649",
+      "inningsCount": 2,
+      "player": "Jeremy Blood",
+      "playerId": "p-jeremy-blood-380e0c6b"
+    },
+    {
       "fixtureId": "779649",
       "inningsCount": 2,
       "player": "Keshav Bhatnagar",
@@ -3169,28 +3193,22 @@
       "playerId": "p-kiran-sv-87ddf68c"
     },
     {
-      "fixtureId": "780720",
-      "inningsCount": 2,
-      "player": "Anura Suriyapperuma",
-      "playerId": "p-anura-suriyapperuma-b3356594"
-    },
-    {
-      "fixtureId": "780720",
-      "inningsCount": 2,
-      "player": "Jeremy Blood",
-      "playerId": "p-jeremy-blood-380e0c6b"
-    },
-    {
-      "fixtureId": "780720",
+      "fixtureId": "779649",
       "inningsCount": 2,
       "player": "Mohandoss Ilangovan",
       "playerId": "p-mohandoss-ilangovan-1b36dcd8"
     },
     {
-      "fixtureId": "780720",
+      "fixtureId": "779649",
       "inningsCount": 2,
       "player": "Sidharth Kashyap",
       "playerId": "p-sidharth-kashyap-a0f61d64"
+    },
+    {
+      "fixtureId": "781386",
+      "inningsCount": 2,
+      "player": "Bailey Brookes",
+      "playerId": "p-bailey-brookes-41aca146"
     },
     {
       "fixtureId": "781386",
@@ -3205,25 +3223,19 @@
       "playerId": "p-keshav-bhatnagar-01fe9234"
     },
     {
-      "fixtureId": "782086",
-      "inningsCount": 2,
-      "player": "Bailey Brookes",
-      "playerId": "p-bailey-brookes-41aca146"
-    },
-    {
-      "fixtureId": "831124",
+      "fixtureId": "830735",
       "inningsCount": 2,
       "player": "David Richardson",
       "playerId": "p-david-richardson-0e407c2b"
     },
     {
-      "fixtureId": "831124",
+      "fixtureId": "830735",
       "inningsCount": 2,
       "player": "Eóghan Forde",
       "playerId": "p-e-ghan-forde-711b9e92"
     },
     {
-      "fixtureId": "831124",
+      "fixtureId": "830735",
       "inningsCount": 2,
       "player": "Jaskaran Singh",
       "playerId": "p-jaskaran-singh-db0fa705"
@@ -3244,16 +3256,16 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15757,
+    "appearanceCount": 15752,
     "battingInningsCount": 13141,
     "bowlingSpellCount": 9407,
     "calculatedInningsOversCount": 610,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2433,
-    "fixtureCount": 1494,
+    "dnbOnlyAppearanceCount": 2430,
+    "fixtureCount": 1477,
     "matchedRecordPlayerCount": 649,
     "matchedScorecardPlayerCount": 646,
-    "multipleBattingInningsAppearanceCount": 16,
+    "multipleBattingInningsAppearanceCount": 18,
     "playerCount": 647,
     "recordPlayerCount": 660,
     "sourceParseWarningCount": 0,
@@ -3261,8 +3273,8 @@
     "suppressedAdministrativeFixtureCount": 15,
     "suppressedDnbRows": 12,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15757,
-    "uniqueFixtureIds": 1494,
+    "uniqueAppearanceKeys": 15752,
+    "uniqueFixtureIds": 1477,
     "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
