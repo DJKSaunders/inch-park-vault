@@ -17,6 +17,20 @@ pnpm run build
 
 ### Routine updates without Codex
 
+The easiest route is the local **Vault Updater**: double-click
+[`tools/Start Vault Updater.command`](tools/Start%20Vault%20Updater.command).
+It opens a local page where you select the three files, choose a season and
+first run a non-publishing review. After checking the GitHub report, select
+that staged package, confirm you have reviewed it and choose **Apply and
+deploy**. The updater uses the existing authenticated `gh` command, so it does
+not store a GitHub password or token. If GitHub CLI is not authenticated, run
+`gh auth login` once in Terminal.
+
+Every updater run refreshes the selected season's public scorecards and then
+rebuilds the records, profiles, milestones, cap register, team summaries and
+archive insights together. A consistency check blocks publication if any of
+those datasets is behind the refreshed records.
+
 The normal operational route is **GitHub → Actions → Refresh Vault data**.
 Upload the three exports to a dated folder in [`data/updates`](data/updates/README.md),
 run the action once with **Apply changes** off, inspect its downloadable report,

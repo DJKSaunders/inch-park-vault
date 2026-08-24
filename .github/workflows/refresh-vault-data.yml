@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       scrape_scorecards:
-        description: "Discover and refresh scorecards for this season"
+        description: "Required: discover and refresh scorecards for this season"
         required: true
         default: true
         type: boolean
@@ -65,13 +65,9 @@ jobs:
         run: |
           python scripts/validate_update_package.py "$UPDATE_DIRECTORY" --season "$SEASON" --output update-validation.json
 
-      - name: Discover selected season's scorecards
-        if: env.SCRAPE_SCORECARDS == 'true'
+      - name: Require a complete refresh
         run: |
-          python scripts/scrape_scorecards.py --seasons "$SEASON" --sample-per-season 0 --delay 1.0 \
-            --output-dir data/scorecards/refresh --cache-dir data/scorecards/cache --quiet > scorecard-refresh.json
-          python scripts/merge_scorecard_archive.py data/scorecards/archive/scorecards.json \
-            data/scorecards/refresh/scorecards.json --season "$SEASON" > scorecard-merge.json
+          test "$SCRAPE_SCORECARDS" = "true" || (echo "Scorecard refresh is required to keep all Vault sections in sync." && exit 1)
 
       - name: Refresh authoritative career records
         run: |
@@ -79,13 +75,30 @@ jobs:
             "$UPDATE_DIRECTORY/batting.xml" "$UPDATE_DIRECTORY/bowling.xml" "$UPDATE_DIRECTORY/averages.xlsx" \
             --season "$SEASON" > records-refresh.json
 
+      - name: Discover selected season's scorecards
+        run: |
+          python scripts/scrape_scorecards.py --seasons "$SEASON" --sample-per-season 0 --delay 1.0 \
+            --output-dir data/scorecards/refresh --cache-dir data/scorecards/cache --quiet > scorecard-refresh.json
+          python scripts/merge_scorecard_archive.py data/scorecards/archive/scorecards.json \
+            data/scorecards/refresh/scorecards.json --season "$SEASON" > scorecard-merge.json
+
       - name: Apply approved internal-fixture rules
         run: python scripts/apply_internal_fixture_rules.py > internal-fixture-rules.json
 
       - name: Rebuild scorecard enrichment
-        if: env.SCRAPE_SCORECARDS == 'true'
         run: |
           python scripts/export_scorecard_data.py > scorecard-export.json
+
+      - name: Continue competitive cap numbers
+        run: |
+          python scripts/refresh_cap_numbers.py > cap-number-refresh.json
+          python scripts/export_cap_numbers.py > cap-number-export.txt
+
+      - name: Rebuild archive insights and team summaries
+        run: python scripts/export_archive_developments.py
+
+      - name: Check every site dataset is aligned
+        run: python scripts/check_data_consistency.py > data-consistency.json
 
       - name: Run data checks
         run: |
@@ -103,6 +116,8 @@ jobs:
             scorecard-refresh.json
             scorecard-merge.json
             scorecard-export.json
+            cap-number-refresh.json
+            data-consistency.json
             public/data/records-quality.json
             public/data/scorecards/data-quality.json
           if-no-files-found: ignore
@@ -114,7 +129,7 @@ jobs:
         run: |
           git config user.name "Vault refresh bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data data/scorecards/archive/scorecards.json
+          git add public/data data/scorecards/archive/scorecards.json data/cap-numbers-source.json
           git diff --cached --quiet || git commit -m "Refresh Vault data through $SEASON"
           git push
           gh workflow run deploy-pages.yml --ref main

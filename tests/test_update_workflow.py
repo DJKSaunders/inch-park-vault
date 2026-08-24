@@ -23,6 +23,14 @@ MERGER = module("merge_scorecard_archive")
 
 
 class UpdateWorkflowTests(unittest.TestCase):
+    def test_workflow_rebuilds_every_derived_dataset(self):
+        workflow = (ROOT / ".github/workflows/refresh-vault-data.yml").read_text()
+        self.assertIn("Scorecard refresh is required", workflow)
+        self.assertIn("python scripts/export_scorecard_data.py", workflow)
+        self.assertIn("python scripts/refresh_cap_numbers.py", workflow)
+        self.assertIn("python scripts/export_archive_developments.py", workflow)
+        self.assertIn("python scripts/check_data_consistency.py", workflow)
+
     def test_package_path_rejects_directories_outside_updates(self):
         with self.assertRaises(ValueError):
             VALIDATOR.package_path("public/data")
