@@ -2,11 +2,11 @@
   "authoritativeCareerRecords": true,
   "authoritativeScorecards": false,
   "careerRecords": "public/data/records.json",
-  "careerRecordsSha256": "dc4b1a4e4e16ed320e9efba41012b82fcf6f270bfdb39903aebe3f7df4e4f9a3",
+  "careerRecordsSha256": "c6a7e97c816f35ed0d6a2150b9a38a225876779a077bc9b18ebc0cfb4f622c48",
   "generatedAt": "2026-08-10T15:09:25.605881+00:00",
   "schemaVersion": "1.0.0",
   "source": "https://www.edinburghsouthcc.org",
   "sourceArchive": "data/scorecards/archive/scorecards.json",
-  "sourceArchiveSha256": "03321ba44ed00f5c7a8c4e7fa901f0a9d46455f36516e5bc6a0a196433f39b75",
-  "sourceScorecardCount": 1494
+  "sourceArchiveSha256": "e1ea4bbced6b934fd75dbc04dd29dd5d32f15343f049e5047eb6178e3e4fa882",
+  "sourceScorecardCount": 1501
 }

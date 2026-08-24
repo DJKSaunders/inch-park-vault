@@ -216,8 +216,8 @@
       }
     ],
     "multipleBattingInnings": [],
-    "outputRowCount": 1450,
-    "sourceRowCount": 1454,
+    "outputRowCount": 1526,
+    "sourceRowCount": 1531,
     "suppressedDnbRows": [
       {
         "date": "2026-05-09",
@@ -239,6 +239,13 @@
         "player": "Keshav Bhatnagar",
         "suppressedRows": 1,
         "team": "4th XI"
+      },
+      {
+        "date": "2026-08-22",
+        "opposition": "Watsonian 3rds",
+        "player": "Rudolf Dsouza",
+        "suppressedRows": 1,
+        "team": "3rd XI"
       }
     ]
   },

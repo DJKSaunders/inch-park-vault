@@ -3049,6 +3049,36 @@
       "fixtureId": "933107",
       "inningsNumber": 2,
       "overs": "40.0"
+    },
+    {
+      "fixtureId": "925538",
+      "inningsNumber": 1,
+      "overs": "46.3"
+    },
+    {
+      "fixtureId": "933053",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "933071",
+      "inningsNumber": 1,
+      "overs": "23.4"
+    },
+    {
+      "fixtureId": "933089",
+      "inningsNumber": 1,
+      "overs": "38.1"
+    },
+    {
+      "fixtureId": "933108",
+      "inningsNumber": 1,
+      "overs": "40.0"
+    },
+    {
+      "fixtureId": "946749",
+      "inningsNumber": 1,
+      "overs": "16.2"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3140,8 +3170,8 @@
   "competitionClassification": {
     "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1434,
-    "missing": 45
+    "exact": 1448,
+    "missing": 38
   },
   "multipleBattingInnings": [
     {
@@ -3256,25 +3286,25 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15752,
-    "battingInningsCount": 13141,
-    "bowlingSpellCount": 9407,
-    "calculatedInningsOversCount": 610,
+    "appearanceCount": 15828,
+    "battingInningsCount": 13208,
+    "bowlingSpellCount": 9454,
+    "calculatedInningsOversCount": 616,
     "collapsedDuplicateDnbRows": 14,
-    "dnbOnlyAppearanceCount": 2430,
-    "fixtureCount": 1477,
-    "matchedRecordPlayerCount": 649,
-    "matchedScorecardPlayerCount": 646,
+    "dnbOnlyAppearanceCount": 2439,
+    "fixtureCount": 1484,
+    "matchedRecordPlayerCount": 650,
+    "matchedScorecardPlayerCount": 647,
     "multipleBattingInningsAppearanceCount": 18,
-    "playerCount": 647,
-    "recordPlayerCount": 660,
+    "playerCount": 648,
+    "recordPlayerCount": 661,
     "sourceParseWarningCount": 0,
     "status": "passed",
     "suppressedAdministrativeFixtureCount": 15,
-    "suppressedDnbRows": 12,
+    "suppressedDnbRows": 13,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15752,
-    "uniqueFixtureIds": 1477,
+    "uniqueAppearanceKeys": 15828,
+    "uniqueFixtureIds": 1484,
     "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },
@@ -3497,6 +3527,13 @@
       "fixtureId": "933088",
       "inningsNumber": 2,
       "player": "Farhan Sheikh",
+      "reason": "genuine-innings-present",
+      "rowNumber": 10
+    },
+    {
+      "fixtureId": "933071",
+      "inningsNumber": 1,
+      "player": "Rudolf Dsouza",
       "reason": "genuine-innings-present",
       "rowNumber": 10
     }
