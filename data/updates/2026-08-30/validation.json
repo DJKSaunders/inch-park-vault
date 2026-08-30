@@ -1,0 +1,13 @@
+{
+  "updateDirectory": "data/updates/2026-08-30",
+  "season": 2026,
+  "files": [
+    "averages.xlsx",
+    "batting.xml",
+    "bowling.xml"
+  ],
+  "battingRows": 1542,
+  "bowlingRows": 923,
+  "ignoredExtraFiles": [],
+  "status": "valid"
+}
