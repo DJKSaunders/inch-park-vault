@@ -3079,6 +3079,11 @@
       "fixtureId": "946749",
       "inningsNumber": 1,
       "overs": "16.2"
+    },
+    {
+      "fixtureId": "925539",
+      "inningsNumber": 1,
+      "overs": "46.2"
     }
   ],
   "collapsedDuplicateDnbRows": [
@@ -3170,7 +3175,7 @@
   "competitionClassification": {
     "curated-fixture": 14,
     "date-team": 1,
-    "exact": 1448,
+    "exact": 1449,
     "missing": 38
   },
   "multipleBattingInnings": [
@@ -3286,13 +3291,13 @@
   "schemaVersion": "1.0.0",
   "sourceParseWarnings": [],
   "summary": {
-    "appearanceCount": 15828,
-    "battingInningsCount": 13208,
-    "bowlingSpellCount": 9454,
-    "calculatedInningsOversCount": 616,
+    "appearanceCount": 15839,
+    "battingInningsCount": 13219,
+    "bowlingSpellCount": 9460,
+    "calculatedInningsOversCount": 617,
     "collapsedDuplicateDnbRows": 14,
     "dnbOnlyAppearanceCount": 2439,
-    "fixtureCount": 1484,
+    "fixtureCount": 1485,
     "matchedRecordPlayerCount": 650,
     "matchedScorecardPlayerCount": 647,
     "multipleBattingInningsAppearanceCount": 18,
@@ -3303,8 +3308,8 @@
     "suppressedAdministrativeFixtureCount": 15,
     "suppressedDnbRows": 13,
     "suppressedUnplayedInningsCount": 44,
-    "uniqueAppearanceKeys": 15828,
-    "uniqueFixtureIds": 1484,
+    "uniqueAppearanceKeys": 15839,
+    "uniqueFixtureIds": 1485,
     "unmatchedRecordPlayerCount": 11,
     "unmatchedScorecardPlayerCount": 1
   },

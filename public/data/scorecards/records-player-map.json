@@ -2572,23 +2572,23 @@
         "Asad Amir"
       ],
       "career": {
-        "appearances": 87,
-        "runs": 1014,
-        "wickets": 91
+        "appearances": 88,
+        "runs": 1039,
+        "wickets": 92
       },
       "name": "Asad Amir",
       "playerId": "p-asad-amir-a2eb20cb",
       "profilePath": "profiles/p-asad-amir-a2eb20cb.json",
       "scorecardMetrics": {
-        "battingBalls": 1096,
-        "battingInningsWithBalls": 59,
-        "battingRunsWithBalls": 711,
-        "battingStrikeRate": 64.87226277372262,
-        "bowlingBalls": 2383,
-        "bowlingStrikeRate": 26.186813186813186,
-        "bowlingWickets": 91,
+        "battingBalls": 1119,
+        "battingInningsWithBalls": 60,
+        "battingRunsWithBalls": 736,
+        "battingStrikeRate": 65.77301161751564,
+        "bowlingBalls": 2413,
+        "bowlingStrikeRate": 26.22826086956522,
+        "bowlingWickets": 92,
         "dismissals": {
-          "bowled": 22,
+          "bowled": 23,
           "caught": 31,
           "hit-wicket": 0,
           "lbw": 9,
@@ -3252,18 +3252,18 @@
         "Bilal Asghar"
       ],
       "career": {
-        "appearances": 75,
-        "runs": 535,
+        "appearances": 76,
+        "runs": 541,
         "wickets": 56
       },
       "name": "Bilal Asghar",
       "playerId": "p-bilal-asghar-ce9b4919",
       "profilePath": "profiles/p-bilal-asghar-ce9b4919.json",
       "scorecardMetrics": {
-        "battingBalls": 1151,
-        "battingInningsWithBalls": 47,
-        "battingRunsWithBalls": 424,
-        "battingStrikeRate": 36.8375325803649,
+        "battingBalls": 1159,
+        "battingInningsWithBalls": 48,
+        "battingRunsWithBalls": 430,
+        "battingStrikeRate": 37.10094909404659,
         "bowlingBalls": 1746,
         "bowlingStrikeRate": 31.178571428571427,
         "bowlingWickets": 56,
@@ -4069,24 +4069,24 @@
         "Chamod Sandaru"
       ],
       "career": {
-        "appearances": 24,
-        "runs": 753,
-        "wickets": 40
+        "appearances": 25,
+        "runs": 789,
+        "wickets": 42
       },
       "name": "Chamod Sandaru",
       "playerId": "p-chamod-sandaru-7f9d3aef",
       "profilePath": "profiles/p-chamod-sandaru-7f9d3aef.json",
       "scorecardMetrics": {
-        "battingBalls": 901,
-        "battingInningsWithBalls": 21,
-        "battingRunsWithBalls": 753,
-        "battingStrikeRate": 83.57380688124306,
-        "bowlingBalls": 960,
+        "battingBalls": 944,
+        "battingInningsWithBalls": 22,
+        "battingRunsWithBalls": 789,
+        "battingStrikeRate": 83.58050847457628,
+        "bowlingBalls": 1008,
         "bowlingStrikeRate": 24.0,
-        "bowlingWickets": 40,
+        "bowlingWickets": 42,
         "dismissals": {
           "bowled": 3,
-          "caught": 14,
+          "caught": 15,
           "hit-wicket": 0,
           "lbw": 2,
           "other": 0,
@@ -5565,23 +5565,23 @@
         "David Richardson"
       ],
       "career": {
-        "appearances": 115,
-        "runs": 1123,
+        "appearances": 116,
+        "runs": 1140,
         "wickets": 5
       },
       "name": "David Richardson",
       "playerId": "p-david-richardson-0e407c2b",
       "profilePath": "profiles/p-david-richardson-0e407c2b.json",
       "scorecardMetrics": {
-        "battingBalls": 2092,
-        "battingInningsWithBalls": 65,
-        "battingRunsWithBalls": 874,
-        "battingStrikeRate": 41.77820267686425,
+        "battingBalls": 2147,
+        "battingInningsWithBalls": 66,
+        "battingRunsWithBalls": 891,
+        "battingStrikeRate": 41.499767116907314,
         "bowlingBalls": 116,
         "bowlingStrikeRate": 23.2,
         "bowlingWickets": 5,
         "dismissals": {
-          "bowled": 40,
+          "bowled": 41,
           "caught": 27,
           "hit-wicket": 0,
           "lbw": 0,
@@ -11326,24 +11326,24 @@
         "Kamran ud Din"
       ],
       "career": {
-        "appearances": 70,
-        "runs": 847,
-        "wickets": 5
+        "appearances": 71,
+        "runs": 851,
+        "wickets": 6
       },
       "name": "Kamran ud Din",
       "playerId": "p-kamran-ud-din-0f7bf293",
       "profilePath": "profiles/p-kamran-ud-din-0f7bf293.json",
       "scorecardMetrics": {
-        "battingBalls": 801,
-        "battingInningsWithBalls": 51,
-        "battingRunsWithBalls": 624,
-        "battingStrikeRate": 77.90262172284645,
-        "bowlingBalls": 130,
-        "bowlingStrikeRate": 26.0,
-        "bowlingWickets": 5,
+        "battingBalls": 805,
+        "battingInningsWithBalls": 52,
+        "battingRunsWithBalls": 628,
+        "battingStrikeRate": 78.01242236024845,
+        "bowlingBalls": 136,
+        "bowlingStrikeRate": 22.666666666666668,
+        "bowlingWickets": 6,
         "dismissals": {
           "bowled": 20,
-          "caught": 23,
+          "caught": 24,
           "hit-wicket": 0,
           "lbw": 9,
           "other": 0,
@@ -11836,24 +11836,24 @@
         "Kiran Sankaran"
       ],
       "career": {
-        "appearances": 154,
-        "runs": 1336,
-        "wickets": 115
+        "appearances": 155,
+        "runs": 1340,
+        "wickets": 116
       },
       "name": "Kiran Sankaran",
       "playerId": "p-kiran-sv-87ddf68c",
       "profilePath": "profiles/p-kiran-sv-87ddf68c.json",
       "scorecardMetrics": {
-        "battingBalls": 1268,
-        "battingInningsWithBalls": 81,
-        "battingRunsWithBalls": 795,
-        "battingStrikeRate": 62.69716088328076,
-        "bowlingBalls": 3101,
-        "bowlingStrikeRate": 26.965217391304346,
-        "bowlingWickets": 115,
+        "battingBalls": 1277,
+        "battingInningsWithBalls": 82,
+        "battingRunsWithBalls": 799,
+        "battingStrikeRate": 62.56851996867658,
+        "bowlingBalls": 3107,
+        "bowlingStrikeRate": 26.78448275862069,
+        "bowlingWickets": 116,
         "dismissals": {
           "bowled": 20,
-          "caught": 54,
+          "caught": 55,
           "hit-wicket": 0,
           "lbw": 7,
           "other": 0,
@@ -13808,23 +13808,23 @@
         "Mir Hassan"
       ],
       "career": {
-        "appearances": 104,
-        "runs": 165,
-        "wickets": 148
+        "appearances": 105,
+        "runs": 166,
+        "wickets": 150
       },
       "name": "Mir Hassan",
       "playerId": "p-mir-hassan-7140ef46",
       "profilePath": "profiles/p-mir-hassan-7140ef46.json",
       "scorecardMetrics": {
-        "battingBalls": 191,
-        "battingInningsWithBalls": 39,
-        "battingRunsWithBalls": 135,
-        "battingStrikeRate": 70.68062827225131,
-        "bowlingBalls": 3157,
-        "bowlingStrikeRate": 21.33108108108108,
-        "bowlingWickets": 148,
+        "battingBalls": 198,
+        "battingInningsWithBalls": 40,
+        "battingRunsWithBalls": 136,
+        "battingStrikeRate": 68.68686868686869,
+        "bowlingBalls": 3193,
+        "bowlingStrikeRate": 21.286666666666665,
+        "bowlingWickets": 150,
         "dismissals": {
-          "bowled": 6,
+          "bowled": 7,
           "caught": 15,
           "hit-wicket": 0,
           "lbw": 1,
@@ -16661,18 +16661,18 @@
         "Praful Pant"
       ],
       "career": {
-        "appearances": 144,
-        "runs": 2759,
+        "appearances": 145,
+        "runs": 2763,
         "wickets": 89
       },
       "name": "Praful Pant",
       "playerId": "p-praful-pant-3153cc3d",
       "profilePath": "profiles/p-praful-pant-3153cc3d.json",
       "scorecardMetrics": {
-        "battingBalls": 2648,
-        "battingInningsWithBalls": 99,
-        "battingRunsWithBalls": 2188,
-        "battingStrikeRate": 82.62839879154079,
+        "battingBalls": 2678,
+        "battingInningsWithBalls": 100,
+        "battingRunsWithBalls": 2192,
+        "battingStrikeRate": 81.8521284540702,
         "bowlingBalls": 1744,
         "bowlingStrikeRate": 19.59550561797753,
         "bowlingWickets": 89,
@@ -16680,7 +16680,7 @@
           "bowled": 21,
           "caught": 79,
           "hit-wicket": 0,
-          "lbw": 9,
+          "lbw": 10,
           "other": 0,
           "retired-out": 0,
           "run-out": 6,
@@ -16797,24 +16797,24 @@
         "Qasim Sheikh"
       ],
       "career": {
-        "appearances": 68,
-        "runs": 1340,
+        "appearances": 69,
+        "runs": 1342,
         "wickets": 0
       },
       "name": "Qasim Sheikh",
       "playerId": "p-qasim-sheikh-11ad38f7",
       "profilePath": "profiles/p-qasim-sheikh-11ad38f7.json",
       "scorecardMetrics": {
-        "battingBalls": 1603,
-        "battingInningsWithBalls": 44,
-        "battingRunsWithBalls": 815,
-        "battingStrikeRate": 50.842170929507176,
+        "battingBalls": 1615,
+        "battingInningsWithBalls": 45,
+        "battingRunsWithBalls": 817,
+        "battingStrikeRate": 50.588235294117645,
         "bowlingBalls": 0,
         "bowlingStrikeRate": null,
         "bowlingWickets": 0,
         "dismissals": {
           "bowled": 20,
-          "caught": 30,
+          "caught": 31,
           "hit-wicket": 0,
           "lbw": 3,
           "other": 0,
@@ -20027,24 +20027,24 @@
         "Soyeb Khanusiya"
       ],
       "career": {
-        "appearances": 47,
-        "runs": 272,
+        "appearances": 48,
+        "runs": 296,
         "wickets": 33
       },
       "name": "Soyeb Khanusiya",
       "playerId": "p-soyeb-khanusiya-a695c3f3",
       "profilePath": "profiles/p-soyeb-khanusiya-a695c3f3.json",
       "scorecardMetrics": {
-        "battingBalls": 427,
-        "battingInningsWithBalls": 30,
-        "battingRunsWithBalls": 216,
-        "battingStrikeRate": 50.585480093676814,
+        "battingBalls": 459,
+        "battingInningsWithBalls": 31,
+        "battingRunsWithBalls": 240,
+        "battingStrikeRate": 52.287581699346404,
         "bowlingBalls": 1026,
         "bowlingStrikeRate": 31.09090909090909,
         "bowlingWickets": 33,
         "dismissals": {
           "bowled": 10,
-          "caught": 12,
+          "caught": 13,
           "hit-wicket": 0,
           "lbw": 2,
           "other": 0,
@@ -21301,26 +21301,26 @@
         "Vaishak Rajagopalan"
       ],
       "career": {
-        "appearances": 47,
-        "runs": 995,
-        "wickets": 32
+        "appearances": 48,
+        "runs": 1041,
+        "wickets": 35
       },
       "name": "Vaishak Rajagopalan",
       "playerId": "p-vaishak-rajagopalan-89531d38",
       "profilePath": "profiles/p-vaishak-rajagopalan-89531d38.json",
       "scorecardMetrics": {
-        "battingBalls": 1163,
-        "battingInningsWithBalls": 41,
-        "battingRunsWithBalls": 987,
-        "battingStrikeRate": 84.86672398968186,
-        "bowlingBalls": 992,
-        "bowlingStrikeRate": 31.0,
-        "bowlingWickets": 32,
+        "battingBalls": 1219,
+        "battingInningsWithBalls": 42,
+        "battingRunsWithBalls": 1033,
+        "battingStrikeRate": 84.74159146841673,
+        "bowlingBalls": 1046,
+        "bowlingStrikeRate": 29.885714285714286,
+        "bowlingWickets": 35,
         "dismissals": {
           "bowled": 9,
           "caught": 26,
           "hit-wicket": 0,
-          "lbw": 5,
+          "lbw": 6,
           "other": 0,
           "retired-out": 0,
           "run-out": 1,
@@ -22851,9 +22851,9 @@
       "scorecardName": "Arun Raghu"
     },
     "Asad Amir": {
-      "appearanceCount": 82,
-      "battingInningsCount": 74,
-      "bowlingSpellCount": 76,
+      "appearanceCount": 83,
+      "battingInningsCount": 75,
+      "bowlingSpellCount": 77,
       "matchMethod": "normalized-exact",
       "path": "players/p-asad-amir-a2eb20cb.json",
       "playerId": "p-asad-amir-a2eb20cb",
@@ -23031,8 +23031,8 @@
       "scorecardName": "Benjamin Lee"
     },
     "Bilal Asghar": {
-      "appearanceCount": 70,
-      "battingInningsCount": 56,
+      "appearanceCount": 71,
+      "battingInningsCount": 57,
       "bowlingSpellCount": 55,
       "matchMethod": "normalized-exact",
       "path": "players/p-bilal-asghar-ce9b4919.json",
@@ -23256,9 +23256,9 @@
       "scorecardName": "Caylin Pickett"
     },
     "Chamod Sandaru": {
-      "appearanceCount": 24,
-      "battingInningsCount": 21,
-      "bowlingSpellCount": 22,
+      "appearanceCount": 25,
+      "battingInningsCount": 22,
+      "bowlingSpellCount": 23,
       "matchMethod": "normalized-exact",
       "path": "players/p-chamod-sandaru-7f9d3aef.json",
       "playerId": "p-chamod-sandaru-7f9d3aef",
@@ -23652,8 +23652,8 @@
       "scorecardName": "Dave Picken"
     },
     "David Richardson": {
-      "appearanceCount": 110,
-      "battingInningsCount": 104,
+      "appearanceCount": 111,
+      "battingInningsCount": 105,
       "bowlingSpellCount": 14,
       "matchMethod": "normalized-exact",
       "path": "players/p-david-richardson-0e407c2b.json",
@@ -25176,9 +25176,9 @@
       "scorecardName": "Kamran Naqvi"
     },
     "Kamran ud Din": {
-      "appearanceCount": 64,
-      "battingInningsCount": 60,
-      "bowlingSpellCount": 12,
+      "appearanceCount": 65,
+      "battingInningsCount": 61,
+      "bowlingSpellCount": 13,
       "matchMethod": "normalized-exact",
       "path": "players/p-kamran-ud-din-0f7bf293.json",
       "playerId": "p-kamran-ud-din-0f7bf293",
@@ -25311,9 +25311,9 @@
       "scorecardName": "Khalid Rehman"
     },
     "Kiran Sankaran": {
-      "appearanceCount": 147,
-      "battingInningsCount": 114,
-      "bowlingSpellCount": 112,
+      "appearanceCount": 148,
+      "battingInningsCount": 115,
+      "bowlingSpellCount": 113,
       "matchMethod": "normalized-exact",
       "path": "players/p-kiran-sv-87ddf68c.json",
       "playerId": "p-kiran-sv-87ddf68c",
@@ -25833,9 +25833,9 @@
       "scorecardName": "Miles Weaver"
     },
     "Mir Hassan": {
-      "appearanceCount": 96,
-      "battingInningsCount": 49,
-      "bowlingSpellCount": 93,
+      "appearanceCount": 97,
+      "battingInningsCount": 50,
+      "bowlingSpellCount": 94,
       "matchMethod": "normalized-exact",
       "path": "players/p-mir-hassan-7140ef46.json",
       "playerId": "p-mir-hassan-7140ef46",
@@ -26576,8 +26576,8 @@
       "scorecardName": "Prabhneet Singh"
     },
     "Praful Pant": {
-      "appearanceCount": 139,
-      "battingInningsCount": 131,
+      "appearanceCount": 140,
+      "battingInningsCount": 132,
       "bowlingSpellCount": 76,
       "matchMethod": "normalized-exact",
       "path": "players/p-praful-pant-3153cc3d.json",
@@ -26612,8 +26612,8 @@
       "scorecardName": "Punit Bhudia"
     },
     "Qasim Sheikh": {
-      "appearanceCount": 65,
-      "battingInningsCount": 63,
+      "appearanceCount": 66,
+      "battingInningsCount": 64,
       "bowlingSpellCount": 0,
       "matchMethod": "normalized-exact",
       "path": "players/p-qasim-sheikh-11ad38f7.json",
@@ -27449,8 +27449,8 @@
       "scorecardName": "Sohail Rupani"
     },
     "Soyeb Khanusiya": {
-      "appearanceCount": 44,
-      "battingInningsCount": 34,
+      "appearanceCount": 45,
+      "battingInningsCount": 35,
       "bowlingSpellCount": 34,
       "matchMethod": "normalized-exact",
       "path": "players/p-soyeb-khanusiya-a695c3f3.json",
@@ -27774,9 +27774,9 @@
       "scorecardName": "Vaila Wrench"
     },
     "Vaishak Rajagopalan": {
-      "appearanceCount": 45,
-      "battingInningsCount": 43,
-      "bowlingSpellCount": 36,
+      "appearanceCount": 46,
+      "battingInningsCount": 44,
+      "bowlingSpellCount": 37,
       "matchMethod": "normalized-exact",
       "path": "players/p-vaishak-rajagopalan-89531d38.json",
       "playerId": "p-vaishak-rajagopalan-89531d38",
